@@ -1,0 +1,18 @@
+Booking Website
+
+class Airport (City)
+class Airline
+class Airplane
+	- airline
+	- seating capacity
+	- cost
+Edge - distance
+
+admin
+	- add/remove airport/airline/airplane
+
+Login Page (user and admin)
+User profile
+Airport Info
+Available Flights (either per day or per week with timings)
+Book Ticket
