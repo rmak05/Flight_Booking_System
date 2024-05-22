@@ -2,15 +2,15 @@
 #include <cstring>
 #include <windows.h>
 #define SCREEN_MAX_WIDTH 135
-#define SCREEN_WIDTH 100
-#define LEFT_BORDER_WIDTH 15
+#define SCREEN_WIDTH 120
+#define LEFT_BORDER_WIDTH 8
 #define TEXT_PADDING 1
 using namespace std;
 
 enum align{
-    left = (1<<0),
-    right = (1<<1),
-    center = (1<<2)
+    left   = 0,
+    right  = 1,
+    center = 2
 };
 
 void printLine(){
@@ -68,17 +68,21 @@ void printScreen(){
     cout<<(char)187<<"\n";
 
     // title
-    strcpy(text,"  ___  ___________ _     _____ _   _  _____ ");
+    strcpy(text,"______ _ _       _     _     ______             _    _                _____           _                 ");
     printLine(text,align::center);
-    strcpy(text," / _ \\|_   _| ___ \\ |   |_   _| \\ | ||  ___|");
+    strcpy(text,"|  ___| (_)     | |   | |    | ___ \\           | |  (_)              /  ___|         | |                ");
     printLine(text,align::center);
-    strcpy(text,"/ /_\\ \\ | | | |_/ / |     | | |  \\| || |__  ");
+    strcpy(text,"| |_  | |_  __ _| |__ | |_   | |_/ / ___   ___ | | ___ _ __   __ _   \\ `--. _   _ ___| |_ ___ _ __ ___  ");
     printLine(text,align::center);
-    strcpy(text,"|  _  | | | |    /| |     | | | . ` ||  __| ");
+    strcpy(text,"|  _| | | |/ _` | '_ \\| __|  | ___ \\/ _ \\ / _ \\| |/ / | '_ \\ / _` |   `--. \\ | | / __| __/ _ \\ '_ ` _ \\ ");
     printLine(text,align::center);
-    strcpy(text,"| | | |_| |_| |\\ \\| |_____| |_| |\\  || |___ ");
+    strcpy(text,"| |   | | | (_| | | | | |_   | |_/ / (_) | (_) |   <| | | | | (_| |  /\\__/ / |_| \\__ \\ ||  __/ | | | | |");
     printLine(text,align::center);
-    strcpy(text,"\\_| |_/\\___/\\_| \\_\\_____/\\___/\\_| \\_/\\____/ ");
+    strcpy(text,"\\_|   |_|_|\\__, |_| |_|\\__|  \\____/ \\___/ \\___/|_|\\_\\_|_| |_|\\__, |  \\____/ \\__, |___/\\__\\___|_| |_| |_|");
+    printLine(text,align::center);
+    strcpy(text,"            __/ |                                             __/ |          __/ |                      ");
+    printLine(text,align::center);
+    strcpy(text,"           |___/                                             |___/          |___/                       "); 
     printLine(text,align::center);
 
     // body
@@ -105,5 +109,26 @@ int main(){
 
 // ascii art
 // big
-// doom
+// doom (currently using)
 // standard
+// flight booking system 
+
+//      _    _      _ _            
+//     / \  (_)_ __| (_)_ __   ___ 
+//    / _ \ | | '__| | | '_ \ / _ \
+//   / ___ \| | |  | | | | | |  __/
+//  /_/   \_\_|_|  |_|_|_| |_|\___|
+
+//   ___  _      _ _            
+//  / _ \(_)    | (_)           
+// / /_\ \_ _ __| |_ _ __   ___ 
+// |  _  | | '__| | | '_ \ / _ \
+// | | | | | |  | | | | | |  __/
+// \_| |_/_|_|  |_|_|_| |_|\___|
+                             
+//   ___  ___________ _     _____ _   _  _____ 
+//  / _ \|_   _| ___ \ |   |_   _| \ | ||  ___|
+// / /_\ \ | | | |_/ / |     | | |  \| || |__  
+// |  _  | | | |    /| |     | | | . ` ||  __| 
+// | | | |_| |_| |\ \| |_____| |_| |\  || |___ 
+// \_| |_/\___/\_| \_\_____/\___/\_| \_/\____/   
