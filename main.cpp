@@ -2,12 +2,12 @@
 #include <cstring>
 #include <windows.h>
 #include <pthread.h>
+#include <conio.h>
 #define SCREEN_MAX_WIDTH 135
 #define SCREEN_WIDTH 120
 #define LEFT_BORDER_WIDTH 7
 #define TEXT_PADDING 1
-// this can be called main screen delay also
-#define IMPORTANT_NEWS_TEXT_DELAY 1000
+#define IMPORTANT_NEWS_TEXT_DELAY 250
 using namespace std;
 
 enum align{
@@ -124,67 +124,91 @@ circular_list_text_node* makeTextCircular(const char *s,int width){
     return head;
 }
 
+char ch;
+
 void* printScreen(void *p){
+    system("cls");
     char text[SCREEN_WIDTH];
-    int index=0;
-    char z[]="Very Very Big Sample Text";    // make linked list, it seems better
+
+    // top line
+    for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    cout<<(char)201;
+    for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<(char)205;
+    cout<<(char)187<<"\n";
+
+    // title
+    strcpy(text,"______ _ _       _     _     ______             _    _                _____           _                 ");
+    printLine(text,align::center);
+    strcpy(text,"|  ___| (_)     | |   | |    | ___ \\           | |  (_)              /  ___|         | |                ");
+    printLine(text,align::center);
+    strcpy(text,"| |_  | |_  __ _| |__ | |_   | |_/ / ___   ___ | | ___ _ __   __ _   \\ `--. _   _ ___| |_ ___ _ __ ___  ");
+    printLine(text,align::center);
+    strcpy(text,"|  _| | | |/ _` | '_ \\| __|  | ___ \\/ _ \\ / _ \\| |/ / | '_ \\ / _` |   `--. \\ | | / __| __/ _ \\ '_ ` _ \\ ");
+    printLine(text,align::center);
+    strcpy(text,"| |   | | | (_| | | | | |_   | |_/ / (_) | (_) |   <| | | | | (_| |  /\\__/ / |_| \\__ \\ ||  __/ | | | | |");
+    printLine(text,align::center);
+    strcpy(text,"\\_|   |_|_|\\__, |_| |_|\\__|  \\____/ \\___/ \\___/|_|\\_\\_|_| |_|\\__, |  \\____/ \\__, |___/\\__\\___|_| |_| |_|");
+    printLine(text,align::center);
+    strcpy(text,"            __/ |                                             __/ |          __/ |                      ");
+    printLine(text,align::center);
+    strcpy(text,"           |___/                                             |___/          |___/                       "); 
+    printLine(text,align::center);
+
+    printLine();
+    printLine();
+    printLine();
+    printLine();
+
+    printLine();        // 14th row
+
+    printLine();
+    printLine();
+    printLine();
+    printLine();
+
+    // bottom line
+    for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    cout<<(char)200;
+    for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<(char)205;
+    cout<<(char)188<<"\n";
+
+    // important updates
+    HANDLE imp_updates_handle=GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD imp_updates_coord;
+    imp_updates_coord.X=0;
+    imp_updates_coord.Y=13;
+    char imp_text[]="Very Very Big Sample Text";
     int width=14;
-    circular_list_text_node *z_ll=makeTextCircular(z,width);
-    while(1){
-        system("cls");
-
-        // top line
-        for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
-        cout<<(char)201;
-        for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<(char)205;
-        cout<<(char)187<<"\n";
-
-        // title
-        strcpy(text,"______ _ _       _     _     ______             _    _                _____           _                 ");
-        printLine(text,align::center);
-        strcpy(text,"|  ___| (_)     | |   | |    | ___ \\           | |  (_)              /  ___|         | |                ");
-        printLine(text,align::center);
-        strcpy(text,"| |_  | |_  __ _| |__ | |_   | |_/ / ___   ___ | | ___ _ __   __ _   \\ `--. _   _ ___| |_ ___ _ __ ___  ");
-        printLine(text,align::center);
-        strcpy(text,"|  _| | | |/ _` | '_ \\| __|  | ___ \\/ _ \\ / _ \\| |/ / | '_ \\ / _` |   `--. \\ | | / __| __/ _ \\ '_ ` _ \\ ");
-        printLine(text,align::center);
-        strcpy(text,"| |   | | | (_| | | | | |_   | |_/ / (_) | (_) |   <| | | | | (_| |  /\\__/ / |_| \\__ \\ ||  __/ | | | | |");
-        printLine(text,align::center);
-        strcpy(text,"\\_|   |_|_|\\__, |_| |_|\\__|  \\____/ \\___/ \\___/|_|\\_\\_|_| |_|\\__, |  \\____/ \\__, |___/\\__\\___|_| |_| |_|");
-        printLine(text,align::center);
-        strcpy(text,"            __/ |                                             __/ |          __/ |                      ");
-        printLine(text,align::center);
-        strcpy(text,"           |___/                                             |___/          |___/                       "); 
-        printLine(text,align::center);
-
-        printLine();
-        printLine();
-        printLine();
-        printLine();
-
-        // printLine(z+index,width,align::center);
-        printLine(z_ll,width,align::center);
-        z_ll=z_ll->next;
-
-        printLine();
-        printLine();
-        printLine();
-        printLine();
-
-        // bottom line
-        for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
-        cout<<(char)200;
-        for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<(char)205;
-        cout<<(char)188<<"\n";
+    circular_list_text_node *imp_text_ll=makeTextCircular(imp_text,width);
+    while(true){
+        BOOL handle_success=SetConsoleCursorPosition(imp_updates_handle,imp_updates_coord);
+        if(!handle_success) continue;
+        printLine(imp_text_ll,width,align::center);        // 14th row
+        imp_text_ll=imp_text_ll->next;
         Sleep(IMPORTANT_NEWS_TEXT_DELAY);
+        if(ch=='x' ||ch=='X'){
+            cout<<"\n\n\n\n\n\n\n\n\n\n\n";
+            break;
+        }
     }
+
+    return NULL;
+}
+
+void* takeInput(void*){
+    while(true){
+        ch=(char)getch();
+        if(ch=='x' ||ch=='X') break;
+    }
+    return NULL;
 }
 
 void initiate(){
-    printScreen(NULL);
-    pthread_t printScreen_thread;
+    pthread_t printScreen_thread,input_thread;
     pthread_create(&printScreen_thread,NULL,printScreen,NULL);
+    pthread_create(&input_thread,NULL,takeInput,NULL);
     pthread_join(printScreen_thread,NULL);
+    pthread_join(input_thread,NULL);
 }
 
 int main(){
