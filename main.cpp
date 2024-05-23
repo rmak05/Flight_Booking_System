@@ -7,13 +7,15 @@
 #define SCREEN_WIDTH 120
 #define LEFT_BORDER_WIDTH 7
 #define TEXT_PADDING 1
-#define IMPORTANT_NEWS_TEXT_DELAY 250
+#define IMPORTANT_UPDATES_TEXT_DELAY 250
+#define IMP_UPDATES_WIDTH 50
 using namespace std;
 
 enum align{
     left   = 0,
     right  = 1,
-    center = 2
+    center = 2,
+    custom = 3
 };
 
 struct circular_list_text_node{
@@ -75,20 +77,25 @@ void printLine(const char *s,const int a){
     cout<<(char)186<<"\n";
 }
 
-void printLine(circular_list_text_node *s_ll,const int s_width,const int a){
-    int n=s_width,left_space=1,right_space=1;
+// desired_text_padding will by default be taken as left padding unless it is for align::right
+void printLine(const char *s,const int a,const int desired_text_padding){
+    int n=strlen(s),left_space=1,right_space=1;
     switch(a){
         case align::left :
-            left_space=TEXT_PADDING;
-            right_space=SCREEN_WIDTH-2-n-TEXT_PADDING;
+            left_space=desired_text_padding;
+            right_space=SCREEN_WIDTH-2-n-desired_text_padding;
             break;
         case align::right :
-            left_space=SCREEN_WIDTH-2-n-TEXT_PADDING;
-            right_space=TEXT_PADDING;
+            left_space=SCREEN_WIDTH-2-n-desired_text_padding;
+            right_space=desired_text_padding;
             break;
         case align::center :
-            left_space=TEXT_PADDING+(SCREEN_WIDTH-2-n-2*TEXT_PADDING)/2;
-            right_space=2*TEXT_PADDING+SCREEN_WIDTH-2-n-2*TEXT_PADDING-left_space;
+            left_space=desired_text_padding+(SCREEN_WIDTH-2-n-2*desired_text_padding)/2;
+            right_space=2*desired_text_padding+SCREEN_WIDTH-2-n-2*desired_text_padding-left_space;
+            break;
+        case align::custom :
+            left_space=desired_text_padding;
+            right_space=SCREEN_WIDTH-2-n-left_space;
             break;
         default :               // default is left
             left_space=TEXT_PADDING;
@@ -98,21 +105,17 @@ void printLine(circular_list_text_node *s_ll,const int s_width,const int a){
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
     cout<<(char)186;
     for(int i=0;i<left_space;i++) cout<<" ";
-    bool end_flag=false;
-    for(int i=0;i<n;i++){
-        cout<<(s_ll->node_value);
-        s_ll=s_ll->next;
-    }
+    cout<<s;
     for(int i=0;i<right_space;i++) cout<<" ";
     cout<<(char)186<<"\n";
 }
 
-circular_list_text_node* makeTextCircular(const char *s,int width){
+circular_list_text_node* makeTextCircular(const char *s,int imp_updates_width){
     circular_list_text_node *head=NULL,*temp=NULL;
     if(s[0]=='\0') return head;
     head = new circular_list_text_node(' ');
     temp=head;
-    for(int i=0;i<width-1;i++){
+    for(int i=0;i<imp_updates_width-1;i++){
         temp->next = new circular_list_text_node(' ');
         temp=temp->next;
     }
@@ -127,6 +130,7 @@ circular_list_text_node* makeTextCircular(const char *s,int width){
 char ch;
 
 void* printScreen(void *p){
+    int imp_news_line=0;
     system("cls");
     char text[SCREEN_WIDTH];
 
@@ -135,31 +139,48 @@ void* printScreen(void *p){
     cout<<(char)201;
     for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<(char)205;
     cout<<(char)187<<"\n";
+    imp_news_line++;
 
     // title
     strcpy(text,"______ _ _       _     _     ______             _    _                _____           _                 ");
     printLine(text,align::center);
+    imp_news_line++;
     strcpy(text,"|  ___| (_)     | |   | |    | ___ \\           | |  (_)              /  ___|         | |                ");
     printLine(text,align::center);
+    imp_news_line++;
     strcpy(text,"| |_  | |_  __ _| |__ | |_   | |_/ / ___   ___ | | ___ _ __   __ _   \\ `--. _   _ ___| |_ ___ _ __ ___  ");
     printLine(text,align::center);
+    imp_news_line++;
     strcpy(text,"|  _| | | |/ _` | '_ \\| __|  | ___ \\/ _ \\ / _ \\| |/ / | '_ \\ / _` |   `--. \\ | | / __| __/ _ \\ '_ ` _ \\ ");
     printLine(text,align::center);
+    imp_news_line++;
     strcpy(text,"| |   | | | (_| | | | | |_   | |_/ / (_) | (_) |   <| | | | | (_| |  /\\__/ / |_| \\__ \\ ||  __/ | | | | |");
     printLine(text,align::center);
+    imp_news_line++;
     strcpy(text,"\\_|   |_|_|\\__, |_| |_|\\__|  \\____/ \\___/ \\___/|_|\\_\\_|_| |_|\\__, |  \\____/ \\__, |___/\\__\\___|_| |_| |_|");
     printLine(text,align::center);
+    imp_news_line++;
     strcpy(text,"            __/ |                                             __/ |          __/ |                      ");
     printLine(text,align::center);
+    imp_news_line++;
     strcpy(text,"           |___/                                             |___/          |___/                       "); 
     printLine(text,align::center);
+    imp_news_line++;
 
     printLine();
+    imp_news_line++;
     printLine();
+    imp_news_line++;
     printLine();
+    imp_news_line++;
     printLine();
+    imp_news_line++;
 
-    printLine();        // 14th row
+    char imp_updates_title_text[]="Important Updates : ";
+    char imp_text[]="The flight to Bhubaneswar has been delayed. Please wait for further updates.  |  The flight to Pune will arrive at 3:00 PM.  |  The flight to Mumbai has been cancelled.";
+    int imp_updates_title_text_size=strlen(imp_updates_title_text);
+    int desired_left_space=(SCREEN_WIDTH-2-imp_updates_title_text_size-IMP_UPDATES_WIDTH)/2;
+    printLine(imp_updates_title_text,align::custom,desired_left_space);      
 
     printLine();
     printLine();
@@ -175,19 +196,21 @@ void* printScreen(void *p){
     // important updates
     HANDLE imp_updates_handle=GetStdHandle(STD_OUTPUT_HANDLE);
     COORD imp_updates_coord;
-    imp_updates_coord.X=0;
-    imp_updates_coord.Y=13;
-    char imp_text[]="Very Very Big Sample Text";
-    int width=14;
-    circular_list_text_node *imp_text_ll=makeTextCircular(imp_text,width);
+    imp_updates_coord.X=LEFT_BORDER_WIDTH+1+desired_left_space+imp_updates_title_text_size;
+    imp_updates_coord.Y=imp_news_line;
+    circular_list_text_node *imp_text_ll=makeTextCircular(imp_text,IMP_UPDATES_WIDTH),*temp_ll;
     while(true){
         BOOL handle_success=SetConsoleCursorPosition(imp_updates_handle,imp_updates_coord);
         if(!handle_success) continue;
-        printLine(imp_text_ll,width,align::center);        // 14th row
+        temp_ll=imp_text_ll;
+        for(int i=0;i<IMP_UPDATES_WIDTH;i++){
+            cout<<(temp_ll->node_value);
+            temp_ll=temp_ll->next;
+        }
         imp_text_ll=imp_text_ll->next;
-        Sleep(IMPORTANT_NEWS_TEXT_DELAY);
+        cout<<"\n\n\n\n\n\n\n\n\n\n\n";
+        Sleep(IMPORTANT_UPDATES_TEXT_DELAY);
         if(ch=='x' ||ch=='X'){
-            cout<<"\n\n\n\n\n\n\n\n\n\n\n";
             break;
         }
     }
