@@ -6,16 +6,23 @@
 #define SCREEN_MAX_WIDTH 135
 #define SCREEN_WIDTH 120
 #define LEFT_BORDER_WIDTH 7
-#define TEXT_PADDING 1
+#define TEXT_PADDING 10
 #define IMPORTANT_UPDATES_TEXT_DELAY 250
-#define IMP_UPDATES_WIDTH 50
+#define IMP_UPDATES_WIDTH 75
 using namespace std;
+
+char user_choice;
 
 enum align{
     left   = 0,
     right  = 1,
     center = 2,
     custom = 3
+};
+
+enum line{
+    dashed = 0,
+    dotted = 1,
 };
 
 struct circular_list_text_node{
@@ -40,12 +47,45 @@ void printLine(){
     cout<<(char)186<<"\n";
 }
 
-void printLine(const char *s){
+void printLine(const int a){
+    char line_ch;
+    switch(a){
+        case line::dashed :
+            line_ch=(char)196;
+            break;
+        case line::dotted :
+            line_ch=(char)250;
+            break;
+        default :               // default is empty line
+            line_ch=' ';
+            break;
+    }
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
     cout<<(char)186;
+    for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<line_ch;
+    cout<<(char)186<<"\n";
+}
+
+void printLine(const char *s){
     int n=strlen(s);
+    for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    cout<<(char)186;
+    for(int i=0;i<TEXT_PADDING;i++) cout<<" ";
     cout<<s;
-    for(int i=0;i<SCREEN_WIDTH-2-n;i++) cout<<" ";
+    for(int i=0;i<SCREEN_WIDTH-TEXT_PADDING-2-n;i++) cout<<" ";
+    cout<<(char)186<<"\n";
+}
+
+void printLine(const char *s1,const char *s2){
+    int n1=strlen(s1),n2=strlen(s2);
+    for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    cout<<(char)186;
+    for(int i=0;i<TEXT_PADDING;i++) cout<<" ";
+    cout<<s1;
+    for(int i=0;i<(SCREEN_WIDTH-2)/2-TEXT_PADDING-n1;i++) cout<<" ";
+    for(int i=0;i<TEXT_PADDING;i++) cout<<" ";
+    cout<<s2;
+    for(int i=0;i<(SCREEN_WIDTH-2)/2-TEXT_PADDING-n2;i++) cout<<" ";
     cout<<(char)186<<"\n";
 }
 
@@ -61,40 +101,7 @@ void printLine(const char *s,const int a){
             right_space=TEXT_PADDING;
             break;
         case align::center :
-            left_space=TEXT_PADDING+(SCREEN_WIDTH-2-n-2*TEXT_PADDING)/2;
-            right_space=2*TEXT_PADDING+SCREEN_WIDTH-2-n-2*TEXT_PADDING-left_space;
-            break;
-        default :               // default is left
-            left_space=TEXT_PADDING;
-            right_space=SCREEN_WIDTH-2-n-TEXT_PADDING;
-            break;
-    }
-    for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
-    cout<<(char)186;
-    for(int i=0;i<left_space;i++) cout<<" ";
-    cout<<s;
-    for(int i=0;i<right_space;i++) cout<<" ";
-    cout<<(char)186<<"\n";
-}
-
-// desired_text_padding will by default be taken as left padding unless it is for align::right
-void printLine(const char *s,const int a,const int desired_text_padding){
-    int n=strlen(s),left_space=1,right_space=1;
-    switch(a){
-        case align::left :
-            left_space=desired_text_padding;
-            right_space=SCREEN_WIDTH-2-n-desired_text_padding;
-            break;
-        case align::right :
-            left_space=SCREEN_WIDTH-2-n-desired_text_padding;
-            right_space=desired_text_padding;
-            break;
-        case align::center :
-            left_space=desired_text_padding+(SCREEN_WIDTH-2-n-2*desired_text_padding)/2;
-            right_space=2*desired_text_padding+SCREEN_WIDTH-2-n-2*desired_text_padding-left_space;
-            break;
-        case align::custom :
-            left_space=desired_text_padding;
+            left_space=(SCREEN_WIDTH-2-n)/2;
             right_space=SCREEN_WIDTH-2-n-left_space;
             break;
         default :               // default is left
@@ -110,7 +117,41 @@ void printLine(const char *s,const int a,const int desired_text_padding){
     cout<<(char)186<<"\n";
 }
 
-circular_list_text_node* makeTextCircular(const char *s,int imp_updates_width){
+// desired_text_padding will by default be taken as left padding unless it is for align::right
+// desired_text_padding is ignored for align::center
+void printLine(const char *s,const int a,const int desired_text_padding){
+    int n=strlen(s),left_space=1,right_space=1;
+    switch(a){
+        case align::left :
+            left_space=desired_text_padding;
+            right_space=SCREEN_WIDTH-2-n-desired_text_padding;
+            break;
+        case align::right :
+            left_space=SCREEN_WIDTH-2-n-desired_text_padding;
+            right_space=desired_text_padding;
+            break;
+        case align::center :
+            left_space=(SCREEN_WIDTH-2-n)/2;
+            right_space=SCREEN_WIDTH-2-n-left_space;
+            break;
+        case align::custom :
+            left_space=desired_text_padding;
+            right_space=SCREEN_WIDTH-2-n-left_space;
+            break;
+        default :               // default is left
+            left_space=desired_text_padding;
+            right_space=SCREEN_WIDTH-2-n-desired_text_padding;
+            break;
+    }
+    for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    cout<<(char)186;
+    for(int i=0;i<left_space;i++) cout<<" ";
+    cout<<s;
+    for(int i=0;i<right_space;i++) cout<<" ";
+    cout<<(char)186<<"\n";
+}
+
+circular_list_text_node* makeTextCircular(const char *s,const int imp_updates_width){
     circular_list_text_node *head=NULL,*temp=NULL;
     if(s[0]=='\0') return head;
     head = new circular_list_text_node(' ');
@@ -126,8 +167,6 @@ circular_list_text_node* makeTextCircular(const char *s,int imp_updates_width){
     temp->next=head;
     return head;
 }
-
-char ch;
 
 void* printScreen(void *p){
     int imp_news_line=0;
@@ -171,19 +210,24 @@ void* printScreen(void *p){
     imp_news_line++;
     printLine();
     imp_news_line++;
-    printLine();
+    printLine(line::dashed);
     imp_news_line++;
     printLine();
     imp_news_line++;
 
+    // important updates
     char imp_updates_title_text[]="Important Updates : ";
     char imp_text[]="The flight to Bhubaneswar has been delayed. Please wait for further updates.  |  The flight to Pune will arrive at 3:00 PM.  |  The flight to Mumbai has been cancelled.";
     int imp_updates_title_text_size=strlen(imp_updates_title_text);
-    int desired_left_space=(SCREEN_WIDTH-2-imp_updates_title_text_size-IMP_UPDATES_WIDTH)/2;
+    int desired_left_space=TEXT_PADDING;
+    // int desired_left_space=(SCREEN_WIDTH-2-imp_updates_title_text_size-IMP_UPDATES_WIDTH)/2;
     printLine(imp_updates_title_text,align::custom,desired_left_space);      
 
     printLine();
+    printLine(line::dashed);
     printLine();
+    
+    printLine("1. Book Ticket","2. Cancel Ticket");
     printLine();
     printLine();
 
@@ -210,7 +254,7 @@ void* printScreen(void *p){
         imp_text_ll=imp_text_ll->next;
         cout<<"\n\n\n\n\n\n\n\n\n\n\n";
         Sleep(IMPORTANT_UPDATES_TEXT_DELAY);
-        if(ch=='x' ||ch=='X'){
+        if(user_choice=='x' ||user_choice=='X'){
             break;
         }
     }
@@ -220,8 +264,8 @@ void* printScreen(void *p){
 
 void* takeInput(void*){
     while(true){
-        ch=(char)getch();
-        if(ch=='x' ||ch=='X') break;
+        user_choice=(char)getch();
+        if(user_choice=='x' ||user_choice=='X') break;
     }
     return NULL;
 }

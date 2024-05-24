@@ -11,8 +11,10 @@ Edge - distance
 admin
 	- add/remove airport/airline/airplane
 
-Login Page (user and admin)
+Login Page (user and admin and guest)
 User profile
 Airport Info
 Available Flights (either per day or per week with timings)
 Book Ticket
+Add loading screen
+Add a nice flight animation after successful booking
