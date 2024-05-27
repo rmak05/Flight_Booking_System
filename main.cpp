@@ -76,7 +76,7 @@ void printLine(const char *s){
     cout<<(char)186<<"\n";
 }
 
-void printLine(const char *s1,const char *s2){
+void printLine(const char *s1, const char *s2){
     int n1=strlen(s1),n2=strlen(s2);
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
     cout<<(char)186;
@@ -89,7 +89,7 @@ void printLine(const char *s1,const char *s2){
     cout<<(char)186<<"\n";
 }
 
-void printLine(const char *s,const int a){
+void printLine(const char *s, const int a){
     int n=strlen(s),left_space=1,right_space=1;
     switch(a){
         case align::left :
@@ -119,7 +119,7 @@ void printLine(const char *s,const int a){
 
 // desired_text_padding will by default be taken as left padding unless it is for align::right
 // desired_text_padding is ignored for align::center
-void printLine(const char *s,const int a,const int desired_text_padding){
+void printLine(const char *s, const int a, const int desired_text_padding){
     int n=strlen(s),left_space=1,right_space=1;
     switch(a){
         case align::left :
@@ -151,7 +151,7 @@ void printLine(const char *s,const int a,const int desired_text_padding){
     cout<<(char)186<<"\n";
 }
 
-circular_list_text_node* makeTextCircular(const char *s,const int imp_updates_width){
+circular_list_text_node* makeTextCircular(const char *s, const int imp_updates_width){
     circular_list_text_node *head=NULL,*temp=NULL;
     if(s[0]=='\0') return head;
     head = new circular_list_text_node(' ');
@@ -168,7 +168,8 @@ circular_list_text_node* makeTextCircular(const char *s,const int imp_updates_wi
     return head;
 }
 
-void* printScreen(void *p){
+// check gotoxy
+void* printUserScreen(void *p){
     int imp_news_line=0;
     system("cls");
     char text[SCREEN_WIDTH];
@@ -227,7 +228,9 @@ void* printScreen(void *p){
     printLine(line::dashed);
     printLine();
     
-    printLine("1. Book Ticket","2. Cancel Ticket");
+    printLine("1. Open profile","2. Book ticket");
+    printLine("3. Cancel ticket","4. Check flight availability");
+    printLine("5. Log out");
     printLine();
     printLine();
 
@@ -262,7 +265,7 @@ void* printScreen(void *p){
     return NULL;
 }
 
-void* takeInput(void*){
+void* takeInput(void *a){
     while(true){
         user_choice=(char)getch();
         if(user_choice=='x' ||user_choice=='X') break;
@@ -272,7 +275,7 @@ void* takeInput(void*){
 
 void initiate(){
     pthread_t printScreen_thread,input_thread;
-    pthread_create(&printScreen_thread,NULL,printScreen,NULL);
+    pthread_create(&printScreen_thread,NULL,printUserScreen,NULL);
     pthread_create(&input_thread,NULL,takeInput,NULL);
     pthread_join(printScreen_thread,NULL);
     pthread_join(input_thread,NULL);
