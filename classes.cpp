@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include <map>
 #define SMALL_SIZE 3
 #define MEDIUM_SIZE 50
 #define LARGE_SIZE 100
@@ -11,6 +12,11 @@ class airplane_model;
 class route;
 class airplane;
 class airport;
+
+// check operator overloading for '='
+// check how to use stl containers with classes (like vector<airplane>)
+
+map<string,airport*> code_to_airport;
 
 class airline{
 protected:
@@ -82,12 +88,6 @@ public:
         strcpy(starting_airport,start);
         strcpy(destination_airport,end);
     }
-
-    route(route& another_route){
-        this->route_distance=another_route.route_distance;
-        strcpy(this->starting_airport,another_route.starting_airport);
-        strcpy(this->destination_airport,another_route.destination_airport);
-    }
 };
 
 class airplane : public airline, public airplane_model, public route{
@@ -117,18 +117,6 @@ public:
         departure_time=d_time;
         arrival_time=a_time;
     }
-    
-    // void operator =(airplane another_airplane){
-    //     this->passenger_capacity=another_airplane.passenger_capacity;
-    //     this->route_distance=another_airplane.route_distance;
-    //     this->airplane_cost=another_airplane.airplane_cost;
-    //     this->departure_time=another_airplane.departure_time;
-    //     this->arrival_time=another_airplane.arrival_time;
-    //     strcpy(this->airline_name,another_airplane.airline_name);
-    //     strcpy(this->model_name,another_airplane.model_name);
-    //     strcpy(this->starting_airport,another_airplane.starting_airport);
-    //     strcpy(this->destination_airport,another_airplane.destination_airport);
-    // }
 };
 
 class airport{
@@ -136,7 +124,7 @@ protected:
     char airport_name[LARGE_SIZE+1];
     char airport_city[MEDIUM_SIZE+1];
     char airport_code[SMALL_SIZE+1];
-    vector<airplane> outgoing_flights;
+    vector<airplane*> outgoing_flights;
 
 public:
     airport(){
@@ -152,22 +140,33 @@ public:
         strcpy(airport_code,a_code);
     }
 
-    airport(char *a_name, char *a_city, char *a_code, vector<airplane>& o_flights){
+    airport(char *a_name, char *a_city, char *a_code, vector<airplane*>& o_flights){
         strcpy(airport_name,a_name);
         strcpy(airport_city,a_city);
         strcpy(airport_code,a_code);
-        int o_flights_size=o_flights.size();
-        outgoing_flights=vector<airplane>(o_flights_size);
-        for(int i=0;i<o_flights_size;i++){
-            outgoing_flights[i]=o_flights[i];
-        }
+        outgoing_flights=o_flights;
     }
 
     ~airport(){
         outgoing_flights.clear();
     }
+
+    void tempDisplay(){
+        cout<<airport_name<<endl;
+        cout<<airport_city<<endl;
+        cout<<airport_code<<endl;
+        cout<<endl;
+    }
 };
 
 int main(){
+    airline airIndia((char*)"Air India");
+    airplane_model boeing(300,(char*)"Boeing 747");
+    route bbs_bom(300,(char*)"BBS",(char*)"BOM");
+    airplane plane(airIndia,boeing,bbs_bom,5000,1200,1400);
+    airport biju((char*)"Bijju Pattanaik International Airport",(char*)"Bhubaneswar",(char*)"BBS");
+    code_to_airport["BBS"]=&biju;
+    airport *temp=code_to_airport["BBS"];
+    (*temp).tempDisplay();
     return 0;
 }
