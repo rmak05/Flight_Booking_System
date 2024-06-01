@@ -6,8 +6,7 @@
 #define SMALL_SIZE 3
 #define MEDIUM_SIZE 50
 #define LARGE_SIZE 100
-#define ALPHABETS 26
-#define OTHER_CHARACTERS 1
+#define TRIE_CHARACTERS 63      // 52 Alphabets + 10 Digits + Whitespace
 using namespace std;
 
 class airline;
@@ -21,29 +20,27 @@ template<class T>
 struct trieNode;
 
 // check how to use stl containers with classes (like vector<airplane>)
-// check whether it is better to use map or hashmap for strings
-// can use trie instead of maps
-map<string,airline*> name_to_airline;
-map<string,airplane_model*> name_to_airplane_model;
-map<string,airport*> code_to_airport;
-map<string,route*> code_to_route;
+// map<string,airline*> name_to_airline;
+// map<string,airplane_model*> name_to_airplane_model;
+// map<string,airport*> code_to_airport;
+// map<string,route*> code_to_route;
 
 template<class T>
 struct trieNode{
     T* value;
     bool isEnd;
-    trieNode* next[ALPHABETS+OTHER_CHARACTERS];     // A to Z , a to z , ' '
+    trieNode<T>* next[TRIE_CHARACTERS];     // A to Z , a to z , , 0 to 9 , ' '
 
     trieNode(){
         value=NULL;
         isEnd=false;
-        for(auto i:next) i=NULL;
+        for(int i=0;i<TRIE_CHARACTERS;i++) next[i]=NULL;
     }
 
     trieNode(T *T_object){
         value=T_object;
         isEnd=false;
-        for(auto i:next) i=NULL;
+        for(int i=0;i<TRIE_CHARACTERS;i++) next[i]=NULL;
     }
 };
 
@@ -55,49 +52,143 @@ private:
     int get_index(char ch){
         if('A'<=ch && ch<='Z') return (int)(ch-'A');            // 0 to 25
         else if('a'<=ch && ch<='z') return (int)(ch-'a'+26);    // 26 to 51
-        else if(ch==' ') return 52;                             // 52
+        else if('0'<=ch && ch<='9') return (int)(ch-'0'+52);    // 52 to 61
+        else if(ch==' ') return TRIE_CHARACTERS;                // 62
         else return -1;
     }
+
+    trieNode<T>* get_key_node(const char *key){
+        trieNode<T> *temp=root;
+        int key_size=strlen(key),index;
+        for(int i=0;i<key_size;i++){
+            index=get_index(key[i]);
+            if(temp->next[index]==NULL) return NULL;
+            temp=temp->next[index];
+        }
+        if(temp->isEnd) return temp;
+        else return NULL;
+    }
+
+    class trieProxy{
+    private:
+        trie<T> *tr;
+        const char *key;
+
+    public:
+        trieProxy(){
+            tr=NULL;
+            key=NULL;
+        }
+
+        trieProxy(trie<T> *_tr, const char *_key){
+            tr=_tr;
+            key=_key;
+        }
+
+        void operator=(T* _value){
+            trieNode<T> *node=tr->get_key_node(key);
+            if(node==NULL){
+                tr->insert(key,_value);
+            }
+            else{
+                node->value=_value;
+            }
+        }
+
+        // this is type caster
+        operator T*() const{
+            return tr->get_value(key);
+        }
+    };
 
 public:
     trie(){
         root = new trieNode<T>;
     }
 
-    void insert(char *key,T *T_value){
-        trieNode<T> temp=root;
-        int target_size=strlen(key),index;
-        for(int i=0;i<target_size;i++){
+    void insert(const char *key, T *T_value){
+        trieNode<T> *temp=root;
+        int key_size=strlen(key),index;
+        for(int i=0;i<key_size;i++){
             index=get_index(key[i]);
-            if(temp->next[index]==NULL) temp->next = new trieNode<T>;
+            if(temp->next[index]==NULL) temp->next[index] = new trieNode<T>;
             temp=temp->next[index];
         }
         temp->isEnd=true;
         temp->value=T_value;
     }
 
-    bool find(char *target){
-        trieNode<T> temp=root;
-        int target_size=strlen(target),index;
-        for(int i=0;i<target_size;i++){
-            index=get_index(target[i]);
+    bool find(const char *key){
+        trieNode<T> *temp=root;
+        int key_size=strlen(key),index;
+        for(int i=0;i<key_size;i++){
+            index=get_index(key[i]);
             if(temp->next[index]==NULL) return false;
             temp=temp->next[index];
         }
         return temp->isEnd;
     }
 
-    T* get_value(char *target){
-        trieNode<T> temp=root;
-        int target_size=strlen(target),index;
-        for(int i=0;i<target_size;i++){
-            index=get_index(target[i]);
+    T* get_value(const char *key){
+        trieNode<T> *temp=root;
+        int key_size=strlen(key),index;
+        for(int i=0;i<key_size;i++){
+            index=get_index(key[i]);
             if(temp->next[index]==NULL) return NULL;
             temp=temp->next[index];
         }
-        return temp->value;
+        if(temp->isEnd) return temp->value;
+        else return NULL;
+    }
+
+    void erase(const char *key){
+        if(!find(key)) return;
+        trieNode<T> *temp=root,*temp2;
+        int key_size=strlen(key),index,last_useful_node=(-1),children=0;
+        if(key_size==0){
+            temp->isEnd=false;
+            return;
+        }
+        for(int i=0;i<key_size;i++){
+            index=get_index(key[i]);
+            temp=temp->next[index];
+            children=0;
+            for(int i=0;i<TRIE_CHARACTERS;i++){
+                if(temp->next[i]!=NULL) children++;
+            }
+            if((children>=2) || ((temp->isEnd) && (i!=key_size-1))) last_useful_node=i;
+            if((children>=1) && (i==key_size)) last_useful_node=key_size-1;
+        }
+        temp->isEnd=false;
+        temp->value=NULL;
+        if(last_useful_node==key_size-1) return;
+        temp=root;
+        for(int i=0;i<=last_useful_node;i++){
+            index=get_index(key[i]);
+            temp=temp->next[index];
+        }
+        temp2=temp;
+        index=get_index(key[last_useful_node+1]);
+        temp=temp->next[index];
+        temp2->next[index]=NULL;
+        for(int i=last_useful_node+2;i<key_size;i++){
+            index=get_index(key[i]);
+            temp2=temp;
+            temp=temp->next[index];
+            delete temp2;
+        }
+        delete temp;
+    }
+
+    trieProxy operator[](const char *key){
+        return trieProxy(this,key);
     }
 };
+
+trie<airline> name_to_airline;
+trie<airplane_model> name_to_airplane_model;
+trie<airport> code_to_airport;
+trie<route> code_to_route;
 
 class airline{
 protected:
@@ -111,10 +202,6 @@ public:
     airline(char *a_name){
         strcpy(airline_name,a_name);
     }
-
-    // airline(airline& another_airline){
-    //     strcpy(this->airline_name,another_airline.airline_name);
-    // }
 
     char* get_airline_name(){
         return airline_name;
@@ -140,11 +227,6 @@ public:
         passenger_capacity=capacity;
         strcpy(model_name,m_name);
     }
-
-    // airplane_model(airplane_model& another_model){
-    //     this->passenger_capacity=another_model.passenger_capacity;
-    //     strcpy(this->model_name,another_model.model_name);
-    // }
 
     int get_passenger_capacity(){
         return passenger_capacity;
@@ -185,6 +267,8 @@ public:
     char* get_route_code(){
         return route_code;
     }
+
+    void tempDisplay(){}
 };
 
 class airplane : public airline, public airplane_model, public route{
@@ -258,19 +342,12 @@ public:
     //     cout<<airport_code<<endl;
     //     cout<<endl;
     // }
+    void tempDisplay(){}
+
 };
 
-void showAirlines(){
-    int pos=3;
-    fstream airline_file;
-    airline_file.open("airline_data.bin",ios::in | ios::out | ios::app | ios::binary);
-    airline_file.seekg((pos-1)*sizeof(airline),ios::beg);
-    airline _airline;
-    airline_file.read((char*)&_airline,sizeof(airline));
-    _airline.tempDisplay();
-}
-
 void addAirline(){
+    fflush(stdin);
     char a_name[MEDIUM_SIZE+1];
     cout<<"Airline : ";
     cin.getline(a_name,sizeof(a_name));
@@ -284,10 +361,12 @@ void addAirline(){
 }
 
 void addAirplaneModel(){
+    fflush(stdin);
     char a_name[MEDIUM_SIZE+1];
     int capacity;
     cout<<"Airplane Model : ";
     cin.getline(a_name,sizeof(a_name));
+    fflush(stdin);
     cout<<"Passenger Capacity : ";
     cin>>capacity;
     airplane_model *_airplane_model;
@@ -300,7 +379,26 @@ void addAirplaneModel(){
 }
 
 void addRoute(){
-
+    fflush(stdin);
+    char s_airport[SMALL_SIZE+1],e_airport[SMALL_SIZE+1],r_code[2*SMALL_SIZE+1];
+    int r_distance;
+    cout<<"Starting Airport : ";
+    cin.getline(s_airport,sizeof(s_airport));
+    fflush(stdin);
+    cout<<"Ending Airport : ";
+    cin.getline(s_airport,sizeof(s_airport));
+    fflush(stdin);
+    cout<<"Route distance : ";
+    cin>>r_distance;
+    strcpy(r_code,s_airport);
+    strcpy(r_code+SMALL_SIZE,e_airport);
+    route *_route;
+    fstream route_file;
+    route_file.open("route_data.bin",ios::out | ios::app | ios::binary);
+    _route = new route(r_distance,s_airport,e_airport);
+    route_file.seekp(0,ios::beg);
+    route_file.write((char*)_route,sizeof(route));
+    code_to_route[r_code]=_route;
 }
 
 void initializeMapsFromFiles(){
@@ -342,24 +440,18 @@ void initializeMapsFromFiles(){
 }
 
 int main(){
-    // airline airIndia((char*)"Air India");
-    // airplane_model boeing(300,(char*)"Boeing 747");
-    // route bbs_bom(300,(char*)"BBS",(char*)"BOM");
-    // airplane plane(airIndia,boeing,bbs_bom,5000,1200,1400);
-    // airport biju((char*)"Bijju Pattanaik International Airport",(char*)"Bhubaneswar",(char*)"BBS");
-    // code_to_airport["BBS"]=&biju;
-    // airport *temp=code_to_airport["BBS"];
-    // (*temp).tempDisplay();
     initializeMapsFromFiles();
     // addAirline();
     // addAirline();
+    addAirplaneModel();
     // addAirplaneModel();
-    for(auto i:name_to_airline){
-        (*(i.second)).tempDisplay();
-    }
-    for(auto i:name_to_airplane_model){
-        (*(i.second)).tempDisplay();
-    }
-    // showAirlines();
+    airline *t= name_to_airline["Akasa"];
+    if(t!=NULL) (*t).tempDisplay();
+    airplane_model *s=name_to_airplane_model["fgh"];
+    if(s!=NULL) (*s).tempDisplay();
+    airplane_model *s1=name_to_airplane_model["adhkd"];
+    if(s1!=NULL) (*s1).tempDisplay();
+    airplane_model *s2=name_to_airplane_model["Boeing 747"];
+    if(s2!=NULL) (*s2).tempDisplay();
     return 0;
 }

@@ -25,16 +25,16 @@ enum line{
     dotted = 1,
 };
 
-struct circular_list_text_node{
+struct circularListTextNode{
     char node_value;
-    circular_list_text_node *next;
+    circularListTextNode *next;
 
-    circular_list_text_node(){
+    circularListTextNode(){
         node_value='\0';
         next=NULL;
     }
 
-    circular_list_text_node(char value){
+    circularListTextNode(char value){
         node_value=value;
         next=NULL;
     }
@@ -151,17 +151,17 @@ void printLine(const char *s, const int a, const int desired_text_padding){
     cout<<(char)186<<"\n";
 }
 
-circular_list_text_node* makeTextCircular(const char *s, const int imp_updates_width){
-    circular_list_text_node *head=NULL,*temp=NULL;
+circularListTextNode* makeTextCircular(const char *s, const int imp_updates_width){
+    circularListTextNode *head=NULL,*temp=NULL;
     if(s[0]=='\0') return head;
-    head = new circular_list_text_node(' ');
+    head = new circularListTextNode(' ');
     temp=head;
     for(int i=0;i<imp_updates_width-1;i++){
-        temp->next = new circular_list_text_node(' ');
+        temp->next = new circularListTextNode(' ');
         temp=temp->next;
     }
     for(int i=0;s[i]!='\0';i++){
-        temp->next = new circular_list_text_node(s[i]);
+        temp->next = new circularListTextNode(s[i]);
         temp=temp->next;
     }
     temp->next=head;
@@ -245,7 +245,7 @@ void* printUserScreen(void *p){
     COORD imp_updates_coord;
     imp_updates_coord.X=LEFT_BORDER_WIDTH+1+desired_left_space+imp_updates_title_text_size;
     imp_updates_coord.Y=imp_news_line;
-    circular_list_text_node *imp_text_ll=makeTextCircular(imp_text,IMP_UPDATES_WIDTH),*temp_ll;
+    circularListTextNode *imp_text_ll=makeTextCircular(imp_text,IMP_UPDATES_WIDTH),*temp_ll;
     while(true){
         BOOL handle_success=SetConsoleCursorPosition(imp_updates_handle,imp_updates_coord);
         if(!handle_success) continue;
@@ -290,24 +290,3 @@ int main(){
 // big
 // doom (currently using)
 // standard
-// flight booking system 
-
-//      _    _      _ _            
-//     / \  (_)_ __| (_)_ __   ___ 
-//    / _ \ | | '__| | | '_ \ / _ \
-//   / ___ \| | |  | | | | | |  __/
-//  /_/   \_\_|_|  |_|_|_| |_|\___|
-
-//   ___  _      _ _            
-//  / _ \(_)    | (_)           
-// / /_\ \_ _ __| |_ _ __   ___ 
-// |  _  | | '__| | | '_ \ / _ \
-// | | | | | |  | | | | | |  __/
-// \_| |_/_|_|  |_|_|_| |_|\___|
-                             
-//   ___  ___________ _     _____ _   _  _____ 
-//  / _ \|_   _| ___ \ |   |_   _| \ | ||  ___|
-// / /_\ \ | | | |_/ / |     | | |  \| || |__  
-// |  _  | | | |    /| |     | | | . ` ||  __| 
-// | | | |_| |_| |\ \| |_____| |_| |\  || |___ 
-// \_| |_/\___/\_| \_\_____/\___/\_| \_/\____/   
