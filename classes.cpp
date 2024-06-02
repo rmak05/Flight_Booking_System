@@ -257,7 +257,7 @@ public:
     }
 
     route(int distance, char *start, char *end){
-        route_distance=0;
+        route_distance=distance;
         strcpy(starting_airport,start);
         strcpy(destination_airport,end);
         strcpy(route_code,starting_airport);
@@ -268,14 +268,16 @@ public:
         return route_code;
     }
 
-    void tempDisplay(){}
+    void tempDisplay(){
+        cout<<starting_airport<<" "<<destination_airport<<" "<<route_distance<<" "<<route_code<<endl;
+    }
 };
 
 class airplane : public airline, public airplane_model, public route{
 protected:
     int airplane_cost;
-    int departure_time; // departure from starting_airport
-    int arrival_time;   // arrival at destination_airport
+    int departure_time;     // departure from starting_airport
+    int arrival_time;       // arrival at destination_airport
 
 public:
     airplane() :
@@ -298,10 +300,17 @@ public:
         departure_time=d_time;
         arrival_time=a_time;
     }
+
+    void tempDisplay(){
+        airline::tempDisplay();
+        airplane_model::tempDisplay();
+        route::tempDisplay();
+        cout<<airplane_cost<<" "<<departure_time<<" "<<arrival_time<<" "<<endl;
+    }
 };
 
 class airport{
-protected:
+private:
     char airport_name[LARGE_SIZE+1];
     char airport_city[MEDIUM_SIZE+1];
     char airport_code[SMALL_SIZE+1];
@@ -336,34 +345,43 @@ public:
         return airport_code;
     }
 
-    // void tempDisplay(){
-    //     cout<<airport_name<<endl;
-    //     cout<<airport_city<<endl;
-    //     cout<<airport_code<<endl;
-    //     cout<<endl;
-    // }
-    void tempDisplay(){}
+    void clearFlights(){
+        outgoing_flights.clear();
+    }
+
+    void addAirplane(airplane *_airplane){
+        outgoing_flights.push_back(_airplane);
+    }
+
+    void tempDisplay(){
+        cout<<airport_name<<" "<<airport_city<<" "<<airport_code<<endl;
+        int o_f_size=outgoing_flights.size();
+        for(int i=0;i<o_f_size;i++){
+            (*outgoing_flights[i]).tempDisplay();
+        }
+    }
 
 };
 
 void addAirline(){
-    fflush(stdin);
     char a_name[MEDIUM_SIZE+1];
+    fflush(stdin);
     cout<<"Airline : ";
     cin.getline(a_name,sizeof(a_name));
     airline *_airline;
     fstream airline_file;
-    airline_file.open("airline_data.bin",ios::out | ios::app | ios::binary);
     _airline = new airline(a_name);
+    airline_file.open("airline_data.bin",ios::out | ios::app | ios::binary);
     airline_file.seekp(0,ios::beg);
     airline_file.write((char*)_airline,sizeof(airline));
+    airline_file.close();
     name_to_airline[a_name]=_airline;
 }
 
 void addAirplaneModel(){
-    fflush(stdin);
     char a_name[MEDIUM_SIZE+1];
     int capacity;
+    fflush(stdin);
     cout<<"Airplane Model : ";
     cin.getline(a_name,sizeof(a_name));
     fflush(stdin);
@@ -371,43 +389,100 @@ void addAirplaneModel(){
     cin>>capacity;
     airplane_model *_airplane_model;
     fstream airplane_model_file;
-    airplane_model_file.open("airplane_model_data.bin",ios::out | ios::app | ios::binary);
     _airplane_model = new airplane_model(capacity,a_name);
+    airplane_model_file.open("airplane_model_data.bin",ios::out | ios::app | ios::binary);
     airplane_model_file.seekp(0,ios::beg);
     airplane_model_file.write((char*)_airplane_model,sizeof(airplane_model));
+    airplane_model_file.close();
     name_to_airplane_model[a_name]=_airplane_model;
 }
 
 void addRoute(){
-    fflush(stdin);
-    char s_airport[SMALL_SIZE+1],e_airport[SMALL_SIZE+1],r_code[2*SMALL_SIZE+1];
+    char s_airport[SMALL_SIZE+1],d_airport[SMALL_SIZE+1],r_code[2*SMALL_SIZE+1];
     int r_distance;
+    fflush(stdin);
     cout<<"Starting Airport : ";
     cin.getline(s_airport,sizeof(s_airport));
     fflush(stdin);
     cout<<"Ending Airport : ";
-    cin.getline(s_airport,sizeof(s_airport));
+    cin.getline(d_airport,sizeof(d_airport));
     fflush(stdin);
     cout<<"Route distance : ";
     cin>>r_distance;
     strcpy(r_code,s_airport);
-    strcpy(r_code+SMALL_SIZE,e_airport);
+    strcpy(r_code+SMALL_SIZE,d_airport);
     route *_route;
     fstream route_file;
+    _route = new route(r_distance,s_airport,d_airport);
     route_file.open("route_data.bin",ios::out | ios::app | ios::binary);
-    _route = new route(r_distance,s_airport,e_airport);
     route_file.seekp(0,ios::beg);
     route_file.write((char*)_route,sizeof(route));
+    route_file.close();
     code_to_route[r_code]=_route;
 }
 
-void initializeMapsFromFiles(){
+void addAirport(){
+    char a_name[LARGE_SIZE+1],a_city[MEDIUM_SIZE+1],a_code[SMALL_SIZE+1];
+    fflush(stdin);
+    cout<<"Airport Name : ";
+    cin.getline(a_name,sizeof(a_name));
+    fflush(stdin);
+    cout<<"Airport City : ";
+    cin.getline(a_city,sizeof(a_city));
+    fflush(stdin);
+    cout<<"Airport Code : ";
+    cin.getline(a_code,sizeof(a_code));
+    airport *_airport;
+    fstream airport_file;
+    _airport = new airport(a_name,a_city,a_code);
+    airport_file.open("airport_data.bin",ios::out | ios::app | ios::binary);
+    airport_file.seekp(0,ios::beg);
+    airport_file.write((char*)_airport,sizeof(airport));
+    airport_file.close();
+    code_to_airport[a_code]=_airport;
+}
+
+ void addAirplane(){
+    char _airline_name[MEDIUM_SIZE+1],_model_name[MEDIUM_SIZE+1],_route_code[2*SMALL_SIZE+1];
+    int cost,d_time,a_time;
+    fflush(stdin);
+    cout<<"Airline Name : ";
+    cin.getline(_airline_name,sizeof(_airline_name));
+    fflush(stdin);
+    cout<<"Airlplane Model Name : ";
+    cin.getline(_model_name,sizeof(_model_name));
+    fflush(stdin);
+    cout<<"Route Code : ";
+    cin.getline(_route_code,sizeof(_route_code));
+    fflush(stdin);
+    cout<<"Airplane Cost : ";
+    cin>>cost;
+    fflush(stdin);
+    cout<<"Departure Time : ";
+    cin>>d_time;
+    fflush(stdin);
+    cout<<"Arrival Time : ";
+    cin>>a_time;
+    airline *_airline=name_to_airline[_airline_name];
+    airplane_model *_airplane_model=name_to_airplane_model[_model_name];
+    route *_route=code_to_route[_route_code];
+    airplane *_airplane;
+    fstream airplane_file;
+    _airplane = new airplane((*_airline),(*_airplane_model),(*_route),cost,d_time,a_time);
+    airplane_file.open("airplane_data.bin",ios::out | ios::app | ios::binary);
+    airplane_file.seekp(0,ios::beg);
+    airplane_file.write((char*)_airplane,sizeof(airplane));
+    airplane_file.close();
+ }
+
+void initializeDataFromFiles(){
     airline _airline;
     fstream airline_file;
     airline_file.open("airline_data.bin",ios::in | ios::app | ios::binary);
     airline_file.seekg(0,ios::beg);
     while(airline_file.read((char*)&_airline,sizeof(airline))){
         name_to_airline[_airline.get_airline_name()] = new airline(_airline);
+        (*name_to_airline[_airline.get_airline_name()]).tempDisplay();
     }
     airline_file.close();
 
@@ -417,6 +492,7 @@ void initializeMapsFromFiles(){
     airplane_model_file.seekg(0,ios::beg);
     while(airplane_model_file.read((char*)&_airplane_model,sizeof(airplane_model))){
         name_to_airplane_model[_airplane_model.get_model_name()] = new airplane_model(_airplane_model);
+        (*name_to_airplane_model[_airplane_model.get_model_name()]).tempDisplay();
     }
     airplane_model_file.close();
 
@@ -426,6 +502,7 @@ void initializeMapsFromFiles(){
     route_file.seekg(0,ios::beg);
     while(route_file.read((char*)&_route,sizeof(route))){
         code_to_route[_route.get_route_code()] = new route(_route);
+        (*code_to_route[_route.get_route_code()]).tempDisplay();
     }
     route_file.close();
 
@@ -434,24 +511,35 @@ void initializeMapsFromFiles(){
     airport_file.open("airport_data.bin",ios::in | ios::app | ios::binary);
     airport_file.seekg(0,ios::beg);
     while(airport_file.read((char*)&_airport,sizeof(airport))){
+        _airport.clearFlights();
         code_to_airport[_airport.get_airport_code()] = new airport(_airport);
+        (*code_to_airport[_airport.get_airport_code()]).tempDisplay();
     }
     airport_file.close();
+
+    airplane _airplane;
+    fstream airplane_file;
+    airplane_file.open("airplane_data.bin",ios::in | ios::app |ios::binary);
+    airplane_file.seekg(0,ios::beg);
+    while(airplane_file.read((char*)&_airplane,sizeof(airplane))){
+        _airplane.tempDisplay();
+    }
+    airplane_file.close();
 }
 
 int main(){
-    initializeMapsFromFiles();
+    initializeDataFromFiles();
     // addAirline();
     // addAirline();
-    addAirplaneModel();
     // addAirplaneModel();
-    airline *t= name_to_airline["Akasa"];
-    if(t!=NULL) (*t).tempDisplay();
-    airplane_model *s=name_to_airplane_model["fgh"];
-    if(s!=NULL) (*s).tempDisplay();
-    airplane_model *s1=name_to_airplane_model["adhkd"];
-    if(s1!=NULL) (*s1).tempDisplay();
-    airplane_model *s2=name_to_airplane_model["Boeing 747"];
-    if(s2!=NULL) (*s2).tempDisplay();
+    // addAirplaneModel();
+    // addRoute();
+    // addRoute();
+    // addAirport();
+    // addAirport();
+    // addAirplane();
     return 0;
 }
+
+// add feature that when entering code, lowercase gets converted to uppercase
+//ignore leading whitespaces
