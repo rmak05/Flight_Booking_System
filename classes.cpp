@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstring>
 #include <map>
+#include <limits>
 #define SMALL_SIZE 3
 #define MEDIUM_SIZE 50
 #define LARGE_SIZE 100
@@ -525,6 +526,19 @@ void initializeDataFromFiles(){
         _airplane.tempDisplay();
     }
     airplane_file.close();
+}
+
+void customInput(char *s,int size){
+    char c='a';
+    int l=0;
+    while(c!='\n' && l<size-1){
+        c=cin.get();
+        s[l++]=c;
+    }
+    s[l]='\0';
+    if(c!='\n'){
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
+    }
 }
 
 int main(){
