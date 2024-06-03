@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <pthread.h>
 #include <conio.h>
+#include "classes.cpp"
 #define SCREEN_MAX_WIDTH 135
 #define SCREEN_WIDTH 120
 #define LEFT_BORDER_WIDTH 7
@@ -11,7 +12,7 @@
 #define IMP_UPDATES_WIDTH 75
 using namespace std;
 
-char user_choice;
+unsigned char user_choice;
 int curr_screen;
 
 enum align{
@@ -26,17 +27,18 @@ enum line{
     dotted = 1,
 };
 
-enum user_type{
-    user  = 0,
-    admin = 1,
-    guest = 2
-};
+// enum user_type{
+//     user  = 0,
+//     admin = 1,
+//     guest = 2
+// };
 
 enum screen{
-    user_type      = 0,
+    usage_type     = 0,
     user_homepage  = 1,
     admin_homepage = 2,
-    program_exit           = 3
+    program_exit   = 3,
+    logged_out     = 4 
 };
 
 struct circularListTextNode{
@@ -266,6 +268,7 @@ void* printUserScreen(void *p){
     printLine("5. Log out");
     printLine();
     printLine();
+    printLine();
     printBottomBorder();
 
     // important updates
@@ -274,6 +277,7 @@ void* printUserScreen(void *p){
     imp_updates_coord.X=LEFT_BORDER_WIDTH+1+desired_left_space+imp_updates_title_text_size;
     imp_updates_coord.Y=imp_news_line;
     circularListTextNode *imp_text_ll=makeTextCircular(imp_text,IMP_UPDATES_WIDTH),*temp_ll;
+    user_choice='\0';
     while(true){
         BOOL handle_success=SetConsoleCursorPosition(imp_updates_handle,imp_updates_coord);
         if(!handle_success) continue;
@@ -285,9 +289,7 @@ void* printUserScreen(void *p){
         imp_text_ll=imp_text_ll->next;
         cout<<"\n\n\n\n\n\n\n\n\n\n\n";
         Sleep(IMPORTANT_UPDATES_TEXT_DELAY);
-        if(user_choice=='x' || user_choice=='X'){
-            break;
-        }
+        if(user_choice!='\0') break;
     }
 
     return NULL;
@@ -322,6 +324,7 @@ void* printAdminScreen(void *p){
     printLine("1. Manage Important Updates","2. Manage Airports");
     printLine("3. Manage Airlines","4. Manage Airplane Models");
     printLine("5. Manage Routes","6. Manage Flights");
+    printLine("7. Log out");
     printLine();
     printLine();
     printBottomBorder();
@@ -332,6 +335,7 @@ void* printAdminScreen(void *p){
     imp_updates_coord.X=LEFT_BORDER_WIDTH+1+desired_left_space+imp_updates_title_text_size;
     imp_updates_coord.Y=imp_news_line;
     circularListTextNode *imp_text_ll=makeTextCircular(imp_text,IMP_UPDATES_WIDTH),*temp_ll;
+    user_choice='\0';
     while(true){
         BOOL handle_success=SetConsoleCursorPosition(imp_updates_handle,imp_updates_coord);
         if(!handle_success) continue;
@@ -343,9 +347,7 @@ void* printAdminScreen(void *p){
         imp_text_ll=imp_text_ll->next;
         cout<<"\n\n\n\n\n\n\n\n\n\n\n";
         Sleep(IMPORTANT_UPDATES_TEXT_DELAY);
-        if(user_choice=='x' || user_choice=='X'){
-            break;
-        }
+        if(user_choice!='\0') break;
     }
 
     return NULL;
@@ -364,65 +366,66 @@ void* printUserTypeSelectionScreen(void *p){
     printLine("3. Admin",align::center);
     printLine();
     printLine();
+    printLine();
     printBottomBorder();
     return NULL;
 }
 
-void* takeInput(void *a){
-    user_choice=(char)getch();
-    if(curr_screen==screen::user_type){
+void* printLoggedOutScreen(void *p){
+    system("cls");
+    printTopBorder();
+    printTitle();
+    printLine();
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    printLine("Successfully Logged Out",align::center);
+    printLine("Press any key to continue ...",align::center);
+    printLine();
+    printLine();
+    printLine();
+    printBottomBorder();
+    return NULL;
+}
+
+void* takeInput(void *p){
+    user_choice=(unsigned char)getch();
+    if(curr_screen==screen::usage_type){
         if(user_choice=='1'){
             
         }
-        else if(user_choice=='2'){
-            curr_screen=user_homepage;
-        }
-        else if(user_choice=='3'){
-            curr_screen=admin_homepage;
-        }
-        else if(user_choice=='x'){
-            curr_screen=screen::program_exit;
-        }
+        else if(user_choice=='2') curr_screen=screen::user_homepage;
+        else if(user_choice=='3') curr_screen=screen::admin_homepage;
+        else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::user_homepage){
         if(user_choice=='1'){
             
         }
-        else if(user_choice=='2'){
-            curr_screen=user_homepage;
-        }
-        else if(user_choice=='3'){
-            curr_screen=admin_homepage;
-        }
-        else if(user_choice=='x'){
-            curr_screen=screen::program_exit;
-        }
+        else if(user_choice=='5') curr_screen=screen::logged_out;
+        else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::admin_homepage){
         if(user_choice=='1'){
             
         }
-        else if(user_choice=='2'){
-            curr_screen=user_homepage;
-        }
-        else if(user_choice=='3'){
-            curr_screen=admin_homepage;
-        }
-        else if(user_choice=='x'){
-            curr_screen=screen::program_exit;
-        }
+        else if(user_choice=='7') curr_screen=screen::logged_out;
+        else if(user_choice=='x') curr_screen=screen::program_exit;
+    }
+    else if(curr_screen==screen::logged_out){
+        curr_screen=screen::usage_type;
     }
     return NULL;
 }
 
 void controlCenter(){
-    curr_screen=screen::user_type;
-    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread;
+    curr_screen=screen::usage_type;
+    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread;
 
-    do{
+    while(true){
         if(curr_screen==program_exit) break;
         switch(curr_screen){
-            case screen::user_type :
+            case screen::usage_type :
                 pthread_create(&printUserTypeSelectionScreen_thread,NULL,printUserTypeSelectionScreen,NULL);
                 pthread_create(&takeInput_thread,NULL,takeInput,NULL);
                 pthread_join(printUserTypeSelectionScreen_thread,NULL);
@@ -440,14 +443,18 @@ void controlCenter(){
                 pthread_join(printAdminScreen_thread,NULL);
                 pthread_join(takeInput_thread,NULL);
                 break;
+            case screen::logged_out :
+                pthread_create(&printLoggedOutScreen_thread,NULL,printLoggedOutScreen,NULL);
+                pthread_create(&takeInput_thread,NULL,takeInput,NULL);
+                pthread_join(printLoggedOutScreen_thread,NULL);
+                pthread_join(takeInput_thread,NULL);
+                break;
             case screen::program_exit :
                 break;
             default :
                 break;
         }
-        if(curr_screen==program_exit) break;
-    }while(true);
-
+    }
 }
 
 int main(){

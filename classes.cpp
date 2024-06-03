@@ -540,8 +540,8 @@ void customInput(char *s,int size){
     }
 }
 
-int main(){
-    initializeDataFromFiles();
+// int main(){
+//     initializeDataFromFiles();
     // addAirline();
     // addAirline();
     // addAirplaneModel();
@@ -551,8 +551,8 @@ int main(){
     // addAirport();
     // addAirport();
     // addAirplane();
-    return 0;
-}
+//     return 0;
+// }
 
 // add feature that when entering code, lowercase gets converted to uppercase
 //ignore leading whitespaces
