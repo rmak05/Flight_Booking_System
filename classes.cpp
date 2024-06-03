@@ -2,7 +2,6 @@
 #include <fstream>
 #include <vector>
 #include <cstring>
-#include <map>
 #include <limits>
 #define SMALL_SIZE 3
 #define MEDIUM_SIZE 50

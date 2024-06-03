@@ -12,6 +12,7 @@
 using namespace std;
 
 char user_choice;
+int curr_screen;
 
 enum align{
     left   = 0,
@@ -23,6 +24,19 @@ enum align{
 enum line{
     dashed = 0,
     dotted = 1,
+};
+
+enum user_type{
+    user  = 0,
+    admin = 1,
+    guest = 2
+};
+
+enum screen{
+    user_type      = 0,
+    user_homepage  = 1,
+    admin_homepage = 2,
+    program_exit           = 3
 };
 
 struct circularListTextNode{
@@ -168,45 +182,65 @@ circularListTextNode* makeTextCircular(const char *s, const int imp_updates_widt
     return head;
 }
 
-// check gotoxy
-void* printUserScreen(void *p){
-    int imp_news_line=0;
-    system("cls");
+// returns number of lines printed
+int printTitle(){
+    int num_lines=0;
     char text[SCREEN_WIDTH];
+    strcpy(text,"______ _ _       _     _     ______             _    _                _____           _                 ");
+    printLine(text,align::center);
+    num_lines++;
+    strcpy(text,"|  ___| (_)     | |   | |    | ___ \\           | |  (_)              /  ___|         | |                ");
+    printLine(text,align::center);
+    num_lines++;
+    strcpy(text,"| |_  | |_  __ _| |__ | |_   | |_/ / ___   ___ | | ___ _ __   __ _   \\ `--. _   _ ___| |_ ___ _ __ ___  ");
+    printLine(text,align::center);
+    num_lines++;
+    strcpy(text,"|  _| | | |/ _` | '_ \\| __|  | ___ \\/ _ \\ / _ \\| |/ / | '_ \\ / _` |   `--. \\ | | / __| __/ _ \\ '_ ` _ \\ ");
+    printLine(text,align::center);
+    num_lines++;
+    strcpy(text,"| |   | | | (_| | | | | |_   | |_/ / (_) | (_) |   <| | | | | (_| |  /\\__/ / |_| \\__ \\ ||  __/ | | | | |");
+    printLine(text,align::center);
+    num_lines++;
+    strcpy(text,"\\_|   |_|_|\\__, |_| |_|\\__|  \\____/ \\___/ \\___/|_|\\_\\_|_| |_|\\__, |  \\____/ \\__, |___/\\__\\___|_| |_| |_|");
+    printLine(text,align::center);
+    num_lines++;
+    strcpy(text,"            __/ |                                             __/ |          __/ |                      ");
+    printLine(text,align::center);
+    num_lines++;
+    strcpy(text,"           |___/                                             |___/          |___/                       "); 
+    printLine(text,align::center);
+    num_lines++;
+    return num_lines;
+}
 
-    // top line
+// returns number of lines printed
+int printTopBorder(){
+    int num_lines=0;
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
     cout<<(char)201;
     for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<(char)205;
     cout<<(char)187<<"\n";
-    imp_news_line++;
+    num_lines++;
+    return num_lines;
+}
 
-    // title
-    strcpy(text,"______ _ _       _     _     ______             _    _                _____           _                 ");
-    printLine(text,align::center);
-    imp_news_line++;
-    strcpy(text,"|  ___| (_)     | |   | |    | ___ \\           | |  (_)              /  ___|         | |                ");
-    printLine(text,align::center);
-    imp_news_line++;
-    strcpy(text,"| |_  | |_  __ _| |__ | |_   | |_/ / ___   ___ | | ___ _ __   __ _   \\ `--. _   _ ___| |_ ___ _ __ ___  ");
-    printLine(text,align::center);
-    imp_news_line++;
-    strcpy(text,"|  _| | | |/ _` | '_ \\| __|  | ___ \\/ _ \\ / _ \\| |/ / | '_ \\ / _` |   `--. \\ | | / __| __/ _ \\ '_ ` _ \\ ");
-    printLine(text,align::center);
-    imp_news_line++;
-    strcpy(text,"| |   | | | (_| | | | | |_   | |_/ / (_) | (_) |   <| | | | | (_| |  /\\__/ / |_| \\__ \\ ||  __/ | | | | |");
-    printLine(text,align::center);
-    imp_news_line++;
-    strcpy(text,"\\_|   |_|_|\\__, |_| |_|\\__|  \\____/ \\___/ \\___/|_|\\_\\_|_| |_|\\__, |  \\____/ \\__, |___/\\__\\___|_| |_| |_|");
-    printLine(text,align::center);
-    imp_news_line++;
-    strcpy(text,"            __/ |                                             __/ |          __/ |                      ");
-    printLine(text,align::center);
-    imp_news_line++;
-    strcpy(text,"           |___/                                             |___/          |___/                       "); 
-    printLine(text,align::center);
-    imp_news_line++;
+// returns number of lines printed
+int printBottomBorder(){
+    int num_lines=0;
+    for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    cout<<(char)200;
+    for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<(char)205;
+    cout<<(char)188<<"\n";
+    num_lines++;
+    return num_lines;
+}
 
+void* printUserScreen(void *p){
+    system("cls");
+    int imp_news_line=0;
+
+    imp_news_line+=printTopBorder();
+    imp_news_line+=printTitle();
     printLine();
     imp_news_line++;
     printLine();
@@ -227,18 +261,12 @@ void* printUserScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    
     printLine("1. Open profile","2. Book ticket");
     printLine("3. Cancel ticket","4. Check flight availability");
     printLine("5. Log out");
     printLine();
     printLine();
-
-    // bottom line
-    for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
-    cout<<(char)200;
-    for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<(char)205;
-    cout<<(char)188<<"\n";
+    printBottomBorder();
 
     // important updates
     HANDLE imp_updates_handle=GetStdHandle(STD_OUTPUT_HANDLE);
@@ -257,7 +285,7 @@ void* printUserScreen(void *p){
         imp_text_ll=imp_text_ll->next;
         cout<<"\n\n\n\n\n\n\n\n\n\n\n";
         Sleep(IMPORTANT_UPDATES_TEXT_DELAY);
-        if(user_choice=='x' ||user_choice=='X'){
+        if(user_choice=='x' || user_choice=='X'){
             break;
         }
     }
@@ -265,24 +293,165 @@ void* printUserScreen(void *p){
     return NULL;
 }
 
-void* takeInput(void *a){
+void* printAdminScreen(void *p){
+    system("cls");
+    int imp_news_line=0;
+
+    imp_news_line+=printTopBorder();
+    imp_news_line+=printTitle();
+    printLine();
+    imp_news_line++;
+    printLine();
+    imp_news_line++;
+    printLine(line::dashed);
+    imp_news_line++;
+    printLine();
+    imp_news_line++;
+
+    // important updates
+    char imp_updates_title_text[]="Important Updates : ";
+    char imp_text[]="The flight to Bhubaneswar has been delayed. Please wait for further updates.  |  The flight to Pune will arrive at 3:00 PM.  |  The flight to Mumbai has been cancelled.";
+    int imp_updates_title_text_size=strlen(imp_updates_title_text);
+    int desired_left_space=TEXT_PADDING;
+    // int desired_left_space=(SCREEN_WIDTH-2-imp_updates_title_text_size-IMP_UPDATES_WIDTH)/2;
+    printLine(imp_updates_title_text,align::custom,desired_left_space);      
+
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    printLine("1. Manage Important Updates","2. Manage Airports");
+    printLine("3. Manage Airlines","4. Manage Airplane Models");
+    printLine("5. Manage Routes","6. Manage Flights");
+    printLine();
+    printLine();
+    printBottomBorder();
+
+    // important updates
+    HANDLE imp_updates_handle=GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD imp_updates_coord;
+    imp_updates_coord.X=LEFT_BORDER_WIDTH+1+desired_left_space+imp_updates_title_text_size;
+    imp_updates_coord.Y=imp_news_line;
+    circularListTextNode *imp_text_ll=makeTextCircular(imp_text,IMP_UPDATES_WIDTH),*temp_ll;
     while(true){
-        user_choice=(char)getch();
-        if(user_choice=='x' ||user_choice=='X') break;
+        BOOL handle_success=SetConsoleCursorPosition(imp_updates_handle,imp_updates_coord);
+        if(!handle_success) continue;
+        temp_ll=imp_text_ll;
+        for(int i=0;i<IMP_UPDATES_WIDTH;i++){
+            cout<<(temp_ll->node_value);
+            temp_ll=temp_ll->next;
+        }
+        imp_text_ll=imp_text_ll->next;
+        cout<<"\n\n\n\n\n\n\n\n\n\n\n";
+        Sleep(IMPORTANT_UPDATES_TEXT_DELAY);
+        if(user_choice=='x' || user_choice=='X'){
+            break;
+        }
+    }
+
+    return NULL;
+}
+
+void* printUserTypeSelectionScreen(void *p){
+    system("cls");
+    printTopBorder();
+    printTitle();
+    printLine();
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    printLine("1. Guest",align::center);
+    printLine("2. User",align::center);
+    printLine("3. Admin",align::center);
+    printLine();
+    printLine();
+    printBottomBorder();
+    return NULL;
+}
+
+void* takeInput(void *a){
+    user_choice=(char)getch();
+    if(curr_screen==screen::user_type){
+        if(user_choice=='1'){
+            
+        }
+        else if(user_choice=='2'){
+            curr_screen=user_homepage;
+        }
+        else if(user_choice=='3'){
+            curr_screen=admin_homepage;
+        }
+        else if(user_choice=='x'){
+            curr_screen=screen::program_exit;
+        }
+    }
+    else if(curr_screen==screen::user_homepage){
+        if(user_choice=='1'){
+            
+        }
+        else if(user_choice=='2'){
+            curr_screen=user_homepage;
+        }
+        else if(user_choice=='3'){
+            curr_screen=admin_homepage;
+        }
+        else if(user_choice=='x'){
+            curr_screen=screen::program_exit;
+        }
+    }
+    else if(curr_screen==screen::admin_homepage){
+        if(user_choice=='1'){
+            
+        }
+        else if(user_choice=='2'){
+            curr_screen=user_homepage;
+        }
+        else if(user_choice=='3'){
+            curr_screen=admin_homepage;
+        }
+        else if(user_choice=='x'){
+            curr_screen=screen::program_exit;
+        }
     }
     return NULL;
 }
 
-void initiate(){
-    pthread_t printScreen_thread,input_thread;
-    pthread_create(&printScreen_thread,NULL,printUserScreen,NULL);
-    pthread_create(&input_thread,NULL,takeInput,NULL);
-    pthread_join(printScreen_thread,NULL);
-    pthread_join(input_thread,NULL);
+void controlCenter(){
+    curr_screen=screen::user_type;
+    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread;
+
+    do{
+        if(curr_screen==program_exit) break;
+        switch(curr_screen){
+            case screen::user_type :
+                pthread_create(&printUserTypeSelectionScreen_thread,NULL,printUserTypeSelectionScreen,NULL);
+                pthread_create(&takeInput_thread,NULL,takeInput,NULL);
+                pthread_join(printUserTypeSelectionScreen_thread,NULL);
+                pthread_join(takeInput_thread,NULL);
+                break;
+            case screen::user_homepage :
+                pthread_create(&printUserScreen_thread,NULL,printUserScreen,NULL);
+                pthread_create(&takeInput_thread,NULL,takeInput,NULL);
+                pthread_join(printUserScreen_thread,NULL);
+                pthread_join(takeInput_thread,NULL);
+                break;
+            case screen::admin_homepage :
+                pthread_create(&printAdminScreen_thread,NULL,printAdminScreen,NULL);
+                pthread_create(&takeInput_thread,NULL,takeInput,NULL);
+                pthread_join(printAdminScreen_thread,NULL);
+                pthread_join(takeInput_thread,NULL);
+                break;
+            case screen::program_exit :
+                break;
+            default :
+                break;
+        }
+        if(curr_screen==program_exit) break;
+    }while(true);
+
 }
 
 int main(){
-    initiate();
+    controlCenter();
     return 0;
 }
 
@@ -290,3 +459,4 @@ int main(){
 // big
 // doom (currently using)
 // standard
+// printLine() should return number of lines printed
