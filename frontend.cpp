@@ -10,6 +10,7 @@
 #define TEXT_PADDING 10
 #define IMPORTANT_UPDATES_TEXT_DELAY 250
 #define IMP_UPDATES_WIDTH 75
+#define ESCAPE 27
 using namespace std;
 
 unsigned char user_choice;
@@ -40,7 +41,9 @@ enum screen{
     program_exit    = 3,
     logged_out      = 4,
     manage_airports = 5,
-    add_airport     = 6
+    add_airport     = 6,
+    delete_airport  = 7,
+    airport_list    = 8
 };
 
 struct circularListTextNode{
@@ -436,6 +439,7 @@ void* takeInput(void *p){
         }
         else if(user_choice=='2') curr_screen=screen::user_homepage;
         else if(user_choice=='3') curr_screen=screen::admin_homepage;
+        else if(user_choice==(char)ESCAPE) curr_screen=screen::program_exit;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::user_homepage){
@@ -455,6 +459,9 @@ void* takeInput(void *p){
     }
     else if(curr_screen==screen::manage_airports){
         if(user_choice=='1') curr_screen=screen::add_airport;
+        else if(user_choice=='2') curr_screen=screen::delete_airport;
+        else if(user_choice=='3') curr_screen=screen::airport_list;
+        else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::logged_out){
@@ -462,55 +469,6 @@ void* takeInput(void *p){
     }
     return NULL;
 }
-
-// void controlCenter(){
-//     curr_screen=screen::usage_type;
-//     pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,printManageAirportsScreen_thread,addAirportScreen_thread;
-
-//     while(true){
-//         if(curr_screen==program_exit) break;
-//         switch(curr_screen){
-//             case screen::usage_type :
-//                 pthread_create(&printUserTypeSelectionScreen_thread,NULL,printUserTypeSelectionScreen,NULL);
-//                 pthread_create(&takeInput_thread,NULL,takeInput,NULL);
-//                 pthread_join(printUserTypeSelectionScreen_thread,NULL);
-//                 pthread_join(takeInput_thread,NULL);
-//                 break;
-//             case screen::user_homepage :
-//                 pthread_create(&printUserScreen_thread,NULL,printUserScreen,NULL);
-//                 pthread_create(&takeInput_thread,NULL,takeInput,NULL);
-//                 pthread_join(printUserScreen_thread,NULL);
-//                 pthread_join(takeInput_thread,NULL);
-//                 break;
-//             case screen::admin_homepage :
-//                 pthread_create(&printAdminScreen_thread,NULL,printAdminScreen,NULL);
-//                 pthread_create(&takeInput_thread,NULL,takeInput,NULL);
-//                 pthread_join(printAdminScreen_thread,NULL);
-//                 pthread_join(takeInput_thread,NULL);
-//                 break;
-//             case screen::logged_out :
-//                 pthread_create(&printLoggedOutScreen_thread,NULL,printLoggedOutScreen,NULL);
-//                 pthread_create(&takeInput_thread,NULL,takeInput,NULL);
-//                 pthread_join(printLoggedOutScreen_thread,NULL);
-//                 pthread_join(takeInput_thread,NULL);
-//                 break;
-//             case screen::manage_airports :
-//                 pthread_create(&printManageAirportsScreen_thread,NULL,printManageAirportsScreen,NULL);
-//                 pthread_create(&takeInput_thread,NULL,takeInput,NULL);
-//                 pthread_join(printManageAirportsScreen_thread,NULL);
-//                 pthread_join(takeInput_thread,NULL);
-//                 break;
-//             case screen::add_airport :
-//                 pthread_create(&addAirportScreen_thread,NULL,addAirportScreen,NULL);
-//                 pthread_join(addAirportScreen_thread,NULL);
-//                 break;
-//             case screen::program_exit :
-//                 break;
-//             default :
-//                 break;
-//         }
-//     }
-// }
 
 // int main(){
 //     controlCenter();

@@ -1,4 +1,4 @@
-#include "frontend.cpp"
+// #include "frontend.cpp"
 #include "classes.cpp"
 
 void convertToLowercase(char& ch){
@@ -39,6 +39,15 @@ char inputYesNo(){
         ch=(char)getch();
         convertToLowercase(ch);
         if((ch=='y') || (ch=='n')) break;
+    }
+    return ch;
+}
+
+char inputEscape(){
+    char ch='a';
+    while(true){
+        ch=(char)getch();
+        if(ch==((char)ESCAPE)) break;           
     }
     return ch;
 }
@@ -147,8 +156,76 @@ void addAirportScreen(){
     line+=printOutputSetCursor("Airport added successfully",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
+}
 
-    cout<<"\n\n\n\n\n\n";
+void DeleteAirportScreen(){
+    system("cls");
+    int line=0;
+    char a_code[SMALL_SIZE+1];
+    char yesno;
+
+    line+=printTopBorder();
+    line+=printTitle();
+    line+=printLine();
+    line+=printLine();
+    line+=printLine(line::dashed);
+    line+=printLine();
+    printLine();
+    printLine();
+    printLine();
+    printLine();
+    printLine();
+    printLine();
+    printLine();
+    printBottomBorder();
+
+    line+=takeInputSetCursor("Airport Code : ",a_code,sizeof(a_code),line);
+    convertToUppercase(a_code);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES and 'N' for NO : ",yesno,line);
+    if(yesno=='n'){
+        curr_screen=screen::delete_airport;
+        return;
+    }
+    curr_screen=screen::manage_airports;
+
+    code_to_airport.erase(a_code);
+    code_to_airport.copy_to_file("airport_data.bin");
+    line+=printOutputSetCursor("Airport deleted successfully",line);
+    line+=printOutputSetCursor("Press any key to continue ...",line);
+    getch();
+}
+
+void AirportListScreen(){
+    curr_screen=screen::manage_airports;
+    system("cls");
+    int line=0,list_size=0;
+    vector<airport*> airport_list;
+
+    line+=printTopBorder();
+    line+=printTitle();
+    line+=printLine();
+    line+=printLine();
+    line+=printLine(line::dashed);
+    printLine();
+    printLine("Press Escape to go back");
+    printLine();
+    printLine(line::dashed);
+
+    code_to_airport.traverse(airport_list);
+    list_size=airport_list.size();
+    for(int i=0;i<list_size;i++){
+        printLine();
+        (*airport_list[i]).display();
+        if(i!=list_size-1){
+            printLine();
+            printLine(line::dotted);
+        }
+    }
+
+    printLine();
+    printBottomBorder();
+    inputEscape();
 }
 
 void controlCenter(){
@@ -191,6 +268,12 @@ void controlCenter(){
             case screen::add_airport :
                 addAirportScreen();
                 break;
+            case screen::delete_airport :
+                DeleteAirportScreen();
+                break;
+            case screen::airport_list :
+                AirportListScreen();
+                break;
             case screen::program_exit :
                 break;
             default :
@@ -201,6 +284,8 @@ void controlCenter(){
 
 int main(){
     initializeDataFromFiles();
-    // controlCenter();
+    controlCenter();
     return 0;
 }
+
+// check if all input characters are trie characters are not

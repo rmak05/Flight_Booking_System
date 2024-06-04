@@ -3,6 +3,8 @@
 #include <vector>
 #include <cstring>
 #include <limits>
+#include <stack>
+#include "frontend.cpp"
 #define SMALL_SIZE 3
 #define MEDIUM_SIZE 50
 #define LARGE_SIZE 100
@@ -160,6 +162,7 @@ public:
             if((children>=1) && (i==key_size)) last_useful_node=key_size-1;
         }
         temp->isEnd=false;
+        delete temp->value;
         temp->value=NULL;
         if(last_useful_node==key_size-1) return;
         temp=root;
@@ -178,6 +181,32 @@ public:
             delete temp2;
         }
         delete temp;
+    }
+
+    void traverse(vector<T*>& v){
+        stack<trieNode<T>*> stk;
+        stk.push(root);
+        while(!stk.empty()){
+            trieNode<T> *temp_node=stk.top();
+            stk.pop();
+            if(temp_node->isEnd) v.push_back(temp_node->value);
+            for(int i=TRIE_CHARACTERS-1;i>=0;i--){
+                if(temp_node->next[i]!=NULL) stk.push(temp_node->next[i]);
+            }
+        }
+    }
+
+    void copy_to_file(const char *file_name){
+        vector<T*> v;
+        traverse(v);
+        int size=v.size();
+        fstream output_file;
+        output_file.open(file_name,ios::out);
+        output_file.seekp(0,ios::beg);
+        for(int i=0;i<size;i++){
+            output_file.write((char*)v[i],sizeof(T));
+        }
+        output_file.close();
     }
 
     trieProxy operator[](const char *key){
@@ -207,7 +236,7 @@ public:
         return airline_name;
     }
 
-    void tempDisplay(){
+    void display(){
         cout<<airline_name<<endl;
     }
 };
@@ -236,7 +265,7 @@ public:
         return model_name;
     }
 
-    void tempDisplay(){
+    void display(){
         cout<<model_name<<" "<<passenger_capacity<<endl;
     }
 };
@@ -268,7 +297,7 @@ public:
         return route_code;
     }
 
-    void tempDisplay(){
+    void display(){
         cout<<starting_airport<<" "<<destination_airport<<" "<<route_distance<<" "<<route_code<<endl;
     }
 };
@@ -301,10 +330,10 @@ public:
         arrival_time=a_time;
     }
 
-    void tempDisplay(){
-        airline::tempDisplay();
-        airplane_model::tempDisplay();
-        route::tempDisplay();
+    void display(){
+        airline::display();
+        airplane_model::display();
+        route::display();
         cout<<airplane_cost<<" "<<departure_time<<" "<<arrival_time<<" "<<endl;
     }
 };
@@ -353,11 +382,18 @@ public:
         outgoing_flights.push_back(_airplane);
     }
 
-    void tempDisplay(){
-        cout<<airport_name<<" "<<airport_city<<" "<<airport_code<<endl;
+    void display(){
+        char text[2*LARGE_SIZE+1];
+        sprintf(text,"Name : %s",airport_name);
+        printLine(text);
+        sprintf(text,"City : %s",airport_city);
+        printLine(text);
+        sprintf(text,"Code : %s",airport_code);
+        printLine(text);
+        // cout<<airport_name<<" "<<airport_city<<" "<<airport_code<<endl;
         int o_f_size=outgoing_flights.size();
         for(int i=0;i<o_f_size;i++){
-            (*outgoing_flights[i]).tempDisplay();
+            (*outgoing_flights[i]).display();
         }
     }
 
@@ -421,27 +457,6 @@ void addRoute(){
     code_to_route[r_code]=_route;
 }
 
-// void addAirport(){
-//     char a_name[LARGE_SIZE+1],a_city[MEDIUM_SIZE+1],a_code[SMALL_SIZE+1];
-//     fflush(stdin);
-//     cout<<"Airport Name : ";
-//     cin.getline(a_name,sizeof(a_name));
-//     fflush(stdin);
-//     cout<<"Airport City : ";
-//     cin.getline(a_city,sizeof(a_city));
-//     fflush(stdin);
-//     cout<<"Airport Code : ";
-//     cin.getline(a_code,sizeof(a_code));
-//     airport *_airport;
-//     fstream airport_file;
-//     _airport = new airport(a_name,a_city,a_code);
-//     airport_file.open("airport_data.bin",ios::out | ios::app | ios::binary);
-//     airport_file.seekp(0,ios::beg);
-//     airport_file.write((char*)_airport,sizeof(airport));
-//     airport_file.close();
-//     code_to_airport[a_code]=_airport;
-// }
-
 void addAirplane(){
     char _airline_name[MEDIUM_SIZE+1],_model_name[MEDIUM_SIZE+1],_route_code[2*SMALL_SIZE+1];
     int cost,d_time,a_time;
@@ -483,7 +498,7 @@ void initializeDataFromFiles(){
     airline_file.seekg(0,ios::beg);
     while(airline_file.read((char*)&_airline,sizeof(airline))){
         name_to_airline[_airline.get_airline_name()] = new airline(_airline);
-        (*name_to_airline[_airline.get_airline_name()]).tempDisplay();
+        (*name_to_airline[_airline.get_airline_name()]).display();
     }
     airline_file.close();
 
@@ -493,7 +508,7 @@ void initializeDataFromFiles(){
     airplane_model_file.seekg(0,ios::beg);
     while(airplane_model_file.read((char*)&_airplane_model,sizeof(airplane_model))){
         name_to_airplane_model[_airplane_model.get_model_name()] = new airplane_model(_airplane_model);
-        (*name_to_airplane_model[_airplane_model.get_model_name()]).tempDisplay();
+        (*name_to_airplane_model[_airplane_model.get_model_name()]).display();
     }
     airplane_model_file.close();
 
@@ -503,7 +518,7 @@ void initializeDataFromFiles(){
     route_file.seekg(0,ios::beg);
     while(route_file.read((char*)&_route,sizeof(route))){
         code_to_route[_route.get_route_code()] = new route(_route);
-        (*code_to_route[_route.get_route_code()]).tempDisplay();
+        (*code_to_route[_route.get_route_code()]).display();
     }
     route_file.close();
 
@@ -514,7 +529,7 @@ void initializeDataFromFiles(){
     while(airport_file.read((char*)&_airport,sizeof(airport))){
         _airport.clearFlights();
         code_to_airport[_airport.get_airport_code()] = new airport(_airport);
-        (*code_to_airport[_airport.get_airport_code()]).tempDisplay();
+        (*code_to_airport[_airport.get_airport_code()]).display();
     }
     airport_file.close();
 
@@ -523,7 +538,7 @@ void initializeDataFromFiles(){
     airplane_file.open("airplane_data.bin",ios::in | ios::app |ios::binary);
     airplane_file.seekg(0,ios::beg);
     while(airplane_file.read((char*)&_airplane,sizeof(airplane))){
-        _airplane.tempDisplay();
+        _airplane.display();
     }
     airplane_file.close();
 }
