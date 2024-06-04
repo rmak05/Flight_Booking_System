@@ -421,28 +421,28 @@ void addRoute(){
     code_to_route[r_code]=_route;
 }
 
-void addAirport(){
-    char a_name[LARGE_SIZE+1],a_city[MEDIUM_SIZE+1],a_code[SMALL_SIZE+1];
-    fflush(stdin);
-    cout<<"Airport Name : ";
-    cin.getline(a_name,sizeof(a_name));
-    fflush(stdin);
-    cout<<"Airport City : ";
-    cin.getline(a_city,sizeof(a_city));
-    fflush(stdin);
-    cout<<"Airport Code : ";
-    cin.getline(a_code,sizeof(a_code));
-    airport *_airport;
-    fstream airport_file;
-    _airport = new airport(a_name,a_city,a_code);
-    airport_file.open("airport_data.bin",ios::out | ios::app | ios::binary);
-    airport_file.seekp(0,ios::beg);
-    airport_file.write((char*)_airport,sizeof(airport));
-    airport_file.close();
-    code_to_airport[a_code]=_airport;
-}
+// void addAirport(){
+//     char a_name[LARGE_SIZE+1],a_city[MEDIUM_SIZE+1],a_code[SMALL_SIZE+1];
+//     fflush(stdin);
+//     cout<<"Airport Name : ";
+//     cin.getline(a_name,sizeof(a_name));
+//     fflush(stdin);
+//     cout<<"Airport City : ";
+//     cin.getline(a_city,sizeof(a_city));
+//     fflush(stdin);
+//     cout<<"Airport Code : ";
+//     cin.getline(a_code,sizeof(a_code));
+//     airport *_airport;
+//     fstream airport_file;
+//     _airport = new airport(a_name,a_city,a_code);
+//     airport_file.open("airport_data.bin",ios::out | ios::app | ios::binary);
+//     airport_file.seekp(0,ios::beg);
+//     airport_file.write((char*)_airport,sizeof(airport));
+//     airport_file.close();
+//     code_to_airport[a_code]=_airport;
+// }
 
- void addAirplane(){
+void addAirplane(){
     char _airline_name[MEDIUM_SIZE+1],_model_name[MEDIUM_SIZE+1],_route_code[2*SMALL_SIZE+1];
     int cost,d_time,a_time;
     fflush(stdin);
@@ -473,8 +473,9 @@ void addAirport(){
     airplane_file.seekp(0,ios::beg);
     airplane_file.write((char*)_airplane,sizeof(airplane));
     airplane_file.close();
- }
+}
 
+// remove tempdisplay from here
 void initializeDataFromFiles(){
     airline _airline;
     fstream airline_file;
@@ -528,10 +529,12 @@ void initializeDataFromFiles(){
 }
 
 void customInput(char *s,int size){
+    // fflush(stdin);
     char c='a';
     int l=0;
-    while(c!='\n' && l<size-1){
+    while(l<size-1){
         c=cin.get();
+        if(c=='\n') break;
         s[l++]=c;
     }
     s[l]='\0';
