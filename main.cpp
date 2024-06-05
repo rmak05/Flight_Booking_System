@@ -34,16 +34,18 @@ int getInputColumnCoordinate(const char *text){
 }
 
 char inputYesNo(){
+    fflush(stdin);
     char ch='a';
     while(true){
         ch=(char)getch();
         convertToLowercase(ch);
-        if((ch=='y') || (ch=='n')) break;
+        if((ch=='y') || (ch=='n') || (ch=='q')) break;
     }
     return ch;
 }
 
 char inputEscape(){
+    fflush(stdin);
     char ch='a';
     while(true){
         ch=(char)getch();
@@ -110,37 +112,39 @@ int printOutputSetCursor(const char *prompt, int row){
     return num_lines;
 }
 
+// return number of lines printed upto the line following the title
+int printBasicScreen(int height){
+    int num_lines=0;
+    num_lines+=printTopBorder();
+    num_lines+=printTitle();
+    num_lines+=printLine();
+    num_lines+=printLine();
+    num_lines+=printLine(line::dashed);
+    num_lines+=printLine();
+    for(int i=0;i<height;i++) printLine();
+    printBottomBorder();
+    return num_lines;
+}
+
 void addAirportScreen(){
     system("cls");
     int line=0;
     char a_name[LARGE_SIZE+1],a_city[MEDIUM_SIZE+1],a_code[SMALL_SIZE+1];
     char yesno;
 
-    line+=printTopBorder();
-    line+=printTitle();
-    line+=printLine();
-    line+=printLine();
-    line+=printLine(line::dashed);
-    line+=printLine();
-    printLine();
-    printLine();
-    printLine();
-    printLine();
-    printLine();
-    printLine();
-    printLine();
-    printLine();
-    printLine();
-    printBottomBorder();
-
+    line+=printBasicScreen(10);
     line+=takeInputSetCursor("Airport Name : ",a_name,sizeof(a_name),line);
     line+=takeInputSetCursor("Airport City : ",a_city,sizeof(a_city),line);
     line+=takeInputSetCursor("Airport Code : ",a_code,sizeof(a_code),line);
     convertToUppercase(a_code);
     line+=printOutputSetCursor("Are the above details correct ?",line);
-    line+=takeInputSetCursor("Press 'Y' for YES and 'N' for NO : ",yesno,line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
     if(yesno=='n'){
         curr_screen=screen::add_airport;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_airports;
         return;
     }
     curr_screen=screen::manage_airports;
@@ -164,27 +168,17 @@ void DeleteAirportScreen(){
     char a_code[SMALL_SIZE+1];
     char yesno;
 
-    line+=printTopBorder();
-    line+=printTitle();
-    line+=printLine();
-    line+=printLine();
-    line+=printLine(line::dashed);
-    line+=printLine();
-    printLine();
-    printLine();
-    printLine();
-    printLine();
-    printLine();
-    printLine();
-    printLine();
-    printBottomBorder();
-
+    line+=printBasicScreen(7);
     line+=takeInputSetCursor("Airport Code : ",a_code,sizeof(a_code),line);
     convertToUppercase(a_code);
     line+=printOutputSetCursor("Are the above details correct ?",line);
-    line+=takeInputSetCursor("Press 'Y' for YES and 'N' for NO : ",yesno,line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
     if(yesno=='n'){
         curr_screen=screen::delete_airport;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_airports;
         return;
     }
     curr_screen=screen::manage_airports;

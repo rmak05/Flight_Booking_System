@@ -22,10 +22,6 @@ template<class T>
 struct trieNode;
 
 // check how to use stl containers with classes (like vector<airplane>)
-// map<string,airline*> name_to_airline;
-// map<string,airplane_model*> name_to_airplane_model;
-// map<string,airport*> code_to_airport;
-// map<string,route*> code_to_route;
 
 template<class T>
 struct trieNode{
@@ -390,7 +386,6 @@ public:
         printLine(text);
         sprintf(text,"Code : %s",airport_code);
         printLine(text);
-        // cout<<airport_name<<" "<<airport_city<<" "<<airport_code<<endl;
         int o_f_size=outgoing_flights.size();
         for(int i=0;i<o_f_size;i++){
             (*outgoing_flights[i]).display();
@@ -544,7 +539,7 @@ void initializeDataFromFiles(){
 }
 
 void customInput(char *s,int size){
-    // fflush(stdin);
+    fflush(stdin);
     char c='a';
     int l=0;
     while(l<size-1){
@@ -573,4 +568,4 @@ void customInput(char *s,int size){
 // }
 
 // add feature that when entering code, lowercase gets converted to uppercase
-//ignore leading whitespaces
+// ignore leading whitespaces

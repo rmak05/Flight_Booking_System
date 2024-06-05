@@ -28,12 +28,6 @@ enum line{
     dotted = 1,
 };
 
-// enum user_type{
-//     user  = 0,
-//     admin = 1,
-//     guest = 2
-// };
-
 enum screen{
     usage_type      = 0,
     user_homepage   = 1,
@@ -43,7 +37,11 @@ enum screen{
     manage_airports = 5,
     add_airport     = 6,
     delete_airport  = 7,
-    airport_list    = 8
+    airport_list    = 8,
+    manage_airlines = 9,
+    add_airline     = 10,
+    delete_airline  = 11,
+    airline_list    = 12
 };
 
 struct circularListTextNode{
@@ -315,7 +313,7 @@ void* printUserScreen(void *p){
         imp_text_ll=imp_text_ll->next;
         cout<<"\n\n\n\n\n\n\n\n\n\n\n";
         Sleep(IMPORTANT_UPDATES_TEXT_DELAY);
-        if(user_choice!='\0') break;
+        if(user_choice!='\0' || curr_screen!=user_homepage) break;
     }
 
     return NULL;
@@ -373,7 +371,7 @@ void* printAdminScreen(void *p){
         imp_text_ll=imp_text_ll->next;
         cout<<"\n\n\n\n\n\n\n\n\n\n\n";
         Sleep(IMPORTANT_UPDATES_TEXT_DELAY);
-        if(user_choice!='\0') break;
+        if(user_choice!='\0' || curr_screen!=admin_homepage) break;
     }
 
     return NULL;
@@ -479,4 +477,3 @@ void* takeInput(void *p){
 // big
 // doom (currently using)
 // standard
-// printLine() should return number of lines printed
