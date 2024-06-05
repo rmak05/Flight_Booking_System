@@ -264,7 +264,11 @@ public:
     }
 
     void display(){
-        cout<<model_name<<" "<<passenger_capacity<<endl;
+        char text[2*LARGE_SIZE+1];
+        sprintf(text,"Name               : %s",model_name);
+        printLine(text);
+        sprintf(text,"Passenger Capacity : %d",passenger_capacity);
+        printLine(text);
     }
 };
 
@@ -365,6 +369,8 @@ public:
     }
 
     ~airport(){
+        int size=outgoing_flights.size();
+        for(int i=0;i<size;i++) delete outgoing_flights[i];
         outgoing_flights.clear();
     }
 
@@ -394,40 +400,6 @@ public:
         }
     }
 };
-
-void addAirline(){
-    char a_name[MEDIUM_SIZE+1];
-    fflush(stdin);
-    cout<<"Airline : ";
-    cin.getline(a_name,sizeof(a_name));
-    airline *_airline;
-    fstream airline_file;
-    _airline = new airline(a_name);
-    airline_file.open("airline_data.bin",ios::out | ios::app | ios::binary);
-    airline_file.seekp(0,ios::beg);
-    airline_file.write((char*)_airline,sizeof(airline));
-    airline_file.close();
-    name_to_airline[a_name]=_airline;
-}
-
-void addAirplaneModel(){
-    char a_name[MEDIUM_SIZE+1];
-    int capacity;
-    fflush(stdin);
-    cout<<"Airplane Model : ";
-    cin.getline(a_name,sizeof(a_name));
-    fflush(stdin);
-    cout<<"Passenger Capacity : ";
-    cin>>capacity;
-    airplane_model *_airplane_model;
-    fstream airplane_model_file;
-    _airplane_model = new airplane_model(capacity,a_name);
-    airplane_model_file.open("airplane_model_data.bin",ios::out | ios::app | ios::binary);
-    airplane_model_file.seekp(0,ios::beg);
-    airplane_model_file.write((char*)_airplane_model,sizeof(airplane_model));
-    airplane_model_file.close();
-    name_to_airplane_model[a_name]=_airplane_model;
-}
 
 void addRoute(){
     char s_airport[SMALL_SIZE+1],d_airport[SMALL_SIZE+1],r_code[2*SMALL_SIZE+1];
@@ -494,7 +466,7 @@ void initializeDataFromFiles(){
     airline_file.seekg(0,ios::beg);
     while(airline_file.read((char*)&_airline,sizeof(airline))){
         name_to_airline[_airline.get_airline_name()] = new airline(_airline);
-        (*name_to_airline[_airline.get_airline_name()]).display();
+        // (*name_to_airline[_airline.get_airline_name()]).display();
     }
     airline_file.close();
 
@@ -504,7 +476,7 @@ void initializeDataFromFiles(){
     airplane_model_file.seekg(0,ios::beg);
     while(airplane_model_file.read((char*)&_airplane_model,sizeof(airplane_model))){
         name_to_airplane_model[_airplane_model.get_model_name()] = new airplane_model(_airplane_model);
-        (*name_to_airplane_model[_airplane_model.get_model_name()]).display();
+        // (*name_to_airplane_model[_airplane_model.get_model_name()]).display();
     }
     airplane_model_file.close();
 
@@ -525,7 +497,7 @@ void initializeDataFromFiles(){
     while(airport_file.read((char*)&_airport,sizeof(airport))){
         _airport.clearFlights();
         code_to_airport[_airport.get_airport_code()] = new airport(_airport);
-        (*code_to_airport[_airport.get_airport_code()]).display();
+        // (*code_to_airport[_airport.get_airport_code()]).display();
     }
     airport_file.close();
 
@@ -571,3 +543,4 @@ void customInput(char *s,int size){
 // add feature that when entering code, lowercase gets converted to uppercase
 // ignore leading whitespaces
 // add destructor for class airport
+// when we are deleting airline, model or route, all corresponding airplanes must also be deleted

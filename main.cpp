@@ -97,6 +97,27 @@ int takeInputSetCursor(const char *prompt, char& input_char, int row){
 }
 
 // returns number of lines printed
+int takeInputSetCursor(const char *prompt, int& input_num, int row){
+    int num_lines=0;
+    HANDLE input_handle=GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD input_coord;
+    BOOL handle_success;
+
+    fflush(stdin);
+    input_coord.X=0;
+    input_coord.Y=row;
+    handle_success=SetConsoleCursorPosition(input_handle,input_coord);
+    if(!handle_success) return (-1);
+    printLine(prompt);
+    num_lines++;
+    input_coord.X=getInputColumnCoordinate(prompt);
+    handle_success=SetConsoleCursorPosition(input_handle,input_coord);
+    if(!handle_success) return (-1);
+    cin>>input_num;
+    return num_lines;
+}
+
+// returns number of lines printed
 int printOutputSetCursor(const char *prompt, int row){
     int num_lines=0;
     HANDLE output_handle=GetStdHandle(STD_OUTPUT_HANDLE);
@@ -346,9 +367,118 @@ void airlineListScreen(){
     inputEscape();
 }
 
+void* manageAirplaneModelsScreen(void *p){
+    system("cls");
+    printTopBorder();
+    printTitle();
+    printLine();
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    printLine("1. Add Airplane Model","2. Delete Airplane Model");
+    printLine("3. View Airplane Model List");
+    printLine();
+    printLine();
+    printLine();
+    printBottomBorder();
+    return NULL;
+}
+
+void addAirplaneModelScreen(){
+    system("cls");
+    int line=0,capacity;
+    char a_name[MEDIUM_SIZE+1];
+    char yesno;
+
+    line+=printBasicScreen(8);
+    line+=takeInputSetCursor("Airplane Model Name : ",a_name,sizeof(a_name),line);
+    line+=takeInputSetCursor("Passenger Capacity  : ",capacity,line);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    if(yesno=='n'){
+        curr_screen=screen::add_airplane_model;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_airplane_models;
+        return;
+    }
+    curr_screen=screen::manage_airplane_models;
+
+    airplane_model *_airplane_model;
+    fstream airplane_model_file;
+    _airplane_model = new airplane_model(capacity,a_name);
+    airplane_model_file.open("airplane_model_data.bin",ios::out | ios::app | ios::binary);
+    airplane_model_file.seekp(0,ios::beg);
+    airplane_model_file.write((char*)_airplane_model,sizeof(airplane_model));
+    airplane_model_file.close();
+    name_to_airplane_model[a_name]=_airplane_model;
+    line+=printOutputSetCursor("Airplane Model added successfully",line);
+    line+=printOutputSetCursor("Press any key to continue ...",line);
+    getch();
+}
+
+void deleteAirplaneModelScreen(){
+    system("cls");
+    int line=0;
+    char a_name[MEDIUM_SIZE+1];
+    char yesno;
+
+    line+=printBasicScreen(7);
+    line+=takeInputSetCursor("Airplane Model Name : ",a_name,sizeof(a_name),line);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    if(yesno=='n'){
+        curr_screen=screen::delete_airplane_model;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_airplane_models;
+        return;
+    }
+    curr_screen=screen::manage_airplane_models;
+
+    name_to_airplane_model.erase(a_name);
+    name_to_airplane_model.copy_to_file("airplane_model_data.bin");
+    line+=printOutputSetCursor("Airplane Model deleted successfully",line);
+    line+=printOutputSetCursor("Press any key to continue ...",line);
+    getch();
+}
+
+void airplaneModelListScreen(){
+    curr_screen=screen::manage_airplane_models;
+    system("cls");
+    int line=0,list_size=0;
+    vector<airplane_model*> airplane_model_list;
+
+    line+=printTopBorder();
+    line+=printTitle();
+    line+=printLine();
+    line+=printLine();
+    line+=printLine(line::dashed);
+    printLine();
+    printLine("Press Escape to go back");
+    printLine();
+    printLine(line::dashed);
+
+    name_to_airplane_model.traverse(airplane_model_list);
+    list_size=airplane_model_list.size();
+    for(int i=0;i<list_size;i++){
+        printLine();
+        (*airplane_model_list[i]).display();
+        if(i!=list_size-1){
+            printLine();
+            printLine(line::dotted);
+        }
+    }
+    printLine();
+    printBottomBorder();
+    inputEscape();
+}
+
 void controlCenter(){
     curr_screen=screen::usage_type;
-    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,manageAirportsScreen_thread,manageAirlinesScreen_thread;
+    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,manageAirportsScreen_thread,manageAirlinesScreen_thread,manageAirplaneModelsScreen_thread;
 
     while(true){
         if(curr_screen==program_exit) break;
@@ -406,6 +536,21 @@ void controlCenter(){
                 break;
             case screen::airline_list :
                 airlineListScreen();
+                break;
+            case screen::manage_airplane_models :
+                pthread_create(&manageAirplaneModelsScreen_thread,NULL,manageAirplaneModelsScreen,NULL);
+                pthread_create(&takeInput_thread,NULL,takeInput,NULL);
+                pthread_join(manageAirplaneModelsScreen_thread,NULL);
+                pthread_join(takeInput_thread,NULL);
+                break;
+            case screen::add_airplane_model :
+                addAirplaneModelScreen();
+                break;
+            case screen::delete_airplane_model :
+                deleteAirplaneModelScreen();
+                break;
+            case screen::airplane_model_list :
+                airplaneModelListScreen();
                 break;
             case screen::program_exit :
                 break;

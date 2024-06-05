@@ -29,19 +29,23 @@ enum line{
 };
 
 enum screen{
-    usage_type      = 0,
-    user_homepage   = 1,
-    admin_homepage  = 2,
-    program_exit    = 3,
-    logged_out      = 4,
-    manage_airports = 5,
-    add_airport     = 6,
-    delete_airport  = 7,
-    airport_list    = 8,
-    manage_airlines = 9,
-    add_airline     = 10,
-    delete_airline  = 11,
-    airline_list    = 12
+    usage_type             = 0,
+    user_homepage          = 1,
+    admin_homepage         = 2,
+    program_exit           = 3,
+    logged_out             = 4,
+    manage_airports        = 5,
+    add_airport            = 6,
+    delete_airport         = 7,
+    airport_list           = 8,
+    manage_airlines        = 9,
+    add_airline            = 10,
+    delete_airline         = 11,
+    airline_list           = 12,
+    manage_airplane_models = 13,
+    add_airplane_model     = 14,
+    delete_airplane_model  = 15,
+    airplane_model_list    = 16
 };
 
 struct circularListTextNode{
@@ -436,6 +440,7 @@ void* takeInput(void *p){
         }
         else if(user_choice=='2') curr_screen=screen::manage_airports;
         else if(user_choice=='3') curr_screen=screen::manage_airlines;
+        else if(user_choice=='4') curr_screen=screen::manage_airplane_models;
         else if(user_choice=='7') curr_screen=screen::logged_out;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }
@@ -450,6 +455,13 @@ void* takeInput(void *p){
         if(user_choice=='1') curr_screen=screen::add_airline;
         else if(user_choice=='2') curr_screen=screen::delete_airline;
         else if(user_choice=='3') curr_screen=screen::airline_list;
+        else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
+        else if(user_choice=='x') curr_screen=screen::program_exit;
+    }
+    else if(curr_screen==screen::manage_airplane_models){
+        if(user_choice=='1') curr_screen=screen::add_airplane_model;
+        else if(user_choice=='2') curr_screen=screen::delete_airplane_model;
+        else if(user_choice=='3') curr_screen=screen::airplane_model_list;
         else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }
