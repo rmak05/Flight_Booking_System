@@ -412,23 +412,6 @@ void* printLoggedOutScreen(void *p){
     return NULL;
 }
 
-void* printManageAirportsScreen(void *p){
-    system("cls");
-    printTopBorder();
-    printTitle();
-    printLine();
-    printLine();
-    printLine(line::dashed);
-    printLine();
-    printLine("1. Add Airport","2. Delete Airport");
-    printLine("3. View Airport List");
-    printLine();
-    printLine();
-    printLine();
-    printBottomBorder();
-    return NULL;
-}
-
 void* takeInput(void *p){
     user_choice=(unsigned char)getch();
     if(curr_screen==screen::usage_type){
@@ -452,6 +435,7 @@ void* takeInput(void *p){
             
         }
         else if(user_choice=='2') curr_screen=screen::manage_airports;
+        else if(user_choice=='3') curr_screen=screen::manage_airlines;
         else if(user_choice=='7') curr_screen=screen::logged_out;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }
@@ -459,6 +443,13 @@ void* takeInput(void *p){
         if(user_choice=='1') curr_screen=screen::add_airport;
         else if(user_choice=='2') curr_screen=screen::delete_airport;
         else if(user_choice=='3') curr_screen=screen::airport_list;
+        else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
+        else if(user_choice=='x') curr_screen=screen::program_exit;
+    }
+    else if(curr_screen==screen::manage_airlines){
+        if(user_choice=='1') curr_screen=screen::add_airline;
+        else if(user_choice=='2') curr_screen=screen::delete_airline;
+        else if(user_choice=='3') curr_screen=screen::airline_list;
         else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }

@@ -51,7 +51,7 @@ private:
         if('A'<=ch && ch<='Z') return (int)(ch-'A');            // 0 to 25
         else if('a'<=ch && ch<='z') return (int)(ch-'a'+26);    // 26 to 51
         else if('0'<=ch && ch<='9') return (int)(ch-'0'+52);    // 52 to 61
-        else if(ch==' ') return TRIE_CHARACTERS;                // 62
+        else if(ch==' ') return TRIE_CHARACTERS-1;                // 62
         else return -1;
     }
 
@@ -233,7 +233,9 @@ public:
     }
 
     void display(){
-        cout<<airline_name<<endl;
+        char text[2*LARGE_SIZE+1];
+        sprintf(text,"Name : %s",airline_name);
+        printLine(text);
     }
 };
 
@@ -391,7 +393,6 @@ public:
             (*outgoing_flights[i]).display();
         }
     }
-
 };
 
 void addAirline(){
@@ -569,3 +570,4 @@ void customInput(char *s,int size){
 
 // add feature that when entering code, lowercase gets converted to uppercase
 // ignore leading whitespaces
+// add destructor for class airport

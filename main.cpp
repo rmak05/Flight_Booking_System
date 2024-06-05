@@ -126,6 +126,23 @@ int printBasicScreen(int height){
     return num_lines;
 }
 
+void* manageAirportsScreen(void *p){
+    system("cls");
+    printTopBorder();
+    printTitle();
+    printLine();
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    printLine("1. Add Airport","2. Delete Airport");
+    printLine("3. View Airport List");
+    printLine();
+    printLine();
+    printLine();
+    printBottomBorder();
+    return NULL;
+}
+
 void addAirportScreen(){
     system("cls");
     int line=0;
@@ -162,7 +179,7 @@ void addAirportScreen(){
     getch();
 }
 
-void DeleteAirportScreen(){
+void deleteAirportScreen(){
     system("cls");
     int line=0;
     char a_code[SMALL_SIZE+1];
@@ -190,7 +207,7 @@ void DeleteAirportScreen(){
     getch();
 }
 
-void AirportListScreen(){
+void airportListScreen(){
     curr_screen=screen::manage_airports;
     system("cls");
     int line=0,list_size=0;
@@ -216,7 +233,114 @@ void AirportListScreen(){
             printLine(line::dotted);
         }
     }
+    printLine();
+    printBottomBorder();
+    inputEscape();
+}
 
+void* manageAirlinesScreen(void *p){
+    system("cls");
+    printTopBorder();
+    printTitle();
+    printLine();
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    printLine("1. Add Airline","2. Delete Airline");
+    printLine("3. View Airline List");
+    printLine();
+    printLine();
+    printLine();
+    printBottomBorder();
+    return NULL;
+}
+
+void addAirlineScreen(){
+    system("cls");
+    int line=0;
+    char a_name[MEDIUM_SIZE+1];
+    char yesno;
+
+    line+=printBasicScreen(7);
+    line+=takeInputSetCursor("Airline Name : ",a_name,sizeof(a_name),line);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    if(yesno=='n'){
+        curr_screen=screen::add_airline;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_airlines;
+        return;
+    }
+    curr_screen=screen::manage_airlines;
+
+    airline *_airline;
+    fstream airline_file;
+    _airline = new airline(a_name);
+    airline_file.open("airline_data.bin",ios::out | ios::app | ios::binary);
+    airline_file.seekp(0,ios::beg);
+    airline_file.write((char*)_airline,sizeof(airline));
+    airline_file.close();
+    name_to_airline[a_name]=_airline;
+    line+=printOutputSetCursor("Airline added successfully",line);
+    line+=printOutputSetCursor("Press any key to continue ...",line);
+    getch();
+}
+
+void deleteAirlineScreen(){
+    system("cls");
+    int line=0;
+    char a_name[MEDIUM_SIZE+1];
+    char yesno;
+
+    line+=printBasicScreen(7);
+    line+=takeInputSetCursor("Airline Name : ",a_name,sizeof(a_name),line);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    if(yesno=='n'){
+        curr_screen=screen::delete_airline;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_airlines;
+        return;
+    }
+    curr_screen=screen::manage_airlines;
+
+    name_to_airline.erase(a_name);
+    name_to_airline.copy_to_file("airline_data.bin");
+    line+=printOutputSetCursor("Airline deleted successfully",line);
+    line+=printOutputSetCursor("Press any key to continue ...",line);
+    getch();
+}
+
+void airlineListScreen(){
+    curr_screen=screen::manage_airlines;
+    system("cls");
+    int line=0,list_size=0;
+    vector<airline*> airline_list;
+
+    line+=printTopBorder();
+    line+=printTitle();
+    line+=printLine();
+    line+=printLine();
+    line+=printLine(line::dashed);
+    printLine();
+    printLine("Press Escape to go back");
+    printLine();
+    printLine(line::dashed);
+
+    name_to_airline.traverse(airline_list);
+    list_size=airline_list.size();
+    for(int i=0;i<list_size;i++){
+        printLine();
+        (*airline_list[i]).display();
+        if(i!=list_size-1){
+            printLine();
+            printLine(line::dotted);
+        }
+    }
     printLine();
     printBottomBorder();
     inputEscape();
@@ -224,7 +348,7 @@ void AirportListScreen(){
 
 void controlCenter(){
     curr_screen=screen::usage_type;
-    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,printManageAirportsScreen_thread;
+    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,manageAirportsScreen_thread,manageAirlinesScreen_thread;
 
     while(true){
         if(curr_screen==program_exit) break;
@@ -254,19 +378,34 @@ void controlCenter(){
                 pthread_join(takeInput_thread,NULL);
                 break;
             case screen::manage_airports :
-                pthread_create(&printManageAirportsScreen_thread,NULL,printManageAirportsScreen,NULL);
+                pthread_create(&manageAirportsScreen_thread,NULL,manageAirportsScreen,NULL);
                 pthread_create(&takeInput_thread,NULL,takeInput,NULL);
-                pthread_join(printManageAirportsScreen_thread,NULL);
+                pthread_join(manageAirportsScreen_thread,NULL);
                 pthread_join(takeInput_thread,NULL);
                 break;
             case screen::add_airport :
                 addAirportScreen();
                 break;
             case screen::delete_airport :
-                DeleteAirportScreen();
+                deleteAirportScreen();
                 break;
             case screen::airport_list :
-                AirportListScreen();
+                airportListScreen();
+                break;
+            case screen::manage_airlines :
+                pthread_create(&manageAirlinesScreen_thread,NULL,manageAirlinesScreen,NULL);
+                pthread_create(&takeInput_thread,NULL,takeInput,NULL);
+                pthread_join(manageAirlinesScreen_thread,NULL);
+                pthread_join(takeInput_thread,NULL);
+                break;
+            case screen::add_airline :
+                addAirlineScreen();
+                break;
+            case screen::delete_airline :
+                deleteAirlineScreen();
+                break;
+            case screen::airline_list :
+                airlineListScreen();
                 break;
             case screen::program_exit :
                 break;
@@ -279,6 +418,7 @@ void controlCenter(){
 int main(){
     initializeDataFromFiles();
     controlCenter();
+    // if(name_to_airline.find("Fly Emirates")) cout<<"found\n";
     return 0;
 }
 
