@@ -1,4 +1,3 @@
-// #include "frontend.cpp"
 #include "classes.cpp"
 
 void convertToLowercase(char& ch){
@@ -195,6 +194,7 @@ void addAirportScreen(){
     airport_file.write((char*)_airport,sizeof(airport));
     airport_file.close();
     code_to_airport[a_code]=_airport;
+
     line+=printOutputSetCursor("Airport added successfully",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
@@ -304,6 +304,7 @@ void addAirlineScreen(){
     airline_file.write((char*)_airline,sizeof(airline));
     airline_file.close();
     name_to_airline[a_name]=_airline;
+
     line+=printOutputSetCursor("Airline added successfully",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
@@ -413,6 +414,7 @@ void addAirplaneModelScreen(){
     airplane_model_file.write((char*)_airplane_model,sizeof(airplane_model));
     airplane_model_file.close();
     name_to_airplane_model[a_name]=_airplane_model;
+
     line+=printOutputSetCursor("Airplane Model added successfully",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
@@ -476,9 +478,267 @@ void airplaneModelListScreen(){
     inputEscape();
 }
 
+void* manageRoutesScreen(void *p){
+    system("cls");
+    printTopBorder();
+    printTitle();
+    printLine();
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    printLine("1. Add Route","2. Delete Route");
+    printLine("3. View Route List");
+    printLine();
+    printLine();
+    printLine();
+    printBottomBorder();
+    return NULL;
+}
+
+void addRouteScreen(){
+    system("cls");
+    int line=0,r_distance;
+    char s_airport[SMALL_SIZE+1],d_airport[SMALL_SIZE+1],r_code[2*SMALL_SIZE+1];
+    char yesno;
+
+    line+=printBasicScreen(9);
+    line+=takeInputSetCursor("Starting Airport Code    : ",s_airport,sizeof(s_airport),line);
+    line+=takeInputSetCursor("Destination Airport Code : ",d_airport,sizeof(d_airport),line);
+    convertToUppercase(s_airport);
+    convertToUppercase(d_airport);
+    strcpy(r_code,s_airport);
+    strcpy(r_code+SMALL_SIZE,d_airport);
+    line+=takeInputSetCursor("Route Distance           : ",r_distance,line);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    if(yesno=='n'){
+        curr_screen=screen::add_route;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_routes;
+        return;
+    }
+    curr_screen=screen::manage_routes;
+
+    route *_route;
+    fstream route_file;
+    _route = new route(r_distance,s_airport,d_airport);
+    route_file.open("route_data.bin",ios::out | ios::app | ios::binary);
+    route_file.seekp(0,ios::beg);
+    route_file.write((char*)_route,sizeof(route));
+    route_file.close();
+    code_to_route[r_code]=_route;
+
+    line+=printOutputSetCursor("Route added successfully",line);
+    line+=printOutputSetCursor("Press any key to continue ...",line);
+    getch();
+}
+
+void deleteRouteScreen(){
+    system("cls");
+    int line=0;
+    char r_code[2*SMALL_SIZE+1];
+    char yesno;
+
+    line+=printBasicScreen(7);
+    line+=takeInputSetCursor("Route Code : ",r_code,sizeof(r_code),line);
+    convertToUppercase(r_code);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    if(yesno=='n'){
+        curr_screen=screen::delete_route;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_routes;
+        return;
+    }
+    curr_screen=screen::manage_routes;
+
+    code_to_route.erase(r_code);
+    code_to_route.copy_to_file("route_data.bin");
+    line+=printOutputSetCursor("Route deleted successfully",line);
+    line+=printOutputSetCursor("Press any key to continue ...",line);
+    getch();
+}
+
+void routeListScreen(){
+    curr_screen=screen::manage_routes;
+    system("cls");
+    int line=0,list_size=0;
+    vector<route*> route_list;
+
+    line+=printTopBorder();
+    line+=printTitle();
+    line+=printLine();
+    line+=printLine();
+    line+=printLine(line::dashed);
+    printLine();
+    printLine("Press Escape to go back");
+    printLine();
+    printLine(line::dashed);
+
+    code_to_route.traverse(route_list);
+    list_size=route_list.size();
+    for(int i=0;i<list_size;i++){
+        printLine();
+        (*route_list[i]).display();
+        if(i!=list_size-1){
+            printLine();
+            printLine(line::dotted);
+        }
+    }
+    printLine();
+    printBottomBorder();
+    inputEscape();
+}
+
+void* manageAirplanesScreen(void *p){
+    system("cls");
+    printTopBorder();
+    printTitle();
+    printLine();
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    printLine("1. Add Airplane","2. Delete Airplane");
+    printLine("3. View Airplane List");
+    printLine();
+    printLine();
+    printLine();
+    printBottomBorder();
+    return NULL;
+}
+
+void addAirplaneScreen(){
+    system("cls");
+    int line=0,cost,d_time,a_time;
+    char _airline_name[MEDIUM_SIZE+1],_model_name[MEDIUM_SIZE+1],_route_code[2*SMALL_SIZE+1],s_airport[SMALL_SIZE+1];
+    char yesno;
+
+    line+=printBasicScreen(12);
+    line+=takeInputSetCursor("Airline Name        : ",_airline_name,sizeof(_airline_name),line);
+    line+=takeInputSetCursor("Airplane Model Name : ",_model_name,sizeof(_model_name),line);
+    line+=takeInputSetCursor("Route Code          : ",_route_code,sizeof(_route_code),line);
+    convertToUppercase(_route_code);
+    for(int i=0;i<SMALL_SIZE;i++) s_airport[i]=_route_code[i];
+    s_airport[SMALL_SIZE]='\0';
+    line+=takeInputSetCursor("Departure Time      : ",d_time,line);
+    line+=takeInputSetCursor("Arrival Time        : ",a_time,line);
+    line+=takeInputSetCursor("Ticket Cost         : ",cost,line);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    if(yesno=='n'){
+        curr_screen=screen::add_airplane;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_airplanes;
+        return;
+    }
+    curr_screen=screen::manage_airplanes;
+
+    airline *_airline=name_to_airline[_airline_name];
+    airplane_model *_airplane_model=name_to_airplane_model[_model_name];
+    route *_route=code_to_route[_route_code];
+    airplane *_airplane;
+    fstream airplane_file;
+    _airplane = new airplane((*_airline),(*_airplane_model),(*_route),cost,d_time,a_time);
+    airplane_file.open("airplane_data.bin",ios::out | ios::app | ios::binary);
+    airplane_file.seekp(0,ios::beg);
+    airplane_file.write((char*)_airplane,sizeof(airplane));
+    airplane_file.close();
+    // (*_airplane).add_to_airport();
+    airport *_airport;
+    _airport=code_to_airport[s_airport];
+    if(_airport!=NULL) (*_airport).add_airplane(_airplane);
+    line+=printOutputSetCursor("Airplane added successfully",line);
+    line+=printOutputSetCursor("Press any key to continue ...",line);
+    getch();
+}
+
+void deleteAirplaneScreen(){
+    system("cls");
+    int line=0,d_time;
+    char _airline_name[MEDIUM_SIZE+1],_route_code[2*SMALL_SIZE+1],s_airport[SMALL_SIZE+1];
+    char yesno;
+
+    line+=printBasicScreen(10);
+    line+=takeInputSetCursor("Airline Name   : ",_airline_name,sizeof(_airline_name),line);
+    line+=takeInputSetCursor("Route Code     : ",_route_code,sizeof(_route_code),line);
+    convertToUppercase(_route_code);
+    for(int i=0;i<SMALL_SIZE;i++) s_airport[i]=_route_code[i];
+    s_airport[SMALL_SIZE]='\0';
+    line+=takeInputSetCursor("Departure Time : ",d_time,line);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    if(yesno=='n'){
+        curr_screen=screen::delete_airplane;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_airplanes;
+        return;
+    }
+    curr_screen=screen::manage_airplanes;
+
+    airport *_airport;
+    _airport=code_to_airport[s_airport];
+    if(_airport!=NULL) (*_airport).delete_airplane(_airline_name,_route_code,d_time);
+    vector<airport*> airport_list;
+    int list_size;
+    code_to_airport.traverse(airport_list);
+    list_size=airport_list.size();
+    fstream airplane_file;
+    airplane_file.open("airplane_data.bin",ios::out);
+    airplane_file.close();
+    for(int i=0;i<list_size;i++) (*airport_list[i]).copy_flights_to_file("airplane_data.bin");
+
+    line+=printOutputSetCursor("Airplane deleted successfully",line);
+    line+=printOutputSetCursor("Press any key to continue ...",line);
+    getch();
+}
+
+void airplaneListScreen(){
+    curr_screen=screen::manage_airplanes;
+    system("cls");
+    int line=0,list_size=0,size=0;
+    vector<airport*> airport_list;
+    vector<airplane*> airplane_list;
+
+    line+=printTopBorder();
+    line+=printTitle();
+    line+=printLine();
+    line+=printLine();
+    line+=printLine(line::dashed);
+    printLine();
+    printLine("Press Escape to go back");
+    printLine();
+    printLine(line::dashed);
+
+    code_to_airport.traverse(airport_list);
+    list_size=airport_list.size();
+    for(int i=0;i<list_size;i++){
+        airplane_list=(*airport_list[i]).get_outgoing_flights();
+        size=airplane_list.size();
+        for(int j=0;j<size;j++){
+            printLine();
+            (*airplane_list[j]).display();
+            if(!(i==list_size-1 && j==size-1)){
+                printLine();
+                printLine(line::dotted);
+            }
+        }
+    }
+    printLine();
+    printBottomBorder();
+    inputEscape();
+}
+
 void controlCenter(){
     curr_screen=screen::usage_type;
-    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,manageAirportsScreen_thread,manageAirlinesScreen_thread,manageAirplaneModelsScreen_thread;
+    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,manageAirportsScreen_thread,manageAirlinesScreen_thread,manageAirplaneModelsScreen_thread,manageRoutesScreen_thread,manageAirplanesScreen_thread;
 
     while(true){
         if(curr_screen==program_exit) break;
@@ -551,6 +811,36 @@ void controlCenter(){
                 break;
             case screen::airplane_model_list :
                 airplaneModelListScreen();
+                break;
+            case screen::manage_routes :
+                pthread_create(&manageRoutesScreen_thread,NULL,manageRoutesScreen,NULL);
+                pthread_create(&takeInput_thread,NULL,takeInput,NULL);
+                pthread_join(manageRoutesScreen_thread,NULL);
+                pthread_join(takeInput_thread,NULL);
+                break;
+            case screen::add_route :
+                addRouteScreen();
+                break;
+            case screen::delete_route :
+                deleteRouteScreen();
+                break;
+            case screen::route_list :
+                routeListScreen();
+                break;
+            case screen::manage_airplanes :
+                pthread_create(&manageAirplanesScreen_thread,NULL,manageAirplanesScreen,NULL);
+                pthread_create(&takeInput_thread,NULL,takeInput,NULL);
+                pthread_join(manageAirplanesScreen_thread,NULL);
+                pthread_join(takeInput_thread,NULL);
+                break;
+            case screen::add_airplane :
+                addAirplaneScreen();
+                break;
+            case screen::delete_airplane :
+                deleteAirplaneScreen();
+                break;
+            case screen::airplane_list :
+                airplaneListScreen();
                 break;
             case screen::program_exit :
                 break;

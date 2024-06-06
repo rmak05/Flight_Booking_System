@@ -3,7 +3,6 @@
 #include <windows.h>
 #include <pthread.h>
 #include <conio.h>
-// #include "classes.cpp"
 #define SCREEN_MAX_WIDTH 135
 #define SCREEN_WIDTH 120
 #define LEFT_BORDER_WIDTH 7
@@ -45,7 +44,15 @@ enum screen{
     manage_airplane_models = 13,
     add_airplane_model     = 14,
     delete_airplane_model  = 15,
-    airplane_model_list    = 16
+    airplane_model_list    = 16,
+    manage_routes          = 17,
+    add_route              = 18,
+    delete_route           = 19,
+    route_list             = 20,
+    manage_airplanes       = 21,
+    add_airplane           = 22,
+    delete_airplane        = 23,
+    airplane_list          = 24
 };
 
 struct circularListTextNode{
@@ -441,6 +448,8 @@ void* takeInput(void *p){
         else if(user_choice=='2') curr_screen=screen::manage_airports;
         else if(user_choice=='3') curr_screen=screen::manage_airlines;
         else if(user_choice=='4') curr_screen=screen::manage_airplane_models;
+        else if(user_choice=='5') curr_screen=screen::manage_routes;
+        else if(user_choice=='6') curr_screen=screen::manage_airplanes;
         else if(user_choice=='7') curr_screen=screen::logged_out;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }
@@ -462,6 +471,20 @@ void* takeInput(void *p){
         if(user_choice=='1') curr_screen=screen::add_airplane_model;
         else if(user_choice=='2') curr_screen=screen::delete_airplane_model;
         else if(user_choice=='3') curr_screen=screen::airplane_model_list;
+        else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
+        else if(user_choice=='x') curr_screen=screen::program_exit;
+    }
+    else if(curr_screen==screen::manage_routes){
+        if(user_choice=='1') curr_screen=screen::add_route;
+        else if(user_choice=='2') curr_screen=screen::delete_route;
+        else if(user_choice=='3') curr_screen=screen::route_list;
+        else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
+        else if(user_choice=='x') curr_screen=screen::program_exit;
+    }
+    else if(curr_screen==screen::manage_airplanes){
+        if(user_choice=='1') curr_screen=screen::add_airplane;
+        else if(user_choice=='2') curr_screen=screen::delete_airplane;
+        else if(user_choice=='3') curr_screen=screen::airplane_list;
         else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }
