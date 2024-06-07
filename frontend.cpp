@@ -9,6 +9,9 @@
 #define TEXT_PADDING 10
 #define IMPORTANT_UPDATES_TEXT_DELAY 250
 #define IMP_UPDATES_WIDTH 75
+#define SMALL_SIZE 3
+#define MEDIUM_SIZE 50
+#define LARGE_SIZE 100
 #define ESCAPE 27
 using namespace std;
 
@@ -52,7 +55,11 @@ enum screen{
     manage_airplanes       = 21,
     add_airplane           = 22,
     delete_airplane        = 23,
-    airplane_list          = 24
+    airplane_list          = 24,
+    manage_imp_updates     = 25,
+    add_imp_update         = 26,
+    delete_imp_update      = 27,
+    imp_update_list        = 28
 };
 
 struct circularListTextNode{
@@ -204,8 +211,11 @@ int printLine(const char *s, const int a, const int desired_text_padding){
 
 circularListTextNode* makeTextCircular(const char *s, const int imp_updates_width){
     circularListTextNode *head=NULL,*temp=NULL;
-    if(s[0]=='\0') return head;
     head = new circularListTextNode(' ');
+    if(s[0]=='\0'){
+        head->next=head;
+        return head;
+    }
     temp=head;
     for(int i=0;i<imp_updates_width-1;i++){
         temp->next = new circularListTextNode(' ');
@@ -272,6 +282,32 @@ int printBottomBorder(){
     return num_lines;
 }
 
+char* getAllImpUpdates(){
+    int list_size,req_size,curr_size=0;
+    fstream imp_updates_file;
+    vector<char*> updates_list;
+    char *text = new char[2*LARGE_SIZE+1];
+    imp_updates_file.open("important_updates_data.bin",ios::in | ios::app | ios::binary);
+    while(imp_updates_file.read((char*)text,2*LARGE_SIZE+1)){
+        req_size+=strlen(text);
+        updates_list.push_back(text);
+        text = new char[2*LARGE_SIZE+1];
+    }
+    imp_updates_file.close();
+    list_size=updates_list.size();
+    char *final_text = new char[req_size+1];
+    final_text[0]='\0';
+    for(int i=0;i<list_size;i++){
+        if(i!=0){
+            strcpy(final_text+curr_size," | ");
+            curr_size+=sizeof(" | ")-1;
+        }
+        strcpy(final_text+curr_size,updates_list[i]);
+        curr_size+=strlen(updates_list[i]);
+    }
+    return final_text;
+}
+
 void* printUserScreen(void *p){
     system("cls");
     int imp_news_line=0;
@@ -289,10 +325,9 @@ void* printUserScreen(void *p){
 
     // important updates
     char imp_updates_title_text[]="Important Updates : ";
-    char imp_text[]="The flight to Bhubaneswar has been delayed. Please wait for further updates.  |  The flight to Pune will arrive at 3:00 PM.  |  The flight to Mumbai has been cancelled.";
+    char *imp_text=getAllImpUpdates();
     int imp_updates_title_text_size=strlen(imp_updates_title_text);
     int desired_left_space=TEXT_PADDING;
-    // int desired_left_space=(SCREEN_WIDTH-2-imp_updates_title_text_size-IMP_UPDATES_WIDTH)/2;
     printLine(imp_updates_title_text,align::custom,desired_left_space);      
 
     printLine();
@@ -347,10 +382,9 @@ void* printAdminScreen(void *p){
 
     // important updates
     char imp_updates_title_text[]="Important Updates : ";
-    char imp_text[]="The flight to Bhubaneswar has been delayed. Please wait for further updates.  |  The flight to Pune will arrive at 3:00 PM.  |  The flight to Mumbai has been cancelled.";
+    char *imp_text=getAllImpUpdates();
     int imp_updates_title_text_size=strlen(imp_updates_title_text);
     int desired_left_space=TEXT_PADDING;
-    // int desired_left_space=(SCREEN_WIDTH-2-imp_updates_title_text_size-IMP_UPDATES_WIDTH)/2;
     printLine(imp_updates_title_text,align::custom,desired_left_space);      
 
     printLine();
@@ -442,9 +476,7 @@ void* takeInput(void *p){
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::admin_homepage){
-        if(user_choice=='1'){
-            
-        }
+        if(user_choice=='1') curr_screen=screen::manage_imp_updates;
         else if(user_choice=='2') curr_screen=screen::manage_airports;
         else if(user_choice=='3') curr_screen=screen::manage_airlines;
         else if(user_choice=='4') curr_screen=screen::manage_airplane_models;
@@ -485,6 +517,13 @@ void* takeInput(void *p){
         if(user_choice=='1') curr_screen=screen::add_airplane;
         else if(user_choice=='2') curr_screen=screen::delete_airplane;
         else if(user_choice=='3') curr_screen=screen::airplane_list;
+        else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
+        else if(user_choice=='x') curr_screen=screen::program_exit;
+    }
+    else if(curr_screen==screen::manage_imp_updates){
+        if(user_choice=='1') curr_screen=screen::add_imp_update;
+        else if(user_choice=='2') curr_screen=screen::delete_imp_update;
+        else if(user_choice=='3') curr_screen=screen::imp_update_list;
         else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }

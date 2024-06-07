@@ -736,9 +736,142 @@ void airplaneListScreen(){
     inputEscape();
 }
 
+void* manageImpUpdatesScreen(void *p){
+    system("cls");
+    printTopBorder();
+    printTitle();
+    printLine();
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    printLine("1. Add Important Update","2. Delete Important Update");
+    printLine("3. View Important Update List");
+    printLine();
+    printLine();
+    printLine();
+    printBottomBorder();
+    return NULL;
+}
+
+void addImpUpdateScreen(){
+    system("cls");
+    int line=0;
+    char _text[2*LARGE_SIZE+1];
+    char yesno;
+
+    line+=printBasicScreen(7);
+    line+=takeInputSetCursor("Important Update : ",_text,sizeof(_text),line);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    if(yesno=='n'){
+        curr_screen=screen::add_imp_update;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_imp_updates;
+        return;
+    }
+    curr_screen=screen::manage_imp_updates;
+
+    fstream imp_updates_file;
+    imp_updates_file.open("important_updates_data.bin",ios::out | ios::app | ios::binary);
+    char *text = new char[2*LARGE_SIZE+1];
+    strcpy(text,_text);
+    imp_updates_file.write((char*)text,2*LARGE_SIZE+1);
+    imp_updates_file.close();
+
+    line+=printOutputSetCursor("Important Update added successfully",line);
+    line+=printOutputSetCursor("Press any key to continue ...",line);
+    getch();
+}
+
+void deleteImpUpdateScreen(){
+    system("cls");
+    int line=0,serial_num;
+    char yesno;
+
+    line+=printBasicScreen(8);
+    line+=takeInputSetCursor("Serial Number : ",serial_num,line);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    if(yesno=='n'){
+        curr_screen=screen::delete_imp_update;
+        return;
+    }
+    else if(yesno=='q'){
+        curr_screen=screen::manage_imp_updates;
+        return;
+    }
+    curr_screen=screen::manage_imp_updates;
+
+    int list_size,s_num=0;
+    fstream imp_updates_file;
+    vector<char*> updates_list;
+    char *text = new char[2*LARGE_SIZE+1];
+    imp_updates_file.open("important_updates_data.bin",ios::in | ios::app | ios::binary);
+    while(imp_updates_file.read((char*)text,2*LARGE_SIZE+1)){
+        s_num++;
+        if(s_num==serial_num) continue;
+        updates_list.push_back(text);
+        text = new char[2*LARGE_SIZE+1];
+    }
+    imp_updates_file.close();
+    imp_updates_file.open("important_updates_data.bin",ios::out);
+    list_size=updates_list.size();
+    for(int i=0;i<list_size;i++) imp_updates_file.write((char*)updates_list[i],2*LARGE_SIZE+1);
+
+    line+=printOutputSetCursor("Important Update deleted successfully",line);
+    line+=printOutputSetCursor("Press any key to continue ...",line);
+    getch();
+}
+
+void impUpdateListScreen(){
+    curr_screen=screen::manage_imp_updates;
+    system("cls");
+    int line=0,serial_num=0,list_size=0,i=(-1);
+
+    line+=printTopBorder();
+    line+=printTitle();
+    line+=printLine();
+    line+=printLine();
+    line+=printLine(line::dashed);
+    printLine();
+    printLine("Press Escape to go back");
+    printLine();
+    printLine(line::dashed);
+
+    fstream imp_updates_file;
+    char *text = new char[2*LARGE_SIZE+1];
+    char _text[2*LARGE_SIZE+1+10];
+    imp_updates_file.open("important_updates_data.bin",ios::in | ios::binary);
+    imp_updates_file.seekg(0,ios::beg);
+    while(imp_updates_file.read((char*)text,2*LARGE_SIZE+1)){
+        list_size++;
+    }
+    imp_updates_file.close();
+    imp_updates_file.open("important_updates_data.bin",ios::in | ios::binary);
+    imp_updates_file.seekg(0,ios::beg);
+    while(imp_updates_file.read((char*)text,2*LARGE_SIZE+1)){
+        i++;
+        serial_num++;
+        sprintf(_text,"%2d. %s",serial_num,text);
+        printLine();
+        printLine(_text);
+        if(i!=list_size-1){
+            printLine();
+            printLine(line::dotted);
+        }
+    }
+    imp_updates_file.close();
+
+    printLine();
+    printBottomBorder();
+    inputEscape();
+}
+
 void controlCenter(){
     curr_screen=screen::usage_type;
-    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,manageAirportsScreen_thread,manageAirlinesScreen_thread,manageAirplaneModelsScreen_thread,manageRoutesScreen_thread,manageAirplanesScreen_thread;
+    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,manageAirportsScreen_thread,manageAirlinesScreen_thread,manageAirplaneModelsScreen_thread,manageRoutesScreen_thread,manageAirplanesScreen_thread,manageImpUpdatesScreen_thread;
 
     while(true){
         if(curr_screen==program_exit) break;
@@ -842,6 +975,21 @@ void controlCenter(){
             case screen::airplane_list :
                 airplaneListScreen();
                 break;
+            case screen::manage_imp_updates :
+                pthread_create(&manageImpUpdatesScreen_thread,NULL,manageImpUpdatesScreen,NULL);
+                pthread_create(&takeInput_thread,NULL,takeInput,NULL);
+                pthread_join(manageImpUpdatesScreen_thread,NULL);
+                pthread_join(takeInput_thread,NULL);
+                break;
+            case screen::add_imp_update :
+                addImpUpdateScreen();
+                break;
+            case screen::delete_imp_update :
+                deleteImpUpdateScreen();
+                break;
+            case screen::imp_update_list :
+                impUpdateListScreen();
+                break;
             case screen::program_exit :
                 break;
             default :
@@ -853,7 +1001,6 @@ void controlCenter(){
 int main(){
     initializeDataFromFiles();
     controlCenter();
-    // if(name_to_airline.find("Fly Emirates")) cout<<"found\n";
     return 0;
 }
 

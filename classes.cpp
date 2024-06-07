@@ -5,9 +5,6 @@
 #include <limits>
 #include <stack>
 #include "frontend.cpp"
-#define SMALL_SIZE 3
-#define MEDIUM_SIZE 50
-#define LARGE_SIZE 100
 #define TRIE_CHARACTERS 63      // 52 Alphabets + 10 Digits + Whitespace
 using namespace std;
 
@@ -51,7 +48,7 @@ private:
         if('A'<=ch && ch<='Z') return (int)(ch-'A');            // 0 to 25
         else if('a'<=ch && ch<='z') return (int)(ch-'a'+26);    // 26 to 51
         else if('0'<=ch && ch<='9') return (int)(ch-'0'+52);    // 52 to 61
-        else if(ch==' ') return TRIE_CHARACTERS-1;                // 62
+        else if(ch==' ') return TRIE_CHARACTERS-1;              // 62
         else return -1;
     }
 
@@ -515,6 +512,10 @@ void initializeDataFromFiles(){
         // _airplane.display();
     }
     airplane_file.close();
+
+    fstream imp_updates_file;
+    imp_updates_file.open("important_updates_data.bin",ios::out | ios::app | ios::binary);
+    imp_updates_file.close();
 }
 
 void customInput(char *s,int size){
