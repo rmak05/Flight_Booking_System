@@ -1,5 +1,37 @@
 #include "classes.cpp"
 
+// x=column , y=row
+bool setCursorPosition(int x, int y){
+    HANDLE _handle=GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD _coord;
+    BOOL _success;
+    _coord.X=x;
+    _coord.Y=y;
+    _success=SetConsoleCursorPosition(_handle,_coord);
+    return _success;
+}
+
+// point.first=x=column , point.second=y=row
+bool setCursorPosition(pair<int,int>& point){
+    HANDLE _handle=GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD _coord;
+    BOOL _success;
+    _coord.X=point.first;
+    _coord.Y=point.second;
+    _success=SetConsoleCursorPosition(_handle,_coord);
+    return _success;
+}
+
+// point.first=x=column , point.second=y=row
+bool getCursorPosition(pair<int,int>& point){
+    CONSOLE_SCREEN_BUFFER_INFO buff_info;
+    HANDLE _handle=GetStdHandle(STD_OUTPUT_HANDLE);
+    BOOL _success=GetConsoleScreenBufferInfo(_handle,&buff_info);
+    point.first=buff_info.dwCursorPosition.X;
+    point.second=buff_info.dwCursorPosition.Y;
+    return _success;
+}
+
 void convertToLowercase(char& ch){
     if(('A'<=ch) && (ch<='Z')){
         ch=(char)(ch-'A'+'a');
@@ -128,6 +160,22 @@ int printOutputSetCursor(const char *prompt, int row){
     handle_success=SetConsoleCursorPosition(output_handle,output_coord);
     if(!handle_success) return (-1);
     printLine(prompt);
+    num_lines++;
+    return num_lines;
+}
+
+// returns number of lines printed
+int printOutputSetCursor(const char *prompt,int alignment, int row){
+    int num_lines=0;
+    HANDLE output_handle=GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD output_coord;
+    BOOL handle_success;
+
+    output_coord.X=0;
+    output_coord.Y=row;
+    handle_success=SetConsoleCursorPosition(output_handle,output_coord);
+    if(!handle_success) return (-1);
+    printLine(prompt,alignment);
     num_lines++;
     return num_lines;
 }
@@ -706,6 +754,7 @@ void airplaneListScreen(){
     int line=0,list_size=0,size=0;
     vector<airport*> airport_list;
     vector<airplane*> airplane_list;
+    bool first=false;
 
     line+=printTopBorder();
     line+=printTitle();
@@ -716,6 +765,7 @@ void airplaneListScreen(){
     printLine("Press Escape to go back");
     printLine();
     printLine(line::dashed);
+    printLine();
 
     code_to_airport.traverse(airport_list);
     list_size=airport_list.size();
@@ -723,12 +773,13 @@ void airplaneListScreen(){
         airplane_list=(*airport_list[i]).get_outgoing_flights();
         size=airplane_list.size();
         for(int j=0;j<size;j++){
-            printLine();
-            (*airplane_list[j]).display();
-            if(!(i==list_size-1 && j==size-1)){
+            if(first){
                 printLine();
                 printLine(line::dotted);
+                printLine();
             }
+            first=true;
+            (*airplane_list[j]).display();
         }
     }
     printLine();
@@ -869,6 +920,164 @@ void impUpdateListScreen(){
     inputEscape();
 }
 
+// int printAirports(int row){
+//     int num_lines=0,list_size=0;
+//     vector<airport*> airport_list;
+//     char text1[MEDIUM_SIZE+SMALL_SIZE+3+1],text2[MEDIUM_SIZE+SMALL_SIZE+3+1];
+//     char *_airport_city,*_airport_code;
+//     HANDLE output_handle=GetStdHandle(STD_OUTPUT_HANDLE);
+//     COORD output_coord;
+//     BOOL handle_success;
+
+//     output_coord.X=0;
+//     (output_coord.Y)=row;
+//     handle_success=SetConsoleCursorPosition(output_handle,output_coord);
+//     handle_success=SetConsoleCursorPosition(output_handle,output_coord);
+//     if(!handle_success) return (-1);
+//     code_to_airport.traverse(airport_list);
+//     list_size=airport_list.size();
+//     for(int i=0;i<list_size;i+=2){
+//         _airport_city=(*airport_list[i]).get_airport_city();
+//         _airport_code=(*airport_list[i]).get_airport_code();
+//         sprintf(text1,"%s : %s",_airport_city,_airport_code);
+//         text2[0]='\0';
+//         if(i+1<list_size){
+//             _airport_city=(*airport_list[i+1]).get_airport_city();
+//             _airport_code=(*airport_list[i+1]).get_airport_code();
+//             sprintf(text2,"%s : %s",_airport_city,_airport_code);
+//         }
+//         num_lines+=printLine(text1,text2);
+//         num_lines+=printLine();
+//     }
+//     num_lines+=printLine(line::dashed);
+//     cout<<"\n\n\n\n\n";
+//     cout<<"\n\n\n\n\n";
+//     cout<<"\n\n\n\n\n";
+//     return num_lines;
+// }
+
+void printTicket(ticket_details& _details){
+    // fstream ticket;
+    // ticket.open("Flight_Ticket.txt",ios::out | ios::binary);
+    // streambuf *cout_buffer,*ticket_buffer;
+    // cout_buffer=cout.rdbuf();
+    // ticket_buffer=ticket.rdbuf();
+    // cout.rdbuf(ticket_buffer);
+    // for(int i=0;i<400;i++){
+    //     char ch=(char)i;
+    //     cout<<i<<" "<<ch<<endl;
+    // }
+    // // printBasicScreen(20);
+    // cout.rdbuf(cout_buffer);
+    // ticket.close();
+}
+
+void bookTicketPassengerDetailsScreen(ticket_details& _details){
+    system("cls");
+    int line=0;
+    char yesno;
+
+    line+=printBasicScreen(14);
+    line+=printOutputSetCursor("Passenger Details",align::center,line);
+    line+=printLine();
+    line+=printLine(line::dashed);
+    line+=printLine();
+    line+=takeInputSetCursor("Name   : ",_details.passenger_name,sizeof(_details.passenger_name),line);
+    line+=printOutputSetCursor("('M' for Male, 'F' for female, 'O' for other)",line);
+    line+=takeInputSetCursor("Gender : ",_details.gender,sizeof(_details.gender),line);
+    if(_details.gender[0]=='0') _details.gender[0]='O';
+    convertToUppercase(_details.gender);
+    line+=takeInputSetCursor("Age    : ",_details.age,line);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    // add yesno mechanism
+    printTicket(_details);
+}
+
+void bookTicketFlightListScreen(ticket_details& _details){
+    system("cls");
+    int line=0,o_flights_size,airplane_list_size,input_num,adjust_lines=0;
+    char _route_code[2*SMALL_SIZE+1],text[MEDIUM_SIZE+1];
+    char *temp_code;
+    vector<airplane*> airplane_list,o_flights;
+    airport s_airport=(*code_to_airport[_details.s_airport]);
+    o_flights=s_airport.get_outgoing_flights();
+    o_flights_size=o_flights.size();
+    strcpy(_route_code,_details.s_airport);
+    strcpy(_route_code+SMALL_SIZE,_details.d_airport);
+    for(int i=0;i<o_flights_size;i++){
+        temp_code=(*o_flights[i]).get_route_code();
+        if(strcmp(_route_code,temp_code)==0) airplane_list.push_back(o_flights[i]);
+    }
+    airplane_list_size=airplane_list.size();
+
+    line+=printTopBorder();
+    line+=printTitle();
+    line+=printLine();
+    line+=printLine();
+    line+=printLine(line::dashed);
+    line+=printLine();
+    line+=printLine("Available Flights",align::center,line);
+    line+=printLine();
+    line+=printLine(line::dashed);
+
+    for(int i=0;i<airplane_list_size;i++){
+        printLine();
+        sprintf(text,"%d.",i+1);
+        printLine(text);
+        (*airplane_list[i]).display();
+        if(i!=airplane_list_size-1){
+            printLine();
+            printLine(line::dotted);
+        }
+    }
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    adjust_lines+=printBottomBorder();
+    adjust_lines+=printLine();
+    adjust_lines+=printLine();
+
+    pair<int,int> cursor_pos;
+    getCursorPosition(cursor_pos);
+    cursor_pos.second-=adjust_lines;
+    line=cursor_pos.second;
+    setCursorPosition(cursor_pos);
+    for(int i=0;i<adjust_lines-1;i++) printLine();
+    printBottomBorder();
+    line+=takeInputSetCursor("Enter Serial number of the flight : ",input_num,line);
+    // check serial number bounds
+    for(int i=0;i<airplane_list_size;i++){
+        if(i+1==input_num){
+            _details._airplane=(*airplane_list[i]);
+            break;
+        }
+    }
+    bookTicketPassengerDetailsScreen(_details);
+}
+
+void bookTicketFlightDetailsScreen(){
+    system("cls");
+    int line=0;
+    char yesno;
+    ticket_details _details;
+
+    line+=printBasicScreen(15);
+    line+=printOutputSetCursor("Flight Details",align::center,line);
+    line+=printLine();
+    line+=printLine(line::dashed);
+    line+=printLine();
+
+    line+=takeInputSetCursor("Starting Airport Code    : ",_details.s_airport,sizeof(_details.s_airport),line);
+    convertToUppercase(_details.s_airport);
+    line+=takeInputSetCursor("Destination Airport Code : ",_details.d_airport,sizeof(_details.d_airport),line);
+    convertToUppercase(_details.d_airport);
+    line+=printOutputSetCursor("Are the above details correct ?",line);
+    line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
+    // add yesno mechanism
+    bookTicketFlightListScreen(_details);
+}
+
 void controlCenter(){
     curr_screen=screen::usage_type;
     pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,manageAirportsScreen_thread,manageAirlinesScreen_thread,manageAirplaneModelsScreen_thread,manageRoutesScreen_thread,manageAirplanesScreen_thread,manageImpUpdatesScreen_thread;
@@ -1000,7 +1209,9 @@ void controlCenter(){
 
 int main(){
     initializeDataFromFiles();
-    controlCenter();
+    // controlCenter();
+    bookTicketFlightDetailsScreen();
+    cout<<"\n\n\n\n\n\n\n\n\n\n\n";
     return 0;
 }
 

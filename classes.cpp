@@ -1,13 +1,8 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <cstring>
-#include <limits>
-#include <stack>
 #include "frontend.cpp"
 #define TRIE_CHARACTERS 63      // 52 Alphabets + 10 Digits + Whitespace
 using namespace std;
 
+class ticket_details;
 class airline;
 class airplane_model;
 class route;
@@ -231,7 +226,7 @@ public:
 
     void display(){
         char text[2*LARGE_SIZE+1];
-        sprintf(text,"Name : %s",airline_name);
+        sprintf(text,"Airline Name             : %s.",airline_name);
         printLine(text);
     }
 };
@@ -262,9 +257,9 @@ public:
 
     void display(){
         char text[2*LARGE_SIZE+1];
-        sprintf(text,"Name               : %s",model_name);
+        sprintf(text,"Airplane Model Name      : %s.",model_name);
         printLine(text);
-        sprintf(text,"Passenger Capacity : %d",passenger_capacity);
+        sprintf(text,"Passenger Capacity       : %d.",passenger_capacity);
         printLine(text);
     }
 };
@@ -298,13 +293,13 @@ public:
 
     void display(){
         char text[2*LARGE_SIZE+1];
-        sprintf(text,"Starting Airport Code    : %s",starting_airport);
+        sprintf(text,"Starting Airport Code    : %s.",starting_airport);
         printLine(text);
-        sprintf(text,"Destination Airport Code : %s",destination_airport);
+        sprintf(text,"Destination Airport Code : %s.",destination_airport);
         printLine(text);
-        sprintf(text,"Route Code               : %s",route_code);
+        sprintf(text,"Route Code               : %s.",route_code);
         printLine(text);
-        sprintf(text,"Route Distance           : %d",route_distance);
+        sprintf(text,"Route Distance           : %d.",route_distance);
         printLine(text);
     }
 };
@@ -352,11 +347,11 @@ public:
         airplane_model::display();
         route::display();
         char text[2*LARGE_SIZE+1];
-        sprintf(text,"Departure Time : %04d",departure_time);
+        sprintf(text,"Departure Time           : %04d.",departure_time);
         printLine(text);
-        sprintf(text,"Arrival Time   : %04d",arrival_time);
+        sprintf(text,"Arrival Time             : %04d.",arrival_time);
         printLine(text);
-        sprintf(text,"Ticket Cost    : %d",airplane_cost);
+        sprintf(text,"Ticket Cost              : %d.",airplane_cost);
         printLine(text);
     }
 };
@@ -393,6 +388,10 @@ public:
         int size=outgoing_flights.size();
         for(int i=0;i<size;i++) delete outgoing_flights[i];
         outgoing_flights.clear();
+    }
+
+    char* get_airport_city(){
+        return airport_city;
     }
 
     char* get_airport_code(){
@@ -440,11 +439,11 @@ public:
 
     void display(){
         char text[2*LARGE_SIZE+1];
-        sprintf(text,"Name : %s",airport_name);
+        sprintf(text,"Name : %s.",airport_name);
         printLine(text);
-        sprintf(text,"City : %s",airport_city);
+        sprintf(text,"City : %s.",airport_city);
         printLine(text);
-        sprintf(text,"Code : %s",airport_code);
+        sprintf(text,"Code : %s.",airport_code);
         printLine(text);
         int o_f_size=outgoing_flights.size();
         for(int i=0;i<o_f_size;i++){
@@ -454,7 +453,21 @@ public:
     }
 };
 
-// remove tempdisplay from here
+class ticket_details{
+public:
+    int age;
+    char passenger_name[MEDIUM_SIZE+1],gender[2],s_airport[SMALL_SIZE+1],d_airport[SMALL_SIZE+1];
+    airplane _airplane;
+
+    ticket_details(){
+        age=0;
+        passenger_name[0]='\0';
+        gender[0]='\0';
+        s_airport[0]='\0';
+        d_airport[0]='\0';
+    }
+};
+
 void initializeDataFromFiles(){
     airline _airline;
     fstream airline_file;
@@ -547,7 +560,6 @@ void customInput(char *s,int size){
 //     return 0;
 // }
 
-// add feature that when entering code, lowercase gets converted to uppercase
 // ignore leading whitespaces
 // add destructor for class airport
 // when we are deleting airline, model or route, all corresponding airplanes must also be deleted

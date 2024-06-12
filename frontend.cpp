@@ -1,8 +1,13 @@
 #include <iostream>
-#include <cstring>
+#include <fstream>
 #include <windows.h>
 #include <pthread.h>
 #include <conio.h>
+#include <limits>
+#include <utility>
+#include <vector>
+#include <stack>
+#include <cstring>
 #define SCREEN_MAX_WIDTH 135
 #define SCREEN_WIDTH 120
 #define LEFT_BORDER_WIDTH 7
@@ -212,10 +217,6 @@ int printLine(const char *s, const int a, const int desired_text_padding){
 circularListTextNode* makeTextCircular(const char *s, const int imp_updates_width){
     circularListTextNode *head=NULL,*temp=NULL;
     head = new circularListTextNode(' ');
-    if(s[0]=='\0'){
-        head->next=head;
-        return head;
-    }
     temp=head;
     for(int i=0;i<imp_updates_width-1;i++){
         temp->next = new circularListTextNode(' ');
