@@ -291,6 +291,10 @@ public:
         return route_code;
     }
 
+    int get_distance(){
+        return route_distance;
+    }
+
     void display(){
         char text[2*LARGE_SIZE+1];
         sprintf(text,"Starting Airport Code    : %s.",starting_airport);
@@ -336,11 +340,13 @@ public:
         return departure_time;
     }
 
-    // void add_to_airport(){
-    //     airport *_airport;
-    //     _airport=code_to_airport[starting_airport];
-    //     if(_airport!=NULL) (*_airport).add_airplane(this);
-    // }
+    int get_arrival_time(){
+        return arrival_time;
+    }
+
+    int get_cost(){
+        return airplane_cost;
+    }
 
     void display(){
         airline::display();
@@ -390,12 +396,23 @@ public:
         outgoing_flights.clear();
     }
 
+    void operator=(airport& another){
+        strcpy(this->airport_name,another.get_airport_name());
+        strcpy(this->airport_city,another.get_airport_city());
+        strcpy(this->airport_code,another.get_airport_code());
+        this->outgoing_flights=another.get_outgoing_flights();
+    }
+
     char* get_airport_city(){
         return airport_city;
     }
 
     char* get_airport_code(){
         return airport_code;
+    }
+
+    char* get_airport_name(){
+        return airport_name;
     }
 
     vector<airplane*>& get_outgoing_flights(){
@@ -465,6 +482,7 @@ public:
         gender[0]='\0';
         s_airport[0]='\0';
         d_airport[0]='\0';
+        _airplane=airplane();
     }
 };
 

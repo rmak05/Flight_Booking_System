@@ -920,59 +920,197 @@ void impUpdateListScreen(){
     inputEscape();
 }
 
-// int printAirports(int row){
-//     int num_lines=0,list_size=0;
-//     vector<airport*> airport_list;
-//     char text1[MEDIUM_SIZE+SMALL_SIZE+3+1],text2[MEDIUM_SIZE+SMALL_SIZE+3+1];
-//     char *_airport_city,*_airport_code;
-//     HANDLE output_handle=GetStdHandle(STD_OUTPUT_HANDLE);
-//     COORD output_coord;
-//     BOOL handle_success;
-
-//     output_coord.X=0;
-//     (output_coord.Y)=row;
-//     handle_success=SetConsoleCursorPosition(output_handle,output_coord);
-//     handle_success=SetConsoleCursorPosition(output_handle,output_coord);
-//     if(!handle_success) return (-1);
-//     code_to_airport.traverse(airport_list);
-//     list_size=airport_list.size();
-//     for(int i=0;i<list_size;i+=2){
-//         _airport_city=(*airport_list[i]).get_airport_city();
-//         _airport_code=(*airport_list[i]).get_airport_code();
-//         sprintf(text1,"%s : %s",_airport_city,_airport_code);
-//         text2[0]='\0';
-//         if(i+1<list_size){
-//             _airport_city=(*airport_list[i+1]).get_airport_city();
-//             _airport_code=(*airport_list[i+1]).get_airport_code();
-//             sprintf(text2,"%s : %s",_airport_city,_airport_code);
-//         }
-//         num_lines+=printLine(text1,text2);
-//         num_lines+=printLine();
-//     }
-//     num_lines+=printLine(line::dashed);
-//     cout<<"\n\n\n\n\n";
-//     cout<<"\n\n\n\n\n";
-//     cout<<"\n\n\n\n\n";
-//     return num_lines;
-// }
-
+// add random seat number
+// create booking id using seed or time
 void printTicket(ticket_details& _details){
-    // fstream ticket;
-    // ticket.open("Flight_Ticket.txt",ios::out | ios::binary);
-    // streambuf *cout_buffer,*ticket_buffer;
-    // cout_buffer=cout.rdbuf();
-    // ticket_buffer=ticket.rdbuf();
-    // cout.rdbuf(ticket_buffer);
-    // for(int i=0;i<400;i++){
-    //     char ch=(char)i;
-    //     cout<<i<<" "<<ch<<endl;
-    // }
-    // // printBasicScreen(20);
-    // cout.rdbuf(cout_buffer);
-    // ticket.close();
+    airport *starting_airport,*destination_airport;
+    destination_airport=code_to_airport[_details.d_airport];
+    starting_airport=code_to_airport[_details.s_airport];
+
+    int d_time[4],a_time[4];
+    int d_time_int,a_time_int;
+    d_time_int=_details._airplane.get_departure_time();
+    a_time_int=_details._airplane.get_arrival_time();
+    for(int i=3;i>=0;i--){
+        d_time[i]=d_time_int%10;
+        a_time[i]=a_time_int%10;
+        d_time_int/=10;
+        a_time_int/=10;
+    }
+    double ticket_cost,gst,total_cost;
+    total_cost=(double)_details._airplane.get_cost();
+    ticket_cost=(20.0*total_cost)/21;
+    gst=total_cost-ticket_cost;
+
+    fstream ticket_file;
+    ticket_file.open("Flight_Ticket.html",ios::out);
+
+    ticket_file<<"<!DOCTYPE html>\n";
+
+    ticket_file<<"<html lang=\"en\">\n";
+
+    ticket_file<<"<head>\n";
+
+    ticket_file<<"\t<meta charset=\"UTF-8\">\n";
+    ticket_file<<"\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n";
+    ticket_file<<"\t<title>Flight Ticket</title>\n";
+    ticket_file<<"\t<link rel=\"stylesheet\" href=\"style.css\">\n";
+
+    ticket_file<<"</head>\n";
+
+    ticket_file<<"<body>\n";
+
+    ticket_file<<"\t<div id=\"main_border\">\n";
+    ticket_file<<"\t\t<div id=\"titles\">\n";
+    ticket_file<<"\t\t\t<div id=\"ticket_title\">\n";
+    ticket_file<<"\t\t\t\tTicket\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div id=\"ticket_text\">\n";
+    ticket_file<<"\t\t\t\tgenerated through\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div id=\"fbs_title\">\n";
+    ticket_file<<"\t\t\t\tFlight Booking System\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\n";
+    ticket_file<<"\t\t<div class=\"line\"></div>\n";
+    ticket_file<<"\n";
+    ticket_file<<"\t\t<div class=\"airline\">\n";
+	ticket_file<<"\t\t\t"<<_details._airplane.get_airline_name()<<"\n";
+	ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\t\t<div class=\"flight_details\">\n";
+    ticket_file<<"\t\t\t<div class=\"from_to_box\">\n";
+    ticket_file<<"\t\t\t\t<div class=\"from_to_text\">\n";
+    ticket_file<<"\t\t\t\t\tFrom\n";
+    ticket_file<<"\t\t\t\t</div>\n";
+    ticket_file<<"\t\t\t\t<div class=\"city\">\n";
+    ticket_file<<"\t\t\t\t\t"<<starting_airport->get_airport_city()<<" ("<<starting_airport->get_airport_code()<<")\n";
+    // ticket_file<<"\t\t\t\t\tPune (PNQ)\n";
+    ticket_file<<"\t\t\t\t</div>\n";
+    ticket_file<<"\t\t\t\t<div class=\"airport_name\">\n";
+    ticket_file<<"\t\t\t\t\t"<<starting_airport->get_airport_name()<<"\n";
+    // ticket_file<<"\t\t\t\t\tPune International Airport\n";
+    ticket_file<<"\t\t\t\t</div>\n";
+    ticket_file<<"\t\t\t\t<div class=\"time\">\n";
+    ticket_file<<"\t\t\t\t\tDeparture Time - "<<d_time[0]<<d_time[1]<<":"<<d_time[2]<<d_time[3]<<"\n";
+    // ticket_file<<"\t\t\t\t\tDeparture Time - 08:00 PM\n";
+    ticket_file<<"\t\t\t\t</div>\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div>\n";
+    ticket_file<<"\t\t\t\t<!-- image taken from vecteezy -->\n";
+    ticket_file<<"\t\t\t\t<img src=\"airplane_image.jpg\" alt=\"image\" class=\"flight_image\">\n";
+    ticket_file<<"\t\t\t\t<div class=\"distance\">\n";
+    ticket_file<<"\t\t\t\t\tDistance : "<<_details._airplane.get_distance()<<" KM\n";
+    // ticket_file<<"\t\t\t\t\tDistance : 1245 KM\n";
+    ticket_file<<"\t\t\t\t</div>\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div class=\"from_to_box from_to_box1\">\n";
+    ticket_file<<"\t\t\t\t<div class=\"from_to_text\">\n";
+    ticket_file<<"\t\t\t\t\tTo\n";
+    ticket_file<<"\t\t\t\t</div>\n";
+    ticket_file<<"\t\t\t\t<div class=\"city\">\n";
+    ticket_file<<"\t\t\t\t\t"<<destination_airport->get_airport_city()<<" ("<<destination_airport->get_airport_code()<<")\n";
+    // ticket_file<<"\t\t\t\t\tBhubaneswar (BBI)\n";
+    ticket_file<<"\t\t\t\t</div>\n";
+    ticket_file<<"\t\t\t\t<div class=\"airport_name\">\n";
+    ticket_file<<"\t\t\t\t\t"<<destination_airport->get_airport_name()<<"\n";
+    // ticket_file<<"\t\t\t\t\tBiju Patnaik International Airport\n";
+    ticket_file<<"\t\t\t\t</div>\n";
+    ticket_file<<"\t\t\t\t<div class=\"time\">\n";
+    ticket_file<<"\t\t\t\t\tArrival Time - "<<a_time[0]<<a_time[1]<<":"<<a_time[2]<<a_time[3]<<"\n";
+    // ticket_file<<"\t\t\t\t\tArrival Time - 10:00 PM\n";
+    ticket_file<<"\t\t\t\t</div>\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\n";
+    ticket_file<<"\t\t<div class=\"line\"></div>\n";
+    ticket_file<<"\n";
+    ticket_file<<"\t\t<div id=\"passenger_title\">\n";
+    ticket_file<<"\t\t\tPassenger Details\n";
+    ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\n";
+    ticket_file<<"\t\t<div id=\"passenger_details\">\n";
+    ticket_file<<"\t\t\t<div class=\"passenger_name passenger_details_titles\">\n";
+    ticket_file<<"\t\t\t\tName\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div class=\"age passenger_details_titles\">\n";
+    ticket_file<<"\t\t\t\tAge\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div class=\"gender passenger_details_titles\">\n";
+    ticket_file<<"\t\t\t\tGender\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div class=\"seat passenger_details_titles\">\n";
+    ticket_file<<"\t\t\t\tSeat Number\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\n";
+    ticket_file<<"\t\t<div id=\"passenger_details\">\n";
+    ticket_file<<"\t\t\t<div class=\"passenger_name\">\n";
+    ticket_file<<"\t\t\t\t"<<_details.passenger_name<<"\n";
+    // ticket_file<<"\t\t\t\tRAVILISETTY MAKARANDH\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div class=\"age\">\n";
+    ticket_file<<"\t\t\t\t"<<_details.age<<"\n";
+    // ticket_file<<"\t\t\t\t55\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div class=\"gender\">\n";
+    ticket_file<<"\t\t\t\t"<<_details.gender<<"\n";
+    // ticket_file<<"\t\t\t\tM\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div class=\"seat\">\n";
+    ticket_file<<"\t\t\t\tG5/ECONOMY\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\n";
+    ticket_file<<"\t\t<div class=\"line\"></div>\n";
+    ticket_file<<"\n";
+    ticket_file<<"\t\t<div class=\"booking\">\n";
+    ticket_file<<"\t\t\tBooking ID : 12345678910\n";
+    ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\t\t<div class=\"cost\">\n";
+    ticket_file<<"\t\t\t<div class=\"cost_text\">\n";
+    ticket_file<<"\t\t\t\tTicket Cost\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div class=\"cost_text cost_value\">\n";
+    ticket_file.setf(ios::fixed,ios::floatfield);
+    ticket_file<<"\t\t\t\tRs. "<<setprecision(2)<<ticket_cost<<"\n";
+    // ticket_file<<"\t\t\t\t5000\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\t\t<div class=\"cost\">\n";
+    ticket_file<<"\t\t\t<div class=\"cost_text\">\n";
+    ticket_file<<"\t\t\t\tGST (5%)\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div class=\"cost_text cost_value\">\n";
+    ticket_file<<"\t\t\t\tRs. "<<setprecision(2)<<gst<<"\n";
+    // ticket_file<<"\t\t\t\t200\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\t\t<div class=\"cost leavemargin\">\n";
+    ticket_file<<"\t\t\t<div class=\"cost_text\">\n";
+    ticket_file<<"\t\t\t\tTotal Cost\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t\t<div class=\"cost_text cost_value\">\n";
+    ticket_file<<"\t\t\t\tRs. "<<setprecision(2)<<total_cost<<"\n";
+    // ticket_file<<"\t\t\t\t5200\n";
+    ticket_file<<"\t\t\t</div>\n";
+    ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\n";
+    ticket_file<<"\t\t<div class=\"line \"></div>\n";
+    ticket_file<<"\n";
+    ticket_file<<"\t\t<div id=\"thankyou\">\n";
+    ticket_file<<"\t\t\tThank You for using Flight Booking System! Happy Journey!\n";
+    ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\t</div>\n";
+
+    ticket_file<<"</body>\n";
+
+    ticket_file<<"</html>\n";
+
+    ticket_file.close();
 }
 
-void bookTicketPassengerDetailsScreen(ticket_details& _details){
+void bookPassengerDetails(ticket_details& _details){
     system("cls");
     int line=0;
     char yesno;
@@ -983,6 +1121,7 @@ void bookTicketPassengerDetailsScreen(ticket_details& _details){
     line+=printLine(line::dashed);
     line+=printLine();
     line+=takeInputSetCursor("Name   : ",_details.passenger_name,sizeof(_details.passenger_name),line);
+    convertToUppercase(_details.passenger_name);
     line+=printOutputSetCursor("('M' for Male, 'F' for female, 'O' for other)",line);
     line+=takeInputSetCursor("Gender : ",_details.gender,sizeof(_details.gender),line);
     if(_details.gender[0]=='0') _details.gender[0]='O';
@@ -994,7 +1133,7 @@ void bookTicketPassengerDetailsScreen(ticket_details& _details){
     printTicket(_details);
 }
 
-void bookTicketFlightListScreen(ticket_details& _details){
+void bookTicketFlightList(ticket_details& _details){
     system("cls");
     int line=0,o_flights_size,airplane_list_size,input_num,adjust_lines=0;
     char _route_code[2*SMALL_SIZE+1],text[MEDIUM_SIZE+1];
@@ -1053,10 +1192,10 @@ void bookTicketFlightListScreen(ticket_details& _details){
             break;
         }
     }
-    bookTicketPassengerDetailsScreen(_details);
+    bookPassengerDetails(_details);
 }
 
-void bookTicketFlightDetailsScreen(){
+void bookTicketFlights(){
     system("cls");
     int line=0;
     char yesno;
@@ -1075,7 +1214,7 @@ void bookTicketFlightDetailsScreen(){
     line+=printOutputSetCursor("Are the above details correct ?",line);
     line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
     // add yesno mechanism
-    bookTicketFlightListScreen(_details);
+    bookTicketFlightList(_details);
 }
 
 void controlCenter(){
@@ -1210,7 +1349,9 @@ void controlCenter(){
 int main(){
     initializeDataFromFiles();
     // controlCenter();
-    bookTicketFlightDetailsScreen();
+    bookTicketFlights();
+    // ticket_details tt;
+    // printTicket(tt);
     cout<<"\n\n\n\n\n\n\n\n\n\n\n";
     return 0;
 }

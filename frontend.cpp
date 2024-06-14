@@ -8,6 +8,7 @@
 #include <vector>
 #include <stack>
 #include <cstring>
+#include <iomanip>
 #define SCREEN_MAX_WIDTH 135
 #define SCREEN_WIDTH 120
 #define LEFT_BORDER_WIDTH 7
