@@ -462,11 +462,11 @@ public:
         printLine(text);
         sprintf(text,"Code : %s.",airport_code);
         printLine(text);
-        int o_f_size=outgoing_flights.size();
-        for(int i=0;i<o_f_size;i++){
-            printLine();
-            (*outgoing_flights[i]).display();
-        }
+        // int o_f_size=outgoing_flights.size();
+        // for(int i=0;i<o_f_size;i++){
+        //     printLine();
+        //     (*outgoing_flights[i]).display();
+        // }
     }
 };
 

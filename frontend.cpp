@@ -21,7 +21,8 @@
 #define ESCAPE 27
 using namespace std;
 
-unsigned char user_choice;
+// 'G' = Guest , 'U' = User , 'A' = Admin
+unsigned char user_choice,user_type;
 int curr_screen;
 
 enum align{
@@ -66,7 +67,8 @@ enum screen{
     add_imp_update         = 26,
     delete_imp_update      = 27,
     imp_update_list        = 28,
-    book_ticket            = 29
+    book_ticket            = 29,
+    flight_availability    = 30
 };
 
 struct circularListTextNode{
@@ -347,8 +349,8 @@ void* printUserScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("1. Open profile","2. Book ticket");
-    printLine("3. Cancel ticket","4. Check flight availability");
+    printLine("1. Open profile","2. View Airport List");
+    printLine("3. Check flight availability","4. Book ticket");
     printLine("5. Log out");
     printLine();
     printLine();
@@ -480,8 +482,14 @@ void* takeInput(void *p){
         if(user_choice=='1'){
             
         }
-        else if(user_choice=='2') curr_screen=screen::user_homepage;
-        else if(user_choice=='3') curr_screen=screen::admin_homepage;
+        else if(user_choice=='2'){
+            user_type='U';
+            curr_screen=screen::user_homepage;
+        }
+        else if(user_choice=='3'){
+            user_type='A';
+            curr_screen=screen::admin_homepage;
+        }
         else if(user_choice==(char)ESCAPE) curr_screen=screen::program_exit;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }
@@ -489,7 +497,9 @@ void* takeInput(void *p){
         if(user_choice=='1'){
             
         }
-        else if(user_choice=='2') curr_screen=screen::book_ticket;
+        else if(user_choice=='2') curr_screen=screen::airport_list;
+        else if(user_choice=='3') curr_screen=screen::flight_availability;
+        else if(user_choice=='4') curr_screen=screen::book_ticket;
         else if(user_choice=='5') curr_screen=screen::logged_out;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }

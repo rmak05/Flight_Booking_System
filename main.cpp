@@ -277,7 +277,9 @@ void deleteAirportScreen(){
 }
 
 void airportListScreen(){
-    curr_screen=screen::manage_airports;
+    // curr_screen=screen::manage_airports;
+    if(user_type=='A') curr_screen=screen::manage_airports;
+    else if(user_type=='U') curr_screen=screen::user_homepage;
     system("cls");
     int line=0,list_size=0;
     vector<airport*> airport_list;
@@ -1012,7 +1014,6 @@ void airplaneAnimation(){
     setCursorVisibility(true);
     bookingSuccessful();
 }
-
 // add random seat number
 // create booking id using seed or time
 void printTicket(ticket_details& _details){
@@ -1278,6 +1279,13 @@ void bookTicketFlightList(ticket_details& _details){
     setCursorPosition(cursor_pos);
     for(int i=0;i<adjust_lines-1;i++) printLine();
     printBottomBorder();
+    if(curr_screen==screen::flight_availability){
+        curr_screen=screen::user_homepage;
+        printOutputSetCursor("Press Escape to go back",line);
+        cout<<"\n\n";
+        inputEscape();
+        return;
+    }
     line+=takeInputSetCursor("Enter Serial number of the flight : ",input_num,line);
     // check serial number bounds
     for(int i=0;i<airplane_list_size;i++){
@@ -1433,6 +1441,8 @@ void controlCenter(){
                 impUpdateListScreen();
                 break;
             case screen::book_ticket:
+                bookTicketFlights();
+            case screen::flight_availability:
                 bookTicketFlights();
             case screen::program_exit :
                 break;
