@@ -65,7 +65,8 @@ enum screen{
     manage_imp_updates     = 25,
     add_imp_update         = 26,
     delete_imp_update      = 27,
-    imp_update_list        = 28
+    imp_update_list        = 28,
+    book_ticket            = 29
 };
 
 struct circularListTextNode{
@@ -82,6 +83,15 @@ struct circularListTextNode{
         next=NULL;
     }
 };
+
+void setCursorVisibility(bool set){
+    HANDLE output_handle=GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursor_info;
+    GetConsoleCursorInfo(output_handle,&cursor_info);
+    cursor_info.bVisible=set;
+    // cursor_info.dwSize=20;      // 20 is default cursor size
+    SetConsoleCursorInfo(output_handle,&cursor_info);
+}
 
 // returns number of lines printed
 int printLine(){
@@ -235,6 +245,7 @@ circularListTextNode* makeTextCircular(const char *s, const int imp_updates_widt
 int printTitle(){
     int num_lines=0;
     char text[SCREEN_WIDTH];
+    // ascii art taken from patorjk.com
     strcpy(text,"______ _ _       _     _     ______             _    _                _____           _                 ");
     printLine(text,align::center);
     num_lines++;
@@ -311,6 +322,7 @@ char* getAllImpUpdates(){
 }
 
 void* printUserScreen(void *p){
+    setCursorVisibility(false);
     system("cls");
     int imp_news_line=0;
 
@@ -364,10 +376,12 @@ void* printUserScreen(void *p){
         if(user_choice!='\0' || curr_screen!=user_homepage) break;
     }
 
+    setCursorVisibility(true);
     return NULL;
 }
 
 void* printAdminScreen(void *p){
+    setCursorVisibility(false);
     system("cls");
     int imp_news_line=0;
 
@@ -421,6 +435,7 @@ void* printAdminScreen(void *p){
         if(user_choice!='\0' || curr_screen!=admin_homepage) break;
     }
 
+    setCursorVisibility(true);
     return NULL;
 }
 
@@ -474,6 +489,7 @@ void* takeInput(void *p){
         if(user_choice=='1'){
             
         }
+        else if(user_choice=='2') curr_screen=screen::book_ticket;
         else if(user_choice=='5') curr_screen=screen::logged_out;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }

@@ -920,6 +920,99 @@ void impUpdateListScreen(){
     inputEscape();
 }
 
+void bookingSuccessful(){
+    curr_screen=screen::user_homepage;
+    system("cls");
+    printTopBorder();
+    printTitle();
+    printLine();
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    printLine("Ticket booked successfully!",align::center);
+    printLine("Booking ID : 12345678910",align::center);
+    printLine("Press any key to continue ...",align::center);
+    printLine();
+    printLine();
+    printLine();
+    printBottomBorder();
+    getch();
+}
+
+// ascii art taken from asciiart.eu
+void airplaneAnimation(){
+    system("cls");
+    setCursorVisibility(false);
+    int line=0,temp_line=0;
+    line+=printBasicScreen(10);
+
+    int animation_width,animation_height=8,count=0,index,total_width=SCREEN_WIDTH-2-2*TEXT_PADDING;
+    animation_width=strlen("        ______                                          ");
+    char text[animation_height][animation_width];
+
+    strcpy(text[0],"        ______                                          ");
+    strcpy(text[1],"        _\\ _~-\\___                                      ");
+    strcpy(text[2],"=  = ==(____AA____D                                     ");
+    strcpy(text[3],"            \\_____\\___________________,-~~~~~~~`-.._    ");
+    strcpy(text[4],"            /     o O o o o o O O o o o o o o O o  |\\_  ");
+    strcpy(text[5],"            `~-.__        ___..----..                  )");
+    strcpy(text[6],"                  `---~~\\___________/------------`````  ");
+    strcpy(text[7],"                  =  ===(_________D                     ");
+
+    for(int i=animation_width;i>=(2-SCREEN_WIDTH);i--){
+        temp_line=line;
+        if((i>=animation_width) || (i<=(2-SCREEN_WIDTH))){
+            for(int j=0;j<8;j++){
+                setCursorPosition(LEFT_BORDER_WIDTH+1,temp_line);
+                temp_line++;
+                for(int k=0;k<SCREEN_WIDTH-2;k++) cout<<" ";
+                cout<<"\n";
+            }
+        }
+        else if(i>=0){
+            for(int j=0;j<animation_height;j++){
+                setCursorPosition(LEFT_BORDER_WIDTH+1,temp_line);
+                temp_line++;
+                count=0;
+                index=i;
+                for(int k=0;index<animation_width && count<SCREEN_WIDTH-2;k++){
+                    cout<<text[j][index++];
+                    count++;
+                }
+                while(count<SCREEN_WIDTH-2){
+                    cout<<" ";
+                    count++;
+                }
+                cout<<"\n";
+            }
+        }
+        else{
+            for(int j=0;j<animation_height;j++){
+                setCursorPosition(LEFT_BORDER_WIDTH+1,temp_line);
+                temp_line++;
+                count=0;
+                index=0;
+                while(count<(-i)){
+                    cout<<" ";
+                    count++;
+                }
+                for(int k=0;k<animation_width && count<SCREEN_WIDTH-2;k++){
+                    cout<<text[j][index++];
+                    count++;
+                }
+                while(count<SCREEN_WIDTH-2){
+                    cout<<" ";
+                    count++;
+                }
+                cout<<"\n";
+            }
+        }
+        // Sleep(10);
+    }
+    setCursorVisibility(true);
+    bookingSuccessful();
+}
+
 // add random seat number
 // create booking id using seed or time
 void printTicket(ticket_details& _details){
@@ -997,7 +1090,7 @@ void printTicket(ticket_details& _details){
     ticket_file<<"\t\t\t\t</div>\n";
     ticket_file<<"\t\t\t</div>\n";
     ticket_file<<"\t\t\t<div>\n";
-    ticket_file<<"\t\t\t\t<!-- image taken from vecteezy -->\n";
+    ticket_file<<"\t\t\t\t<!-- image taken from vecteezy.com -->\n";
     ticket_file<<"\t\t\t\t<img src=\"airplane_image.jpg\" alt=\"image\" class=\"flight_image\">\n";
     ticket_file<<"\t\t\t\t<div class=\"distance\">\n";
     ticket_file<<"\t\t\t\t\tDistance : "<<_details._airplane.get_distance()<<" KM\n";
@@ -1099,7 +1192,7 @@ void printTicket(ticket_details& _details){
     ticket_file<<"\t\t<div class=\"line \"></div>\n";
     ticket_file<<"\n";
     ticket_file<<"\t\t<div id=\"thankyou\">\n";
-    ticket_file<<"\t\t\tThank You for using Flight Booking System! Happy Journey!\n";
+    ticket_file<<"\t\t\tThank you for using Flight Booking System! Happy journey!\n";
     ticket_file<<"\t\t</div>\n";
     ticket_file<<"\t</div>\n";
 
@@ -1108,6 +1201,7 @@ void printTicket(ticket_details& _details){
     ticket_file<<"</html>\n";
 
     ticket_file.close();
+    airplaneAnimation();
 }
 
 void bookPassengerDetails(ticket_details& _details){
@@ -1338,6 +1432,8 @@ void controlCenter(){
             case screen::imp_update_list :
                 impUpdateListScreen();
                 break;
+            case screen::book_ticket:
+                bookTicketFlights();
             case screen::program_exit :
                 break;
             default :
@@ -1348,10 +1444,8 @@ void controlCenter(){
 
 int main(){
     initializeDataFromFiles();
-    // controlCenter();
-    bookTicketFlights();
-    // ticket_details tt;
-    // printTicket(tt);
+    controlCenter();
+    // airplaneAnimation();
     cout<<"\n\n\n\n\n\n\n\n\n\n\n";
     return 0;
 }
