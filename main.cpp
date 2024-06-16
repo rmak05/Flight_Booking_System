@@ -278,8 +278,9 @@ void deleteAirportScreen(){
 
 void airportListScreen(){
     // curr_screen=screen::manage_airports;
-    if(user_type=='A') curr_screen=screen::manage_airports;
+    if(user_type=='G') curr_screen=screen::guest_homepage;
     else if(user_type=='U') curr_screen=screen::user_homepage;
+    else if(user_type=='A') curr_screen=screen::manage_airports;
     system("cls");
     int line=0,list_size=0;
     vector<airport*> airport_list;
@@ -1280,7 +1281,8 @@ void bookTicketFlightList(ticket_details& _details){
     for(int i=0;i<adjust_lines-1;i++) printLine();
     printBottomBorder();
     if(curr_screen==screen::flight_availability){
-        curr_screen=screen::user_homepage;
+        if(user_type=='G') curr_screen=screen::guest_homepage;
+        else if(user_type=='U') curr_screen=screen::user_homepage;
         printOutputSetCursor("Press Escape to go back",line);
         cout<<"\n\n";
         inputEscape();
@@ -1321,7 +1323,7 @@ void bookTicketFlights(){
 
 void controlCenter(){
     curr_screen=screen::usage_type;
-    pthread_t printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,manageAirportsScreen_thread,manageAirlinesScreen_thread,manageAirplaneModelsScreen_thread,manageRoutesScreen_thread,manageAirplanesScreen_thread,manageImpUpdatesScreen_thread;
+    pthread_t guestScreen_thread,printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,manageAirportsScreen_thread,manageAirlinesScreen_thread,manageAirplaneModelsScreen_thread,manageRoutesScreen_thread,manageAirplanesScreen_thread,manageImpUpdatesScreen_thread;
 
     while(true){
         if(curr_screen==program_exit) break;
@@ -1330,6 +1332,12 @@ void controlCenter(){
                 pthread_create(&printUserTypeSelectionScreen_thread,NULL,printUserTypeSelectionScreen,NULL);
                 pthread_create(&takeInput_thread,NULL,takeInput,NULL);
                 pthread_join(printUserTypeSelectionScreen_thread,NULL);
+                pthread_join(takeInput_thread,NULL);
+                break;
+            case screen::guest_homepage :
+                pthread_create(&guestScreen_thread,NULL,guestScreen,NULL);
+                pthread_create(&takeInput_thread,NULL,takeInput,NULL);
+                pthread_join(guestScreen_thread,NULL);
                 pthread_join(takeInput_thread,NULL);
                 break;
             case screen::user_homepage :
@@ -1442,8 +1450,10 @@ void controlCenter(){
                 break;
             case screen::book_ticket:
                 bookTicketFlights();
+                break;
             case screen::flight_availability:
                 bookTicketFlights();
+                break;
             case screen::program_exit :
                 break;
             default :

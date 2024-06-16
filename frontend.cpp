@@ -38,7 +38,8 @@ enum line{
 };
 
 enum screen{
-    usage_type             = 0,
+    usage_type             = (-1),
+    guest_homepage         = 0,
     user_homepage          = 1,
     admin_homepage         = 2,
     program_exit           = 3,
@@ -323,6 +324,64 @@ char* getAllImpUpdates(){
     return final_text;
 }
 
+void* guestScreen(void *p){
+    setCursorVisibility(false);
+    system("cls");
+    int imp_news_line=0;
+
+    imp_news_line+=printTopBorder();
+    imp_news_line+=printTitle();
+    printLine();
+    imp_news_line++;
+    printLine();
+    imp_news_line++;
+    printLine(line::dashed);
+    imp_news_line++;
+    printLine();
+    imp_news_line++;
+
+    // important updates
+    char imp_updates_title_text[]="Important Updates : ";
+    char *imp_text=getAllImpUpdates();
+    int imp_updates_title_text_size=strlen(imp_updates_title_text);
+    int desired_left_space=TEXT_PADDING;
+    printLine(imp_updates_title_text,align::custom,desired_left_space);      
+
+    printLine();
+    printLine(line::dashed);
+    printLine();
+    printLine("1. View Airport List","2. Check flight availability");
+    printLine("3. Log out");
+    printLine();
+    printLine();
+    printLine();
+    printBottomBorder();
+
+    // important updates
+    HANDLE imp_updates_handle=GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD imp_updates_coord;
+    imp_updates_coord.X=LEFT_BORDER_WIDTH+1+desired_left_space+imp_updates_title_text_size;
+    imp_updates_coord.Y=imp_news_line;
+    circularListTextNode *imp_text_ll=makeTextCircular(imp_text,IMP_UPDATES_WIDTH),*temp_ll;
+    user_choice='\0';
+    while(true){
+        BOOL handle_success=SetConsoleCursorPosition(imp_updates_handle,imp_updates_coord);
+        if(!handle_success) continue;
+        temp_ll=imp_text_ll;
+        for(int i=0;i<IMP_UPDATES_WIDTH;i++){
+            cout<<(temp_ll->node_value);
+            temp_ll=temp_ll->next;
+        }
+        imp_text_ll=imp_text_ll->next;
+        cout<<"\n\n\n\n\n\n\n\n\n\n\n";
+        Sleep(IMPORTANT_UPDATES_TEXT_DELAY);
+        if(user_choice!='\0' || curr_screen!=guest_homepage) break;
+    }
+
+    setCursorVisibility(true);
+    return NULL;
+}
+
 void* printUserScreen(void *p){
     setCursorVisibility(false);
     system("cls");
@@ -480,7 +539,8 @@ void* takeInput(void *p){
     user_choice=(unsigned char)getch();
     if(curr_screen==screen::usage_type){
         if(user_choice=='1'){
-            
+            user_type='G';
+            curr_screen=screen::guest_homepage;
         }
         else if(user_choice=='2'){
             user_type='U';
@@ -493,6 +553,12 @@ void* takeInput(void *p){
         else if(user_choice==(char)ESCAPE) curr_screen=screen::program_exit;
         else if(user_choice=='x') curr_screen=screen::program_exit;
     }
+    else if(curr_screen==screen::guest_homepage){
+        if(user_choice=='1') curr_screen=screen::airport_list;
+        else if(user_choice=='2') curr_screen=screen::flight_availability;
+        else if(user_choice=='3') curr_screen=screen::logged_out;
+        // else if(user_choice=='x') curr_screen=screen::program_exit;
+    }
     else if(curr_screen==screen::user_homepage){
         if(user_choice=='1'){
             
@@ -501,7 +567,7 @@ void* takeInput(void *p){
         else if(user_choice=='3') curr_screen=screen::flight_availability;
         else if(user_choice=='4') curr_screen=screen::book_ticket;
         else if(user_choice=='5') curr_screen=screen::logged_out;
-        else if(user_choice=='x') curr_screen=screen::program_exit;
+        // else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::admin_homepage){
         if(user_choice=='1') curr_screen=screen::manage_imp_updates;
@@ -511,49 +577,49 @@ void* takeInput(void *p){
         else if(user_choice=='5') curr_screen=screen::manage_routes;
         else if(user_choice=='6') curr_screen=screen::manage_airplanes;
         else if(user_choice=='7') curr_screen=screen::logged_out;
-        else if(user_choice=='x') curr_screen=screen::program_exit;
+        // else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::manage_airports){
         if(user_choice=='1') curr_screen=screen::add_airport;
         else if(user_choice=='2') curr_screen=screen::delete_airport;
         else if(user_choice=='3') curr_screen=screen::airport_list;
         else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
-        else if(user_choice=='x') curr_screen=screen::program_exit;
+        // else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::manage_airlines){
         if(user_choice=='1') curr_screen=screen::add_airline;
         else if(user_choice=='2') curr_screen=screen::delete_airline;
         else if(user_choice=='3') curr_screen=screen::airline_list;
         else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
-        else if(user_choice=='x') curr_screen=screen::program_exit;
+        // else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::manage_airplane_models){
         if(user_choice=='1') curr_screen=screen::add_airplane_model;
         else if(user_choice=='2') curr_screen=screen::delete_airplane_model;
         else if(user_choice=='3') curr_screen=screen::airplane_model_list;
         else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
-        else if(user_choice=='x') curr_screen=screen::program_exit;
+        // else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::manage_routes){
         if(user_choice=='1') curr_screen=screen::add_route;
         else if(user_choice=='2') curr_screen=screen::delete_route;
         else if(user_choice=='3') curr_screen=screen::route_list;
         else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
-        else if(user_choice=='x') curr_screen=screen::program_exit;
+        // else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::manage_airplanes){
         if(user_choice=='1') curr_screen=screen::add_airplane;
         else if(user_choice=='2') curr_screen=screen::delete_airplane;
         else if(user_choice=='3') curr_screen=screen::airplane_list;
         else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
-        else if(user_choice=='x') curr_screen=screen::program_exit;
+        // else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::manage_imp_updates){
         if(user_choice=='1') curr_screen=screen::add_imp_update;
         else if(user_choice=='2') curr_screen=screen::delete_imp_update;
         else if(user_choice=='3') curr_screen=screen::imp_update_list;
         else if(user_choice==(char)ESCAPE) curr_screen=screen::admin_homepage;
-        else if(user_choice=='x') curr_screen=screen::program_exit;
+        // else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::logged_out){
         curr_screen=screen::usage_type;
