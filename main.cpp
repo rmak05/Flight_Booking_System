@@ -165,7 +165,7 @@ int printOutputSetCursor(const char *prompt, int row){
 }
 
 // returns number of lines printed
-int printOutputSetCursor(const char *prompt,int alignment, int row){
+int printOutputSetCursor(const char *prompt,align alignment, int row){
     int num_lines=0;
     HANDLE output_handle=GetStdHandle(STD_OUTPUT_HANDLE);
     COORD output_coord;
@@ -1321,6 +1321,42 @@ void bookTicketFlights(){
     bookTicketFlightList(_details);
 }
 
+void passwordInput(char *s,int size){
+    fflush(stdin);
+    char c='a';
+    int l=0;
+    // check why '\n'=10 and enter = 13 and why this problem isn't there for cin.get()
+    // cout<<(int)'\n';
+    while(l<size-1){
+        c=getch();
+        // cout<<(int)c;
+        if(c==(int)13) break;
+        // if(c=='\n') break;
+        s[l++]=c;
+        cout<<"*";
+    }
+    s[l]='\0';
+    while(c!=(int)13) c=getch();
+    cout<<"\n";
+}
+
+void loginScreen(){
+    system("cls");
+    int line=0;
+    char _user_id[MEDIUM_SIZE+1],_password[MEDIUM_SIZE+1];
+
+    line+=printBasicScreen(10);
+    setCursorPosition(LEFT_BORDER_WIDTH+1+TEXT_PADDING,line);
+    cout<<"User ID  : ";
+    line++;
+    customInput(_user_id,sizeof(_user_id));
+    setCursorPosition(LEFT_BORDER_WIDTH+1+TEXT_PADDING,line);
+    cout<<"Password : ";
+    line++;
+    passwordInput(_password,sizeof(_password));
+    // cout<<_user_id<<" "<<_password<<"\n";
+}
+
 void controlCenter(){
     curr_screen=screen::usage_type;
     pthread_t guestScreen_thread,printUserScreen_thread,printUserTypeSelectionScreen_thread,takeInput_thread,printAdminScreen_thread,printLoggedOutScreen_thread,manageAirportsScreen_thread,manageAirlinesScreen_thread,manageAirplaneModelsScreen_thread,manageRoutesScreen_thread,manageAirplanesScreen_thread,manageImpUpdatesScreen_thread;
@@ -1465,9 +1501,10 @@ void controlCenter(){
 int main(){
     initializeDataFromFiles();
     controlCenter();
-    // airplaneAnimation();
-    cout<<"\n\n\n\n\n\n\n\n\n\n\n";
+    // loginScreen();
+    cout<<"\n\n\n\n\n\n\n\n";
     return 0;
 }
 
 // check if all input characters are trie characters are not
+// change function parameters to type enum

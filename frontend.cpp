@@ -72,6 +72,29 @@ enum screen{
     flight_availability    = 30
 };
 
+// source https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+enum colour{
+    black    = 30,
+    red      = 31,
+    green    = 32,
+    yellow   = 33,
+    blue     = 34,
+    magenta  = 35,
+    cyan     = 36,
+    white    = 37,
+    _default = 39           // "default" is a keyword
+};
+
+void setColour(colour c){
+    char sequence[15];
+    sprintf(sequence,"\x1b[%dm",c);
+    cout<<sequence;
+}
+
+void resetSyle(){
+    cout<<"\x1b[0m";
+}
+
 struct circularListTextNode{
     char node_value;
     circularListTextNode *next;
@@ -108,7 +131,7 @@ int printLine(){
 }
 
 // returns number of lines printed
-int printLine(const int a){
+int printLine(line a){
     int num_lines=0;
     char line_ch;
     switch(a){
@@ -161,7 +184,7 @@ int printLine(const char *s1, const char *s2){
 }
 
 // returns number of lines printed
-int printLine(const char *s, const int a){
+int printLine(const char *s, align a){
     int n=strlen(s),left_space=1,right_space=1,num_lines=0;
     switch(a){
         case align::left :
@@ -194,7 +217,7 @@ int printLine(const char *s, const int a){
 // desired_text_padding will by default be taken as left padding unless it is for align::right
 // desired_text_padding is ignored for align::center
 // returns number of lines printed
-int printLine(const char *s, const int a, const int desired_text_padding){
+int printLine(const char *s, align a, const int desired_text_padding){
     int n=strlen(s),left_space=1,right_space=1,num_lines=0;
     switch(a){
         case align::left :
