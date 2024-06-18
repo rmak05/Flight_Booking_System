@@ -415,7 +415,7 @@ public:
         strcpy(this->airport_name,another.get_airport_name());
         strcpy(this->airport_city,another.get_airport_city());
         strcpy(this->airport_code,another.get_airport_code());
-        this->outgoing_flights=another.get_outgoing_flights();
+        (this->outgoing_flights)=another.get_outgoing_flights();
     }
 
     char* get_airport_city(){
@@ -448,7 +448,7 @@ public:
         airplane *_airplane;
         for(int i=0;i<size;i++){
             _airplane=outgoing_flights[i];
-            if((strcmp(_airline_name,(*_airplane).get_airline_name())==0) && (strcmp(_route_code,(*_airplane).get_route_code())==0) && (_departure_time==(*_airplane).get_departure_time())){
+            if((strcmp(_airline_name,(_airplane)->get_airline_name())==0) && (strcmp(_route_code,(_airplane)->get_route_code())==0) && (_departure_time==(_airplane)->get_departure_time())){
                 delete _airplane;
             }
             else{

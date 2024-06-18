@@ -774,7 +774,7 @@ void* takeInput(void *p){
             curr_screen=screen::admin_homepage;
         }
         else if(user_choice==(char)ESCAPE) curr_screen=screen::program_exit;
-        else if(user_choice=='x') curr_screen=screen::program_exit;
+        // else if(user_choice=='x') curr_screen=screen::program_exit;
     }
     else if(curr_screen==screen::guest_homepage){
         if(user_choice=='1') curr_screen=screen::airport_list;

@@ -301,7 +301,7 @@ void airportListScreen(){
     list_size=airport_list.size();
     for(int i=0;i<list_size;i++){
         printLine();
-        (*airport_list[i]).display();
+        (airport_list[i])->display();
         if(i!=list_size-1){
             printLine();
             printLine(line::dotted);
@@ -410,7 +410,7 @@ void airlineListScreen(){
     list_size=airline_list.size();
     for(int i=0;i<list_size;i++){
         printLine();
-        (*airline_list[i]).display();
+        (airline_list[i])->display();
         if(i!=list_size-1){
             printLine();
             printLine(line::dotted);
@@ -520,7 +520,7 @@ void airplaneModelListScreen(){
     list_size=airplane_model_list.size();
     for(int i=0;i<list_size;i++){
         printLine();
-        (*airplane_model_list[i]).display();
+        (airplane_model_list[i])->display();
         if(i!=list_size-1){
             printLine();
             printLine(line::dotted);
@@ -636,7 +636,7 @@ void routeListScreen(){
     list_size=route_list.size();
     for(int i=0;i<list_size;i++){
         printLine();
-        (*route_list[i]).display();
+        (route_list[i])->display();
         if(i!=list_size-1){
             printLine();
             printLine(line::dotted);
@@ -738,7 +738,7 @@ void deleteAirplaneScreen(){
 
     airport *_airport;
     _airport=code_to_airport[s_airport];
-    if(_airport!=NULL) (*_airport).delete_airplane(_airline_name,_route_code,d_time);
+    if(_airport!=NULL) _airport->delete_airplane(_airline_name,_route_code,d_time);
     vector<airport*> airport_list;
     int list_size;
     code_to_airport.traverse(airport_list);
@@ -746,7 +746,7 @@ void deleteAirplaneScreen(){
     fstream airplane_file;
     airplane_file.open("airplane_data.bin",ios::out);
     airplane_file.close();
-    for(int i=0;i<list_size;i++) (*airport_list[i]).copy_flights_to_file("airplane_data.bin");
+    for(int i=0;i<list_size;i++) (airport_list[i])->copy_flights_to_file("airplane_data.bin");
 
     line+=printOutputSetCursor("Airplane deleted successfully",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
@@ -775,7 +775,7 @@ void airplaneListScreen(){
     code_to_airport.traverse(airport_list);
     list_size=airport_list.size();
     for(int i=0;i<list_size;i++){
-        airplane_list=(*airport_list[i]).get_outgoing_flights();
+        airplane_list=(airport_list[i])->get_outgoing_flights();
         size=airplane_list.size();
         for(int j=0;j<size;j++){
             if(first){
@@ -784,7 +784,7 @@ void airplaneListScreen(){
                 printLine();
             }
             first=true;
-            (*airplane_list[j]).display();
+            (airplane_list[j])->display();
         }
     }
     printLine();
@@ -1245,13 +1245,13 @@ void bookTicketFlightList(ticket_details& _details){
     char _route_code[2*SMALL_SIZE+1],text[MEDIUM_SIZE+1];
     char *temp_code;
     vector<airplane*> airplane_list,o_flights;
-    airport s_airport=(*code_to_airport[_details.s_airport]);
-    o_flights=s_airport.get_outgoing_flights();
+    airport* _s_airport=(code_to_airport[_details.s_airport]);
+    o_flights=_s_airport->get_outgoing_flights();
     o_flights_size=o_flights.size();
     strcpy(_route_code,_details.s_airport);
     strcpy(_route_code+SMALL_SIZE,_details.d_airport);
     for(int i=0;i<o_flights_size;i++){
-        temp_code=(*o_flights[i]).get_route_code();
+        temp_code=(o_flights[i])->get_route_code();
         if(strcmp(_route_code,temp_code)==0) airplane_list.push_back(o_flights[i]);
     }
     airplane_list_size=airplane_list.size();
@@ -1270,7 +1270,7 @@ void bookTicketFlightList(ticket_details& _details){
         printLine();
         sprintf(text,"%d.",i+1);
         printLine(text,colour::white);
-        (*airplane_list[i]).display();
+        (airplane_list[i])->display();
         if(i!=airplane_list_size-1){
             printLine();
             printLine(line::dotted);
@@ -1526,3 +1526,6 @@ int main(){
 // subsequent attempt to check flight availability is causing some error
 //      check if there is problem is threads
 //      check input streams
+//      I think the bug was due to use of (*). rather than ()->
+//      make sure to remove this in functions like add, delete, etc.
+// the purple colour in vs code terminal looks like dark blue(as it should be) in windows terminal
