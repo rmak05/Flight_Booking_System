@@ -97,7 +97,7 @@ int takeInputSetCursor(const char *prompt, char *input_string, int input_size, i
     input_coord.Y=row;
     handle_success=SetConsoleCursorPosition(input_handle,input_coord);
     if(!handle_success) return (-1);
-    printLine(prompt);
+    printLine(prompt,colour::green);
     num_lines++;
     input_coord.X=getInputColumnCoordinate(prompt);
     handle_success=SetConsoleCursorPosition(input_handle,input_coord);
@@ -118,7 +118,7 @@ int takeInputSetCursor(const char *prompt, char& input_char, int row){
     input_coord.Y=row;
     handle_success=SetConsoleCursorPosition(input_handle,input_coord);
     if(!handle_success) return (-1);
-    printLine(prompt);
+    printLine(prompt,colour::green);
     num_lines++;
     input_coord.X=getInputColumnCoordinate(prompt);
     handle_success=SetConsoleCursorPosition(input_handle,input_coord);
@@ -139,12 +139,14 @@ int takeInputSetCursor(const char *prompt, int& input_num, int row){
     input_coord.Y=row;
     handle_success=SetConsoleCursorPosition(input_handle,input_coord);
     if(!handle_success) return (-1);
-    printLine(prompt);
+    printLine(prompt,colour::green);
     num_lines++;
     input_coord.X=getInputColumnCoordinate(prompt);
     handle_success=SetConsoleCursorPosition(input_handle,input_coord);
     if(!handle_success) return (-1);
+    setBackgroundColour();
     cin>>input_num;
+    resetBackgorund();
     return num_lines;
 }
 
@@ -159,13 +161,13 @@ int printOutputSetCursor(const char *prompt, int row){
     output_coord.Y=row;
     handle_success=SetConsoleCursorPosition(output_handle,output_coord);
     if(!handle_success) return (-1);
-    printLine(prompt);
+    printLine(prompt,colour::green);
     num_lines++;
     return num_lines;
 }
 
 // returns number of lines printed
-int printOutputSetCursor(const char *prompt,align alignment, int row){
+int printOutputSetCursor(const char *prompt, align alignment, int row){
     int num_lines=0;
     HANDLE output_handle=GetStdHandle(STD_OUTPUT_HANDLE);
     COORD output_coord;
@@ -175,7 +177,7 @@ int printOutputSetCursor(const char *prompt,align alignment, int row){
     output_coord.Y=row;
     handle_success=SetConsoleCursorPosition(output_handle,output_coord);
     if(!handle_success) return (-1);
-    printLine(prompt,alignment);
+    printLine(prompt,alignment,colour::green);
     num_lines++;
     return num_lines;
 }
@@ -202,8 +204,8 @@ void* manageAirportsScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("1. Add Airport","2. Delete Airport");
-    printLine("3. View Airport List");
+    printLine("1. ","Add Airport","2. ","Delete Airport",colour::green,true);
+    printLine("3. ","View Airport List",colour::green,true);
     printLine();
     printLine();
     printLine();
@@ -291,7 +293,7 @@ void airportListScreen(){
     line+=printLine();
     line+=printLine(line::dashed);
     printLine();
-    printLine("Press Escape to go back");
+    printLine("Press Escape to go back",colour::red);
     printLine();
     printLine(line::dashed);
 
@@ -318,8 +320,8 @@ void* manageAirlinesScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("1. Add Airline","2. Delete Airline");
-    printLine("3. View Airline List");
+    printLine("1. ","Add Airline","2. ","Delete Airline",colour::green,true);
+    printLine("3. ","View Airline List",colour::green,true);
     printLine();
     printLine();
     printLine();
@@ -400,7 +402,7 @@ void airlineListScreen(){
     line+=printLine();
     line+=printLine(line::dashed);
     printLine();
-    printLine("Press Escape to go back");
+    printLine("Press Escape to go back",colour::red);
     printLine();
     printLine(line::dashed);
 
@@ -427,8 +429,8 @@ void* manageAirplaneModelsScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("1. Add Airplane Model","2. Delete Airplane Model");
-    printLine("3. View Airplane Model List");
+    printLine("1. ","Add Airplane Model","2. ","Delete Airplane Model",colour::green,true);
+    printLine("3. ","View Airplane Model List",colour::green,true);
     printLine();
     printLine();
     printLine();
@@ -510,7 +512,7 @@ void airplaneModelListScreen(){
     line+=printLine();
     line+=printLine(line::dashed);
     printLine();
-    printLine("Press Escape to go back");
+    printLine("Press Escape to go back",colour::red);
     printLine();
     printLine(line::dashed);
 
@@ -537,8 +539,8 @@ void* manageRoutesScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("1. Add Route","2. Delete Route");
-    printLine("3. View Route List");
+    printLine("1. ","Add Route","2. ","Delete Route",colour::green,true);
+    printLine("3. ","View Route List",colour::green,true);
     printLine();
     printLine();
     printLine();
@@ -626,7 +628,7 @@ void routeListScreen(){
     line+=printLine();
     line+=printLine(line::dashed);
     printLine();
-    printLine("Press Escape to go back");
+    printLine("Press Escape to go back",colour::red);
     printLine();
     printLine(line::dashed);
 
@@ -653,8 +655,8 @@ void* manageAirplanesScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("1. Add Airplane","2. Delete Airplane");
-    printLine("3. View Airplane List");
+    printLine("1. ","Add Airplane","2. ","Delete Airplane",colour::green,true);
+    printLine("3. ","View Airplane List",colour::green,true);
     printLine();
     printLine();
     printLine();
@@ -765,7 +767,7 @@ void airplaneListScreen(){
     line+=printLine();
     line+=printLine(line::dashed);
     printLine();
-    printLine("Press Escape to go back");
+    printLine("Press Escape to go back",colour::red);
     printLine();
     printLine(line::dashed);
     printLine();
@@ -798,8 +800,8 @@ void* manageImpUpdatesScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("1. Add Important Update","2. Delete Important Update");
-    printLine("3. View Important Update List");
+    printLine("1. ","Add Important Update","2. ","Delete Important Update",colour::green,true);
+    printLine("3. ","View Important Update List",colour::green,true);
     printLine();
     printLine();
     printLine();
@@ -890,7 +892,7 @@ void impUpdateListScreen(){
     line+=printLine();
     line+=printLine(line::dashed);
     printLine();
-    printLine("Press Escape to go back");
+    printLine("Press Escape to go back",colour::red);
     printLine();
     printLine(line::dashed);
 
@@ -908,9 +910,11 @@ void impUpdateListScreen(){
     while(imp_updates_file.read((char*)text,2*LARGE_SIZE+1)){
         i++;
         serial_num++;
-        sprintf(_text,"%2d. %s",serial_num,text);
         printLine();
-        printLine(_text);
+        // sprintf(_text,"%2d. %s",serial_num,text);
+        // printLine(_text,colour::_default);
+        sprintf(_text,"%2d. ",serial_num);
+        printLine(_text,text,colour::green,true);
         if(i!=list_size-1){
             printLine();
             printLine(line::dotted);
@@ -932,9 +936,9 @@ void bookingSuccessful(){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("Ticket booked successfully!",align::center);
-    printLine("Booking ID : 12345678910",align::center);
-    printLine("Press any key to continue ...",align::center);
+    printLine("Ticket booked successfully!",align::center,colour::green);
+    printLine("Booking ID : 12345678910",align::center,colour::green);
+    printLine("Press any key to continue ...",align::center,colour::green);
     printLine();
     printLine();
     printLine();
@@ -962,6 +966,8 @@ void airplaneAnimation(){
     strcpy(text[6],"                  `---~~\\___________/------------`````  ");
     strcpy(text[7],"                  =  ===(_________D                     ");
 
+    setBackgroundColour();
+    setForegroundColour(255,165,0);
     for(int i=animation_width;i>=(2-SCREEN_WIDTH);i--){
         temp_line=line;
         if((i>=animation_width) || (i<=(2-SCREEN_WIDTH))){
@@ -1012,6 +1018,8 @@ void airplaneAnimation(){
         }
         // Sleep(10);
     }
+    resetBackgorund();
+    setForegroundColour(colour::_default);
     setCursorVisibility(true);
     bookingSuccessful();
 }
@@ -1212,7 +1220,9 @@ void bookPassengerDetails(ticket_details& _details){
     char yesno;
 
     line+=printBasicScreen(14);
-    line+=printOutputSetCursor("Passenger Details",align::center,line);
+    // line+=printOutputSetCursor("Passenger Details",align::center,line);
+    setCursorPosition(0,line);
+    line+=printLine("Passenger Details",align::center,0);
     line+=printLine();
     line+=printLine(line::dashed);
     line+=printLine();
@@ -1252,14 +1262,14 @@ void bookTicketFlightList(ticket_details& _details){
     line+=printLine();
     line+=printLine(line::dashed);
     line+=printLine();
-    line+=printLine("Available Flights",align::center,line);
+    line+=printLine("Available Flights",align::center,0);
     line+=printLine();
     line+=printLine(line::dashed);
 
     for(int i=0;i<airplane_list_size;i++){
         printLine();
         sprintf(text,"%d.",i+1);
-        printLine(text);
+        printLine(text,colour::white);
         (*airplane_list[i]).display();
         if(i!=airplane_list_size-1){
             printLine();
@@ -1283,7 +1293,9 @@ void bookTicketFlightList(ticket_details& _details){
     if(curr_screen==screen::flight_availability){
         if(user_type=='G') curr_screen=screen::guest_homepage;
         else if(user_type=='U') curr_screen=screen::user_homepage;
-        printOutputSetCursor("Press Escape to go back",line);
+        // printOutputSetCursor("Press Escape to go back",line);
+        setCursorPosition(0,line);
+        printLine("Press Escape to go back",colour::red);
         cout<<"\n\n";
         inputEscape();
         return;
@@ -1306,7 +1318,9 @@ void bookTicketFlights(){
     ticket_details _details;
 
     line+=printBasicScreen(15);
-    line+=printOutputSetCursor("Flight Details",align::center,line);
+    // line+=printOutputSetCursor("Flight Details",align::center,line);
+    setCursorPosition(0,line);
+    line+=printLine("Flight Details",align::center,0);
     line+=printLine();
     line+=printLine(line::dashed);
     line+=printLine();
@@ -1503,8 +1517,12 @@ int main(){
     controlCenter();
     // loginScreen();
     cout<<"\n\n\n\n\n\n\n\n";
+    resetStyle();
     return 0;
 }
 
 // check if all input characters are trie characters are not
 // change function parameters to type enum
+// subsequent attempt to check flight availability is causing some error
+//      check if there is problem is threads
+//      check input streams

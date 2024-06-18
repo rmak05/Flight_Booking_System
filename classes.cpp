@@ -226,8 +226,9 @@ public:
 
     void display(){
         char text[2*LARGE_SIZE+1];
-        sprintf(text,"Airline Name             : %s.",airline_name);
-        printLine(text);
+        // sprintf(text,"Airline Name             : %s.",airline_name);
+        // printLine(text,colour::_default);
+        printLine("Airline Name             : ",airline_name,colour::green,true);
     }
 };
 
@@ -257,10 +258,13 @@ public:
 
     void display(){
         char text[2*LARGE_SIZE+1];
-        sprintf(text,"Airplane Model Name      : %s.",model_name);
-        printLine(text);
-        sprintf(text,"Passenger Capacity       : %d.",passenger_capacity);
-        printLine(text);
+        // sprintf(text,"Airplane Model Name      : %s.",model_name);
+        // printLine(text,colour::_default);
+        printLine("Airplane Model Name      : ",model_name,colour::green,true);
+        // sprintf(text,"Passenger Capacity       : %d.",passenger_capacity);
+        // printLine(text,colour::_default);
+        sprintf(text,"%d",passenger_capacity);
+        printLine("Passenger Capacity       : ",text,colour::green,true);
     }
 };
 
@@ -297,14 +301,19 @@ public:
 
     void display(){
         char text[2*LARGE_SIZE+1];
-        sprintf(text,"Starting Airport Code    : %s.",starting_airport);
-        printLine(text);
-        sprintf(text,"Destination Airport Code : %s.",destination_airport);
-        printLine(text);
-        sprintf(text,"Route Code               : %s.",route_code);
-        printLine(text);
-        sprintf(text,"Route Distance           : %d.",route_distance);
-        printLine(text);
+        // sprintf(text,"Starting Airport Code    : %s.",starting_airport);
+        // printLine(text,colour::_default);
+        printLine("Starting Airport Code    : ",starting_airport,colour::green,true);
+        // sprintf(text,"Destination Airport Code : %s.",destination_airport);
+        // printLine(text,colour::_default);
+        printLine("Destination Airport Code : ",destination_airport,colour::green,true);
+        // sprintf(text,"Route Code               : %s.",route_code);
+        // printLine(text,colour::_default);
+        printLine("Route Code               : ",route_code,colour::green,true);
+        // sprintf(text,"Route Distance           : %d.",route_distance);
+        // printLine(text,colour::_default);
+        sprintf(text,"%d",route_distance);
+        printLine("Route Distance           : ",text,colour::green,true);
     }
 };
 
@@ -353,12 +362,18 @@ public:
         airplane_model::display();
         route::display();
         char text[2*LARGE_SIZE+1];
-        sprintf(text,"Departure Time           : %04d.",departure_time);
-        printLine(text);
-        sprintf(text,"Arrival Time             : %04d.",arrival_time);
-        printLine(text);
-        sprintf(text,"Ticket Cost              : %d.",airplane_cost);
-        printLine(text);
+        // sprintf(text,"Departure Time           : %04d.",departure_time);
+        // printLine(text,colour::_default);
+        sprintf(text,"%04d",departure_time);
+        printLine("Departure Time           : ",text,colour::green,true);
+        // sprintf(text,"Arrival Time             : %04d.",arrival_time);
+        // printLine(text,colour::_default);
+        sprintf(text,"%04d",arrival_time);
+        printLine("Arrival Time             : ",text,colour::green,true);
+        // sprintf(text,"Ticket Cost              : %d.",airplane_cost);
+        // printLine(text,colour::_default);
+        sprintf(text,"%d",airplane_cost);
+        printLine("Ticket Cost              : ",text,colour::green,true);
     }
 };
 
@@ -456,12 +471,15 @@ public:
 
     void display(){
         char text[2*LARGE_SIZE+1];
-        sprintf(text,"Name : %s.",airport_name);
-        printLine(text);
-        sprintf(text,"City : %s.",airport_city);
-        printLine(text);
-        sprintf(text,"Code : %s.",airport_code);
-        printLine(text);
+        // sprintf(text,"Name : %s.",airport_name);
+        // printLine(text,colour::_default);
+        printLine("Name : ",airport_name,colour::green,true);
+        // sprintf(text,"City : %s.",airport_city);
+        // printLine(text,colour::_default);
+        printLine("City : ",airport_city,colour::green,true);
+        // sprintf(text,"Code : %s.",airport_code);
+        // printLine(text,colour::_default);
+        printLine("Code : ",airport_code,colour::green,true);
         // int o_f_size=outgoing_flights.size();
         // for(int i=0;i<o_f_size;i++){
         //     printLine();
@@ -551,6 +569,7 @@ void initializeDataFromFiles(){
 
 void customInput(char *s,int size){
     fflush(stdin);
+    setBackgroundColour();
     char c='a';
     int l=0;
     while(l<size-1){
@@ -562,6 +581,7 @@ void customInput(char *s,int size){
     if(c!='\n'){
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
     }
+    resetBackgorund();
 }
 
 // int main(){

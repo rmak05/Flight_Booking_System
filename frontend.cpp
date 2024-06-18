@@ -85,13 +85,27 @@ enum colour{
     _default = 39           // "default" is a keyword
 };
 
-void setColour(colour c){
+void setForegroundColour(colour c){
     char sequence[15];
     sprintf(sequence,"\x1b[%dm",c);
     cout<<sequence;
 }
 
-void resetSyle(){
+void setForegroundColour(int r, int g, int b){
+    char sequence[15];
+    sprintf(sequence,"\x1b[38;2;%d;%d;%dm",r,g,b);
+    cout<<sequence;
+}
+
+void setBackgroundColour(){
+    cout<<"\x1b[48;5;0m";       // black
+}
+
+void resetBackgorund(){
+    cout<<"\x1b[49m";
+}
+
+void resetStyle(){
     cout<<"\x1b[0m";
 }
 
@@ -123,9 +137,16 @@ void setCursorVisibility(bool set){
 int printLine(){
     int num_lines=0;
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    setBackgroundColour();
+    setForegroundColour(70,224,227);
     cout<<(char)186;
+    setForegroundColour(colour::_default);
     for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<" ";
-    cout<<(char)186<<"\n";
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    resetBackgorund();
+    cout<<"\n";
     num_lines++;
     return num_lines;
 }
@@ -146,45 +167,138 @@ int printLine(line a){
             break;
     }
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    setBackgroundColour();
+    setForegroundColour(70,224,227);
     cout<<(char)186;
+    setForegroundColour(colour::_default);
+    if(a==line::dashed) setForegroundColour(89,96,97);
+    else if(a==line::dotted) setForegroundColour(132,139,140);
     for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<line_ch;
-    cout<<(char)186<<"\n";
+    setForegroundColour(colour::_default);
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    resetBackgorund();
+    cout<<"\n";
     num_lines++;
     return num_lines;
 }
 
 // returns number of lines printed
-int printLine(const char *s){
+int printLine(const char *s, colour c){
     int num_lines=0;
     int n=strlen(s);
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    setBackgroundColour();
+    setForegroundColour(70,224,227);
     cout<<(char)186;
+    setForegroundColour(colour::_default);
     for(int i=0;i<TEXT_PADDING;i++) cout<<" ";
+    setForegroundColour(c);
     cout<<s;
+    setForegroundColour(colour::_default);
     for(int i=0;i<SCREEN_WIDTH-TEXT_PADDING-2-n;i++) cout<<" ";
-    cout<<(char)186<<"\n";
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    resetBackgorund();
+    cout<<"\n";
     num_lines++;
     return num_lines;
 }
 
 // returns number of lines printed
-int printLine(const char *s1, const char *s2){
+int printLine(const char *s1, const char *s2, colour c){
     int n1=strlen(s1),n2=strlen(s2),num_lines=0;
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    setBackgroundColour();
+    setForegroundColour(70,224,227);
     cout<<(char)186;
+    setForegroundColour(colour::_default);
     for(int i=0;i<TEXT_PADDING;i++) cout<<" ";
+    setForegroundColour(c);
     cout<<s1;
+    setForegroundColour(colour::_default);
     for(int i=0;i<(SCREEN_WIDTH-2)/2-TEXT_PADDING-n1;i++) cout<<" ";
     for(int i=0;i<TEXT_PADDING;i++) cout<<" ";
+    setForegroundColour(c);
     cout<<s2;
+    setForegroundColour(colour::_default);
     for(int i=0;i<(SCREEN_WIDTH-2)/2-TEXT_PADDING-n2;i++) cout<<" ";
-    cout<<(char)186<<"\n";
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    resetBackgorund();
+    cout<<"\n";
+    num_lines++;
+    return num_lines;
+}
+
+// use this function only to print text with serial number
+// returns number of lines printed
+int printLine(const char *s1, const char *s2, const char *s3, const char *s4, colour c, bool isSerial){
+    if(!isSerial) return 0;
+    int n1=strlen(s1),n2=strlen(s2),n3=strlen(s3),n4=strlen(s4),num_lines=0;
+    for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    setBackgroundColour();
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    for(int i=0;i<TEXT_PADDING;i++) cout<<" ";
+    setForegroundColour(c);
+    cout<<s1;
+    setForegroundColour(colour::_default);
+    setForegroundColour(255,215,0);
+    cout<<s2;
+    setForegroundColour(colour::_default);
+    for(int i=0;i<(SCREEN_WIDTH-2)/2-TEXT_PADDING-n1-n2;i++) cout<<" ";
+    for(int i=0;i<TEXT_PADDING;i++) cout<<" ";
+    setForegroundColour(c);
+    cout<<s3;
+    setForegroundColour(colour::_default);
+    setForegroundColour(255,215,0);
+    cout<<s4;
+    setForegroundColour(colour::_default);
+    for(int i=0;i<(SCREEN_WIDTH-2)/2-TEXT_PADDING-n3-n4;i++) cout<<" ";
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    resetBackgorund();
+    cout<<"\n";
+    num_lines++;
+    return num_lines;
+}
+
+// use this function only to print text with serial number
+// returns number of lines printed
+int printLine(const char *s1, const char *s2, colour c, bool isSerial){
+    if(!isSerial) return printLine(s1,s2,c);
+    int num_lines=0;
+    int n1=strlen(s1),n2=strlen(s2);
+    for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    setBackgroundColour();
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    for(int i=0;i<TEXT_PADDING;i++) cout<<" ";
+    setForegroundColour(c);
+    cout<<s1;
+    setForegroundColour(colour::_default);
+    setForegroundColour(255,215,0);
+    cout<<s2;
+    setForegroundColour(colour::_default);
+    for(int i=0;i<SCREEN_WIDTH-TEXT_PADDING-2-n1-n2;i++) cout<<" ";
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    resetBackgorund();
+    cout<<"\n";
     num_lines++;
     return num_lines;
 }
 
 // returns number of lines printed
-int printLine(const char *s, align a){
+int printLine(const char *s, align a, colour c){
     int n=strlen(s),left_space=1,right_space=1,num_lines=0;
     switch(a){
         case align::left :
@@ -205,17 +319,72 @@ int printLine(const char *s, align a){
             break;
     }
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    setBackgroundColour();
+    setForegroundColour(70,224,227);
     cout<<(char)186;
+    setForegroundColour(colour::_default);
     for(int i=0;i<left_space;i++) cout<<" ";
+    setForegroundColour(c);
     cout<<s;
+    setForegroundColour(colour::_default);
     for(int i=0;i<right_space;i++) cout<<" ";
-    cout<<(char)186<<"\n";
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    resetBackgorund();
+    cout<<"\n";
+    num_lines++;
+    return num_lines;
+}
+
+// use this function only to print text with serial number
+// returns number of lines printed
+int printLine(const char *s1, const char *s2, align a, colour c, bool isSerial){
+    if(!isSerial) return printLine(s1,s2,c);
+    int n1=strlen(s1),n2=strlen(s2),left_space=1,right_space=1,num_lines=0;
+    switch(a){
+        case align::left :
+            left_space=TEXT_PADDING;
+            right_space=SCREEN_WIDTH-2-n1-n2-TEXT_PADDING;
+            break;
+        case align::right :
+            left_space=SCREEN_WIDTH-2-n1-n2-TEXT_PADDING;
+            right_space=TEXT_PADDING;
+            break;
+        case align::center :
+            left_space=(SCREEN_WIDTH-2-n1-n2)/2;
+            right_space=SCREEN_WIDTH-2-n1-n2-left_space;
+            break;
+        default :               // default is left
+            left_space=TEXT_PADDING;
+            right_space=SCREEN_WIDTH-2-n1-n2-TEXT_PADDING;
+            break;
+    }
+    for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    setBackgroundColour();
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    for(int i=0;i<left_space;i++) cout<<" ";
+    setForegroundColour(c);
+    cout<<s1;
+    setForegroundColour(colour::_default);
+    setForegroundColour(255,215,0);
+    cout<<s2;
+    setForegroundColour(colour::_default);
+    for(int i=0;i<right_space;i++) cout<<" ";
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    resetBackgorund();
+    cout<<"\n";
     num_lines++;
     return num_lines;
 }
 
 // desired_text_padding will by default be taken as left padding unless it is for align::right
 // desired_text_padding is ignored for align::center
+// foreground colour is fixed
 // returns number of lines printed
 int printLine(const char *s, align a, const int desired_text_padding){
     int n=strlen(s),left_space=1,right_space=1,num_lines=0;
@@ -242,11 +411,20 @@ int printLine(const char *s, align a, const int desired_text_padding){
             break;
     }
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    setBackgroundColour();
+    setForegroundColour(70,224,227);
     cout<<(char)186;
+    setForegroundColour(colour::_default);
     for(int i=0;i<left_space;i++) cout<<" ";
+    setForegroundColour(16,0,255);
     cout<<s;
+    setForegroundColour(colour::_default);
     for(int i=0;i<right_space;i++) cout<<" ";
-    cout<<(char)186<<"\n";
+    setForegroundColour(70,224,227);
+    cout<<(char)186;
+    setForegroundColour(colour::_default);
+    resetBackgorund();
+    cout<<"\n";
     num_lines++;
     return num_lines;
 }
@@ -273,51 +451,61 @@ int printTitle(){
     char text[SCREEN_WIDTH];
     // ascii art taken from patorjk.com
     strcpy(text,"______ _ _       _     _     ______             _    _                _____           _                 ");
-    printLine(text,align::center);
+    printLine(text,align::center,colour::blue);
     num_lines++;
     strcpy(text,"|  ___| (_)     | |   | |    | ___ \\           | |  (_)              /  ___|         | |                ");
-    printLine(text,align::center);
+    printLine(text,align::center,colour::blue);
     num_lines++;
     strcpy(text,"| |_  | |_  __ _| |__ | |_   | |_/ / ___   ___ | | ___ _ __   __ _   \\ `--. _   _ ___| |_ ___ _ __ ___  ");
-    printLine(text,align::center);
+    printLine(text,align::center,colour::blue);
     num_lines++;
     strcpy(text,"|  _| | | |/ _` | '_ \\| __|  | ___ \\/ _ \\ / _ \\| |/ / | '_ \\ / _` |   `--. \\ | | / __| __/ _ \\ '_ ` _ \\ ");
-    printLine(text,align::center);
+    printLine(text,align::center,colour::blue);
     num_lines++;
     strcpy(text,"| |   | | | (_| | | | | |_   | |_/ / (_) | (_) |   <| | | | | (_| |  /\\__/ / |_| \\__ \\ ||  __/ | | | | |");
-    printLine(text,align::center);
+    printLine(text,align::center,colour::blue);
     num_lines++;
     strcpy(text,"\\_|   |_|_|\\__, |_| |_|\\__|  \\____/ \\___/ \\___/|_|\\_\\_|_| |_|\\__, |  \\____/ \\__, |___/\\__\\___|_| |_| |_|");
-    printLine(text,align::center);
+    printLine(text,align::center,colour::blue);
     num_lines++;
     strcpy(text,"            __/ |                                             __/ |          __/ |                      ");
-    printLine(text,align::center);
+    printLine(text,align::center,colour::blue);
     num_lines++;
     strcpy(text,"           |___/                                             |___/          |___/                       "); 
-    printLine(text,align::center);
+    printLine(text,align::center,colour::blue);
     num_lines++;
     return num_lines;
 }
 
 // returns number of lines printed
 int printTopBorder(){
+    setForegroundColour(70,224,227);
     int num_lines=0;
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    setBackgroundColour();
     cout<<(char)201;
     for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<(char)205;
-    cout<<(char)187<<"\n";
+    cout<<(char)187;
+    resetBackgorund();
+    cout<<"\n";
     num_lines++;
+    setForegroundColour(colour::_default);
     return num_lines;
 }
 
 // returns number of lines printed
 int printBottomBorder(){
+    setForegroundColour(70,224,227);
     int num_lines=0;
     for(int i=0;i<LEFT_BORDER_WIDTH;i++) cout<<" ";
+    setBackgroundColour();
     cout<<(char)200;
     for(int i=0;i<SCREEN_WIDTH-2;i++) cout<<(char)205;
-    cout<<(char)188<<"\n";
+    cout<<(char)188;
+    resetBackgorund();
+    cout<<"\n";
     num_lines++;
+    setForegroundColour(colour::_default);
     return num_lines;
 }
 
@@ -373,8 +561,8 @@ void* guestScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("1. View Airport List","2. Check flight availability");
-    printLine("3. Log out");
+    printLine("1. ","View Airport List","2. ","Check flight availability",colour::green,true);
+    printLine("3. ","Log out",colour::green,true);
     printLine();
     printLine();
     printLine();
@@ -392,7 +580,11 @@ void* guestScreen(void *p){
         if(!handle_success) continue;
         temp_ll=imp_text_ll;
         for(int i=0;i<IMP_UPDATES_WIDTH;i++){
+            setBackgroundColour();
+            setForegroundColour(colour::red);
             cout<<(temp_ll->node_value);
+            setForegroundColour(colour::_default);
+            resetBackgorund();
             temp_ll=temp_ll->next;
         }
         imp_text_ll=imp_text_ll->next;
@@ -431,9 +623,9 @@ void* printUserScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("1. Open profile","2. View Airport List");
-    printLine("3. Check flight availability","4. Book ticket");
-    printLine("5. Log out");
+    printLine("1. ","Open profile","2. ","View Airport List",colour::green,true);
+    printLine("3. ","Check flight availability","4. ","Book ticket",colour::green,true);
+    printLine("5. ","Log out",colour::green,true);
     printLine();
     printLine();
     printLine();
@@ -451,7 +643,11 @@ void* printUserScreen(void *p){
         if(!handle_success) continue;
         temp_ll=imp_text_ll;
         for(int i=0;i<IMP_UPDATES_WIDTH;i++){
+            setBackgroundColour();
+            setForegroundColour(colour::red);
             cout<<(temp_ll->node_value);
+            setForegroundColour(colour::_default);
+            resetBackgorund();
             temp_ll=temp_ll->next;
         }
         imp_text_ll=imp_text_ll->next;
@@ -490,10 +686,10 @@ void* printAdminScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("1. Manage Important Updates","2. Manage Airports");
-    printLine("3. Manage Airlines","4. Manage Airplane Models");
-    printLine("5. Manage Routes","6. Manage Flights");
-    printLine("7. Log out");
+    printLine("1. ","Manage Important Updates","2. ","Manage Airports",colour::green,true);
+    printLine("3. ","Manage Airlines","4. ","Manage Airplane Models",colour::green,true);
+    printLine("5. ","Manage Routes","6. ","Manage Flights",colour::green,true);
+    printLine("7. ","Log out",colour::green,true);
     printLine();
     printLine();
     printBottomBorder();
@@ -510,7 +706,11 @@ void* printAdminScreen(void *p){
         if(!handle_success) continue;
         temp_ll=imp_text_ll;
         for(int i=0;i<IMP_UPDATES_WIDTH;i++){
+            setBackgroundColour();
+            setForegroundColour(colour::red);
             cout<<(temp_ll->node_value);
+            setForegroundColour(colour::_default);
+            resetBackgorund();
             temp_ll=temp_ll->next;
         }
         imp_text_ll=imp_text_ll->next;
@@ -531,9 +731,9 @@ void* printUserTypeSelectionScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("1. Guest",align::center);
-    printLine("2. User",align::center);
-    printLine("3. Admin",align::center);
+    printLine("1. ","Guest",align::center,colour::green,true);
+    printLine("2. ","User",align::center,colour::green,true);
+    printLine("3. ","Admin",align::center,colour::green,true);
     printLine();
     printLine();
     printLine();
@@ -549,8 +749,8 @@ void* printLoggedOutScreen(void *p){
     printLine();
     printLine(line::dashed);
     printLine();
-    printLine("Successfully Logged Out",align::center);
-    printLine("Press any key to continue ...",align::center);
+    printLine("Successfully Logged Out",align::center,colour::green);
+    printLine("Press any key to continue ...",align::center,colour::green);
     printLine();
     printLine();
     printLine();
