@@ -3,11 +3,16 @@
 This program allows users to books flight tickets and also check for available flights. It also has an admin access to manage and update flight data.   
 It is advised that users read the instructions given below before using the program or in case of any query.
 
+# Note
+- Data regarding flights and airports will be added soon.
+- Input validity checks as of now aren't performed at all portions, will be fixed soon.
+
 # Concepts
 
 - Object Oriented Programming
 - File Handling
 - Multithreading
+- Data Structures and Algorithms
 
 # How to run the program
 
@@ -43,8 +48,13 @@ The two main components are airplane(flight) and airport data. Before adding any
 
 # Instructions
 
-- After each stage of entering data, you will be asked to choose Yes/NO/Quit. "Yes" means your input is correct and you want to proceed further. "No" means your input is incorrect and you want to entire your input again. "Quit" means you want to quit from that section (stop giving input) and go to homepage. 
+- After each stage of entering data, you will be asked to choose Yes/NO/Quit. "Yes" means your input is correct and you want to proceed further. "No" means your input is incorrect and you want to entire your input again. "Quit" means you want to quit from that section (stop giving input) and go to homepage.
+- To go back, use the ESCAPE button on your keyboard. Only instances where ESCAPE won't work is when your in a homepage(guest/user/admin). In that case, you will find the log out option, choose that.
 - Although rapidly giving inputs to the system should be fine in most cases but it is always preferred to give one input after another and give the program sufficient time to load its screen.
 - In case you find that you are pressing your keyboard keys but the program apparently isn't taking your input, it's probably because the cursor has moved to a place outside your terminal screen (probably due to changing of tabs). As a remedy, try left clicking once on the terminal screen and then continue giving your input.
 - Measures have been taken to tackle incorrect inputs but it is advisable to give correct inputs.
 <!-- - Regarding ticket css file. -->
+
+# Disclaimer
+
+This program does not book tickets in the real life. All the names of various entities used in this program are just for the sake of this program and do not correlate with the entities in real life.
