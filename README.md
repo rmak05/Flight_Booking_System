@@ -60,6 +60,13 @@ The two main components are airplane(flight) and airport data. Before adding any
 - Measures have been taken to tackle incorrect inputs but it is advisable to give correct inputs.
 <!-- - Regarding ticket css file. -->
 
+# References
+
+- ASCII Art for title taken from patorjk.com
+- ASCII Art for flight animation taken from asciiart.eu
+- Flight image on ticket taken from vecteezy.com
+- Information regarding ANSI Escape Sequences : https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+
 # Disclaimer
 
 This program does not book tickets in the real life. All the names of various entities used in this program are just for the sake of this program and do not correlate with the entities in real life.
