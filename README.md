@@ -42,6 +42,11 @@ It is advised that users read the instructions given below before using the prog
 - Can add or delete data.
 - Can check existing data.
 
+## 4. Booking a Ticket
+
+- Once you enter your flight and passenger details, a .html file will be generated (in the same folder) containing your ticket.
+- Simply double click on the .html file to open your ticket. 
+
 # Managing data as an Admin
 
 The two main components are airplane(flight) and airport data. Before adding any airplane, there must be an airport at the starting and destination locations. Hence, airports must added first. To add an airplane, first its respective airline, airplane model and route must be added.The, you can add a flight(airplane). To check what exact details are to be added, for each entity, you can check out the already existing data through the admin section (for each entity, you will find an option as "View ... List").
