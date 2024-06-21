@@ -13,7 +13,7 @@
 #define SCREEN_WIDTH 120
 #define LEFT_BORDER_WIDTH 7
 #define TEXT_PADDING 10
-#define IMPORTANT_UPDATES_TEXT_DELAY 250
+#define IMPORTANT_UPDATES_TEXT_DELAY 100
 #define IMP_UPDATES_WIDTH 75
 #define SMALL_SIZE 3
 #define MEDIUM_SIZE 50
@@ -92,6 +92,7 @@ void setForegroundColour(colour c){
 }
 
 void setForegroundColour(int r, int g, int b){
+    if(r<0 || r>255 || g<0 || g>255 || b<0 || b>255) return;
     char sequence[15];
     sprintf(sequence,"\x1b[38;2;%d;%d;%dm",r,g,b);
     cout<<sequence;
@@ -416,7 +417,7 @@ int printLine(const char *s, align a, const int desired_text_padding){
     cout<<(char)186;
     setForegroundColour(colour::_default);
     for(int i=0;i<left_space;i++) cout<<" ";
-    setForegroundColour(16,0,255);
+    setForegroundColour(100,0,255);
     cout<<s;
     setForegroundColour(colour::_default);
     for(int i=0;i<right_space;i++) cout<<" ";
@@ -849,11 +850,6 @@ void* takeInput(void *p){
     }
     return NULL;
 }
-
-// int main(){
-//     controlCenter();
-//     return 0;
-// }
 
 // ascii art
 // big

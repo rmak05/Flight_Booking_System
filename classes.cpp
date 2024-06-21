@@ -405,12 +405,6 @@ public:
         outgoing_flights=o_flights;
     }
 
-    ~airport(){
-        int size=outgoing_flights.size();
-        for(int i=0;i<size;i++) delete outgoing_flights[i];
-        outgoing_flights.clear();
-    }
-
     void operator=(airport& another){
         strcpy(this->airport_name,another.get_airport_name());
         strcpy(this->airport_city,another.get_airport_city());
@@ -442,13 +436,13 @@ public:
         outgoing_flights.push_back(_airplane);
     }
 
-    void delete_airplane(char *_airline_name, char *_route_code, int _departure_time){
+    void delete_airplane(char *_route_code, int _departure_time){
         vector<airplane*> new_outgoing_flights;
         int size=outgoing_flights.size();
         airplane *_airplane;
         for(int i=0;i<size;i++){
             _airplane=outgoing_flights[i];
-            if((strcmp(_airline_name,(_airplane)->get_airline_name())==0) && (strcmp(_route_code,(_airplane)->get_route_code())==0) && (_departure_time==(_airplane)->get_departure_time())){
+            if((strcmp(_route_code,(_airplane)->get_route_code())==0) && (_departure_time==(_airplane)->get_departure_time())){
                 delete _airplane;
             }
             else{
@@ -456,6 +450,18 @@ public:
             }
         }
         outgoing_flights=new_outgoing_flights;
+    }
+
+    bool find_airplane(char *_route_code, int _departure_time){
+        int size=outgoing_flights.size();
+        airplane *_airplane;
+        for(int i=0;i<size;i++){
+            _airplane=outgoing_flights[i];
+            if((strcmp(_route_code,(_airplane)->get_route_code())==0) && (_departure_time==(_airplane)->get_departure_time())){
+                return true;
+            }
+        }
+        return false;
     }
 
     void copy_flights_to_file(const char *file_name){
@@ -584,20 +590,5 @@ void customInput(char *s,int size){
     resetBackgorund();
 }
 
-// int main(){
-//     initializeDataFromFiles();
-    // addAirline();
-    // addAirline();
-    // addAirplaneModel();
-    // addAirplaneModel();
-    // addRoute();
-    // addRoute();
-    // addAirport();
-    // addAirport();
-    // addAirplane();
-//     return 0;
-// }
-
-// ignore leading whitespaces
-// add destructor for class airport
+// ignore leading and trailing whitespaces
 // when we are deleting airline, model or route, all corresponding airplanes must also be deleted

@@ -12,15 +12,16 @@ It is advised that users read the instructions given below before using the prog
 - Object Oriented Programming
 - File Handling
 - Multithreading
-- Data Structures and Algorithms
+- Data Structures
 
 # How to run the program
 
 1. Copy all the files into a folder.
 2. Open your Windows terminal (or VS Code terminal). Note that some Windows specific functions have been used so a Windows system is required for the functioning of the program.
-3. Use the command "g++ main.cpp -pthread" (don't use quotes).
-4. Run the .exe file.
-5. Your program has now been initiated!
+3. Set your terminal window to full screen (or as big as possible).
+4. Use the command "g++ main.cpp -pthread" (don't use quotes).
+5. Run the .exe file.
+6. Your program has now been initiated!
 
 # Overview of various sections of the program :
 

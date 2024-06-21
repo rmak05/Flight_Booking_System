@@ -236,6 +236,19 @@ void addAirportScreen(){
     }
     curr_screen=screen::manage_airports;
 
+    if(code_to_airport.find(a_code)){
+        line+=printOutputSetCursor("Airport code already exists.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
+    if(strlen(a_code)!=SMALL_SIZE){
+        line+=printOutputSetCursor("Invalid airport code.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
+
     airport *_airport;
     fstream airport_file;
     _airport = new airport(a_name,a_city,a_code);
@@ -245,7 +258,7 @@ void addAirportScreen(){
     airport_file.close();
     code_to_airport[a_code]=_airport;
 
-    line+=printOutputSetCursor("Airport added successfully",line);
+    line+=printOutputSetCursor("Airport added successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
 }
@@ -273,7 +286,7 @@ void deleteAirportScreen(){
 
     code_to_airport.erase(a_code);
     code_to_airport.copy_to_file("airport_data.bin");
-    line+=printOutputSetCursor("Airport deleted successfully",line);
+    line+=printOutputSetCursor("Airport deleted successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
 }
@@ -349,6 +362,13 @@ void addAirlineScreen(){
     }
     curr_screen=screen::manage_airlines;
 
+    if(name_to_airline.find(a_name)){
+        line+=printOutputSetCursor("Airline already exists.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
+
     airline *_airline;
     fstream airline_file;
     _airline = new airline(a_name);
@@ -358,7 +378,7 @@ void addAirlineScreen(){
     airline_file.close();
     name_to_airline[a_name]=_airline;
 
-    line+=printOutputSetCursor("Airline added successfully",line);
+    line+=printOutputSetCursor("Airline added successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
 }
@@ -385,7 +405,7 @@ void deleteAirlineScreen(){
 
     name_to_airline.erase(a_name);
     name_to_airline.copy_to_file("airline_data.bin");
-    line+=printOutputSetCursor("Airline deleted successfully",line);
+    line+=printOutputSetCursor("Airline deleted successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
 }
@@ -459,6 +479,13 @@ void addAirplaneModelScreen(){
     }
     curr_screen=screen::manage_airplane_models;
 
+    if(name_to_airplane_model.find(a_name)){
+        line+=printOutputSetCursor("Airplane Model already exists.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
+
     airplane_model *_airplane_model;
     fstream airplane_model_file;
     _airplane_model = new airplane_model(capacity,a_name);
@@ -468,7 +495,7 @@ void addAirplaneModelScreen(){
     airplane_model_file.close();
     name_to_airplane_model[a_name]=_airplane_model;
 
-    line+=printOutputSetCursor("Airplane Model added successfully",line);
+    line+=printOutputSetCursor("Airplane Model added successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
 }
@@ -495,7 +522,7 @@ void deleteAirplaneModelScreen(){
 
     name_to_airplane_model.erase(a_name);
     name_to_airplane_model.copy_to_file("airplane_model_data.bin");
-    line+=printOutputSetCursor("Airplane Model deleted successfully",line);
+    line+=printOutputSetCursor("Airplane Model deleted successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
 }
@@ -574,6 +601,25 @@ void addRouteScreen(){
     }
     curr_screen=screen::manage_routes;
 
+    if(!code_to_airport.find(s_airport)){
+        line+=printOutputSetCursor("Starting airport doesn't exist.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
+    if(!code_to_airport.find(d_airport)){
+        line+=printOutputSetCursor("Destination airport doesn't exist.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
+    if(code_to_route.find(r_code)){
+        line+=printOutputSetCursor("Route code already exists.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
+
     route *_route;
     fstream route_file;
     _route = new route(r_distance,s_airport,d_airport);
@@ -583,7 +629,7 @@ void addRouteScreen(){
     route_file.close();
     code_to_route[r_code]=_route;
 
-    line+=printOutputSetCursor("Route added successfully",line);
+    line+=printOutputSetCursor("Route added successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
 }
@@ -611,7 +657,7 @@ void deleteRouteScreen(){
 
     code_to_route.erase(r_code);
     code_to_route.copy_to_file("route_data.bin");
-    line+=printOutputSetCursor("Route deleted successfully",line);
+    line+=printOutputSetCursor("Route deleted successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
 }
@@ -692,6 +738,33 @@ void addAirplaneScreen(){
     }
     curr_screen=screen::manage_airplanes;
 
+    if(!name_to_airline.find(_airline_name)){
+        line+=printOutputSetCursor("Airline doesn't exist.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
+    if(!name_to_airplane_model.find(_model_name)){
+        line+=printOutputSetCursor("Airplane Model doesn't exist.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
+    if(!code_to_route.find(_route_code)){
+        line+=printOutputSetCursor("Route code doesn't exist.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
+    airport *_airport;
+    _airport=code_to_airport[s_airport];
+    if(_airport->find_airplane(_route_code,d_time)){
+        line+=printOutputSetCursor("Either flight already exists or there is a clash with another flight.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
+
     airline *_airline=name_to_airline[_airline_name];
     airplane_model *_airplane_model=name_to_airplane_model[_model_name];
     route *_route=code_to_route[_route_code];
@@ -703,10 +776,8 @@ void addAirplaneScreen(){
     airplane_file.write((char*)_airplane,sizeof(airplane));
     airplane_file.close();
     // (*_airplane).add_to_airport();
-    airport *_airport;
-    _airport=code_to_airport[s_airport];
     if(_airport!=NULL) (*_airport).add_airplane(_airplane);
-    line+=printOutputSetCursor("Airplane added successfully",line);
+    line+=printOutputSetCursor("Airplane added successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
 }
@@ -714,11 +785,12 @@ void addAirplaneScreen(){
 void deleteAirplaneScreen(){
     system("cls");
     int line=0,d_time;
-    char _airline_name[MEDIUM_SIZE+1],_route_code[2*SMALL_SIZE+1],s_airport[SMALL_SIZE+1];
+    // char _airline_name[MEDIUM_SIZE+1];
+    char _route_code[2*SMALL_SIZE+1],s_airport[SMALL_SIZE+1];
     char yesno;
 
     line+=printBasicScreen(10);
-    line+=takeInputSetCursor("Airline Name   : ",_airline_name,sizeof(_airline_name),line);
+    // line+=takeInputSetCursor("Airline Name   : ",_airline_name,sizeof(_airline_name),line);
     line+=takeInputSetCursor("Route Code     : ",_route_code,sizeof(_route_code),line);
     convertToUppercase(_route_code);
     for(int i=0;i<SMALL_SIZE;i++) s_airport[i]=_route_code[i];
@@ -738,7 +810,7 @@ void deleteAirplaneScreen(){
 
     airport *_airport;
     _airport=code_to_airport[s_airport];
-    if(_airport!=NULL) _airport->delete_airplane(_airline_name,_route_code,d_time);
+    if(_airport!=NULL) _airport->delete_airplane(_route_code,d_time);
     vector<airport*> airport_list;
     int list_size;
     code_to_airport.traverse(airport_list);
@@ -748,7 +820,7 @@ void deleteAirplaneScreen(){
     airplane_file.close();
     for(int i=0;i<list_size;i++) (airport_list[i])->copy_flights_to_file("airplane_data.bin");
 
-    line+=printOutputSetCursor("Airplane deleted successfully",line);
+    line+=printOutputSetCursor("Airplane deleted successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
 }
@@ -859,6 +931,10 @@ void deleteImpUpdateScreen(){
         return;
     }
     curr_screen=screen::manage_imp_updates;
+
+    if(serial_num<0){
+        return;
+    }
 
     int list_size,s_num=0;
     fstream imp_updates_file;
@@ -1235,7 +1311,15 @@ void bookPassengerDetails(ticket_details& _details){
     line+=takeInputSetCursor("Age    : ",_details.age,line);
     line+=printOutputSetCursor("Are the above details correct ?",line);
     line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
-    // add yesno mechanism
+    if(yesno=='n'){
+        bookPassengerDetails(_details);
+        return;
+    }
+    else if(yesno=='q'){
+        if(user_type=='G') curr_screen=screen::guest_homepage;
+        else if(user_type=='U') curr_screen=screen::user_homepage;
+        return;
+    }
     printTicket(_details);
 }
 
@@ -1301,13 +1385,18 @@ void bookTicketFlightList(ticket_details& _details){
         return;
     }
     line+=takeInputSetCursor("Enter Serial number of the flight : ",input_num,line);
-    // check serial number bounds
-    for(int i=0;i<airplane_list_size;i++){
-        if(i+1==input_num){
-            _details._airplane=(*airplane_list[i]);
-            break;
-        }
+
+    if(input_num<1 || input_num>airplane_list_size){
+        bookTicketFlightList(_details);
+        return;
     }
+    _details._airplane=(*airplane_list[input_num-1]);
+    // for(int i=0;i<airplane_list_size;i++){
+    //     if(i+1==input_num){
+    //         _details._airplane=(*airplane_list[i]);
+    //         break;
+    //     }
+    // }
     bookPassengerDetails(_details);
 }
 
@@ -1331,7 +1420,15 @@ void bookTicketFlights(){
     convertToUppercase(_details.d_airport);
     line+=printOutputSetCursor("Are the above details correct ?",line);
     line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
-    // add yesno mechanism
+    if(yesno=='n'){
+        bookTicketFlights();
+        return;
+    }
+    else if(yesno=='q'){
+        if(user_type=='G') curr_screen=screen::guest_homepage;
+        else if(user_type=='U') curr_screen=screen::user_homepage;
+        return;
+    }
     bookTicketFlightList(_details);
 }
 
@@ -1515,17 +1612,11 @@ void controlCenter(){
 int main(){
     initializeDataFromFiles();
     controlCenter();
-    // loginScreen();
-    cout<<"\n\n\n\n\n\n\n\n";
+    cout<<"\n\n\n\n\n";
     resetStyle();
     return 0;
 }
 
 // check if all input characters are trie characters are not
-// change function parameters to type enum
 // subsequent attempt to check flight availability is causing some error
-//      check if there is problem is threads
-//      check input streams
-//      I think the bug was due to use of (*). rather than ()->
-//      make sure to remove this in functions like add, delete, etc.
-// the purple colour in vs code terminal looks like dark blue(as it should be) in windows terminal
+//     - I think the bug was due to use of (*). rather than ()-> , that to in class airport only
