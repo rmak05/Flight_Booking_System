@@ -61,11 +61,11 @@ The two main components are airplane(flight) and airport data. Before adding any
 - Measures have been taken to tackle incorrect inputs but it is advisable to give correct inputs.
 <!-- - Regarding ticket css file. -->
 
-# References
+# Resources
 
-- ASCII Art for title taken from patorjk.com
-- ASCII Art for flight animation taken from asciiart.eu
-- Flight image on ticket taken from vecteezy.com
+- ASCII Art for title : https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20
+- ASCII Art for flight animation : https://www.asciiart.eu/vehicles/airplanes
+- Flight image on ticket : https://www.vecteezy.com/png/37277848-flying-airplane-isolated-on-background-3d-rendering-illustration
 - Information regarding ANSI Escape Sequences : https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
 
 # Disclaimer
