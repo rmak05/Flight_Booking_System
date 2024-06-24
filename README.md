@@ -4,8 +4,9 @@ This program allows users to books flight tickets and also check for available f
 It is advised that users read the instructions given below before using the program or in case of any query.
 
 # Note
-- Data regarding flights and airports will be added soon.
-- Input validity checks as of now aren't performed at all portions, will be fixed soon.
+- Flight data has been added for flights connected with Bhubaneswar Airport. More data will be added soon.
+- Input validity checks aren't being performed at some of the sections, will be fixed soon.
+- Login screen is yet to be added.
 
 # Concepts
 
@@ -16,7 +17,7 @@ It is advised that users read the instructions given below before using the prog
 
 # How to run the program
 
-1. Copy all the files into a folder.
+1. Copy all the files into a folder or clone the repository.
 2. Open your Windows terminal (or VS Code terminal). Note that some Windows specific functions have been used so a Windows system is required for the functioning of the program.
 3. Set your terminal window to full screen (or as big as possible).
 4. Use the command "g++ main.cpp -pthread" (don't use quotes).
@@ -45,8 +46,8 @@ It is advised that users read the instructions given below before using the prog
 
 ## 4. Booking a Ticket
 
-- Once you enter your flight and passenger details, a .html file will be generated (in the same folder) containing your ticket.
-- Simply double click on the .html file to open your ticket. 
+- Once you enter your flight and passenger details, a Flight_Ticket.html file will be generated (in the same folder), which will contain your ticket.
+- Simply double click on the Flight_Ticket.html file to open your ticket. 
 
 # Managing data as an Admin
 
@@ -54,12 +55,14 @@ The two main components are airplane(flight) and airport data. Before adding any
 
 # Instructions
 
+- All times are displayed in 24 hour format.
+- If you want to select an option with the serial number, let's say '2', then press '2' on your keyboard to select that option.
 - After each stage of entering data, you will be asked to choose Yes/NO/Quit. "Yes" means your input is correct and you want to proceed further. "No" means your input is incorrect and you want to entire your input again. "Quit" means you want to quit from that section (stop giving input) and go to homepage.
 - To go back, use the ESCAPE button on your keyboard. Only instances where ESCAPE won't work is when your in a homepage(guest/user/admin). In that case, you will find the log out option, choose that.
 - Although rapidly giving inputs to the system should be fine in most cases but it is always preferred to give one input after another and give the program sufficient time to load its screen.
 - In case you find that you are pressing your keyboard keys but the program apparently isn't taking your input, it's probably because the cursor has moved to a place outside your terminal screen (probably due to changing of tabs). As a remedy, try left clicking once on the terminal screen and then continue giving your input.
-- Measures have been taken to tackle incorrect inputs but it is advisable to give correct inputs.
-<!-- - Regarding ticket css file. -->
+- Measures have been taken to tackle invalid inputs but it is advisable to give valid inputs.
+- If you move the ticket file to some other folder, please also move style.css and airplane_image.png files along with it.
 
 # Resources
 

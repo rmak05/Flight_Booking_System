@@ -253,7 +253,7 @@ void addAirportScreen(){
     fstream airport_file;
     _airport = new airport(a_name,a_city,a_code);
     airport_file.open("airport_data.bin",ios::out | ios::app | ios::binary);
-    airport_file.seekp(0,ios::beg);
+    airport_file.seekp(0,ios::end);
     airport_file.write((char*)_airport,sizeof(airport));
     airport_file.close();
     code_to_airport[a_code]=_airport;
@@ -373,7 +373,7 @@ void addAirlineScreen(){
     fstream airline_file;
     _airline = new airline(a_name);
     airline_file.open("airline_data.bin",ios::out | ios::app | ios::binary);
-    airline_file.seekp(0,ios::beg);
+    airline_file.seekp(0,ios::end);
     airline_file.write((char*)_airline,sizeof(airline));
     airline_file.close();
     name_to_airline[a_name]=_airline;
@@ -490,7 +490,7 @@ void addAirplaneModelScreen(){
     fstream airplane_model_file;
     _airplane_model = new airplane_model(capacity,a_name);
     airplane_model_file.open("airplane_model_data.bin",ios::out | ios::app | ios::binary);
-    airplane_model_file.seekp(0,ios::beg);
+    airplane_model_file.seekp(0,ios::end);
     airplane_model_file.write((char*)_airplane_model,sizeof(airplane_model));
     airplane_model_file.close();
     name_to_airplane_model[a_name]=_airplane_model;
@@ -613,6 +613,12 @@ void addRouteScreen(){
         getch();
         return;
     }
+    if(strcmp(s_airport,d_airport)==0){
+        line+=printOutputSetCursor("Starting and Destination airports are the same.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
     if(code_to_route.find(r_code)){
         line+=printOutputSetCursor("Route code already exists.",line);
         line+=printOutputSetCursor("Press any key to continue ...",line);
@@ -624,10 +630,15 @@ void addRouteScreen(){
     fstream route_file;
     _route = new route(r_distance,s_airport,d_airport);
     route_file.open("route_data.bin",ios::out | ios::app | ios::binary);
-    route_file.seekp(0,ios::beg);
+    route_file.seekp(0,ios::end);
     route_file.write((char*)_route,sizeof(route));
-    route_file.close();
     code_to_route[r_code]=_route;
+
+    _route = new route(r_distance,d_airport,s_airport);
+    route_file.write((char*)_route,sizeof(route));
+    strcpy(r_code,_route->get_route_code());
+    code_to_route[r_code]=_route;
+    route_file.close();
 
     line+=printOutputSetCursor("Route added successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
@@ -721,6 +732,13 @@ void addAirplaneScreen(){
     line+=takeInputSetCursor("Airplane Model Name : ",_model_name,sizeof(_model_name),line);
     line+=takeInputSetCursor("Route Code          : ",_route_code,sizeof(_route_code),line);
     convertToUppercase(_route_code);
+    if(strlen(_route_code)!=2*SMALL_SIZE){
+        curr_screen=screen::add_airplane;
+        line+=printOutputSetCursor("Invalid route code.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
     for(int i=0;i<SMALL_SIZE;i++) s_airport[i]=_route_code[i];
     s_airport[SMALL_SIZE]='\0';
     line+=takeInputSetCursor("Departure Time      : ",d_time,line);
@@ -772,7 +790,7 @@ void addAirplaneScreen(){
     fstream airplane_file;
     _airplane = new airplane((*_airline),(*_airplane_model),(*_route),cost,d_time,a_time);
     airplane_file.open("airplane_data.bin",ios::out | ios::app | ios::binary);
-    airplane_file.seekp(0,ios::beg);
+    airplane_file.seekp(0,ios::end);
     airplane_file.write((char*)_airplane,sizeof(airplane));
     airplane_file.close();
     // (*_airplane).add_to_airport();
@@ -793,6 +811,13 @@ void deleteAirplaneScreen(){
     // line+=takeInputSetCursor("Airline Name   : ",_airline_name,sizeof(_airline_name),line);
     line+=takeInputSetCursor("Route Code     : ",_route_code,sizeof(_route_code),line);
     convertToUppercase(_route_code);
+    if(strlen(_route_code)!=2*SMALL_SIZE){
+        curr_screen=screen::delete_airplane;
+        line+=printOutputSetCursor("Invalid route code.",line);
+        line+=printOutputSetCursor("Press any key to continue ...",line);
+        getch();
+        return;
+    }
     for(int i=0;i<SMALL_SIZE;i++) s_airport[i]=_route_code[i];
     s_airport[SMALL_SIZE]='\0';
     line+=takeInputSetCursor("Departure Time : ",d_time,line);
@@ -1177,7 +1202,7 @@ void printTicket(ticket_details& _details){
     ticket_file<<"\t\t\t</div>\n";
     ticket_file<<"\t\t\t<div>\n";
     ticket_file<<"\t\t\t\t<!-- image taken from vecteezy.com -->\n";
-    ticket_file<<"\t\t\t\t<img src=\"airplane_image.jpg\" alt=\"image\" class=\"flight_image\">\n";
+    ticket_file<<"\t\t\t\t<img src=\"airplane_image.png\" alt=\"image\" class=\"flight_image\">\n";
     ticket_file<<"\t\t\t\t<div class=\"distance\">\n";
     ticket_file<<"\t\t\t\t\tDistance : "<<_details._airplane.get_distance()<<" KM\n";
     // ticket_file<<"\t\t\t\t\tDistance : 1245 KM\n";
@@ -1308,6 +1333,7 @@ void bookPassengerDetails(ticket_details& _details){
     line+=takeInputSetCursor("Gender : ",_details.gender,sizeof(_details.gender),line);
     if(_details.gender[0]=='0') _details.gender[0]='O';
     convertToUppercase(_details.gender);
+    if(_details.gender[0]!='M' && _details.gender[0]!='F') _details.gender[0]='O';
     line+=takeInputSetCursor("Age    : ",_details.age,line);
     line+=printOutputSetCursor("Are the above details correct ?",line);
     line+=takeInputSetCursor("Press 'Y' for YES , 'N' for NO and 'Q' to Quit : ",yesno,line);
@@ -1360,6 +1386,10 @@ void bookTicketFlightList(ticket_details& _details){
             printLine(line::dotted);
         }
     }
+    if(airplane_list_size==0){
+        line+=printLine();
+        line+=printOutputSetCursor("There are no available flights.",line);
+    }
     printLine();
     printLine(line::dashed);
     printLine();
@@ -1374,7 +1404,7 @@ void bookTicketFlightList(ticket_details& _details){
     setCursorPosition(cursor_pos);
     for(int i=0;i<adjust_lines-1;i++) printLine();
     printBottomBorder();
-    if(curr_screen==screen::flight_availability){
+    if(curr_screen==screen::flight_availability || airplane_list_size==0){
         if(user_type=='G') curr_screen=screen::guest_homepage;
         else if(user_type=='U') curr_screen=screen::user_homepage;
         // printOutputSetCursor("Press Escape to go back",line);
@@ -1619,4 +1649,5 @@ int main(){
 
 // check if all input characters are trie characters are not
 // subsequent attempt to check flight availability is causing some error
-//     - I think the bug was due to use of (*). rather than ()-> , that to in class airport only
+//      - I think the bug was due to use of (*). rather than ()-> , that to in class airport only
+//      - the bug has been fixed

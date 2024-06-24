@@ -313,7 +313,7 @@ public:
         // sprintf(text,"Route Distance           : %d.",route_distance);
         // printLine(text,colour::_default);
         sprintf(text,"%d",route_distance);
-        printLine("Route Distance           : ",text,colour::green,true);
+        printLine("Route Distance (in KM)   : ",text,colour::green,true);
     }
 };
 
@@ -364,16 +364,18 @@ public:
         char text[2*LARGE_SIZE+1];
         // sprintf(text,"Departure Time           : %04d.",departure_time);
         // printLine(text,colour::_default);
-        sprintf(text,"%04d",departure_time);
+        // sprintf(text,"%04d",departure_time);
+        sprintf(text,"%02d:%d%d",departure_time/100,(departure_time%100)/10,departure_time%10);
         printLine("Departure Time           : ",text,colour::green,true);
         // sprintf(text,"Arrival Time             : %04d.",arrival_time);
         // printLine(text,colour::_default);
-        sprintf(text,"%04d",arrival_time);
+        // sprintf(text,"%04d",arrival_time);
+        sprintf(text,"%02d:%d%d",arrival_time/100,(arrival_time%100)/10,arrival_time%10);
         printLine("Arrival Time             : ",text,colour::green,true);
         // sprintf(text,"Ticket Cost              : %d.",airplane_cost);
         // printLine(text,colour::_default);
         sprintf(text,"%d",airplane_cost);
-        printLine("Ticket Cost              : ",text,colour::green,true);
+        printLine("Ticket Cost (in Rs.)     : ",text,colour::green,true);
     }
 };
 
@@ -467,7 +469,7 @@ public:
     void copy_flights_to_file(const char *file_name){
         fstream output_file;
         output_file.open(file_name,ios::out | ios::app | ios::binary);
-        output_file.seekp(0,ios::beg);
+        output_file.seekp(0,ios::end);
         int size=outgoing_flights.size();
         for(int i=0;i<size;i++){
             output_file.write((char*)outgoing_flights[i],sizeof(airplane));
@@ -486,11 +488,6 @@ public:
         // sprintf(text,"Code : %s.",airport_code);
         // printLine(text,colour::_default);
         printLine("Code : ",airport_code,colour::green,true);
-        // int o_f_size=outgoing_flights.size();
-        // for(int i=0;i<o_f_size;i++){
-        //     printLine();
-        //     (*outgoing_flights[i]).display();
-        // }
     }
 };
 
@@ -556,7 +553,7 @@ void initializeDataFromFiles(){
     airport* __airport;
     fstream airplane_file;
     char s_airport[SMALL_SIZE+1],*r_code;
-    airplane_file.open("airplane_data.bin",ios::in | ios::app |ios::binary);
+    airplane_file.open("airplane_data.bin",ios::in | ios::app | ios::binary);
     airplane_file.seekg(0,ios::beg);
     while(airplane_file.read((char*)&_airplane,sizeof(airplane))){
         r_code=_airplane.get_route_code();
