@@ -73,7 +73,7 @@ The two main components are airplane(flight) and airport data. Before adding any
 
 - ASCII Art for title : [patorjk.com](https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20)
 - ASCII Art for flight animation : [asciiart.eu](https://www.asciiart.eu/vehicles/airplanes)
-- Flight image on ticket : [vecteezy.com](https://www.vecteezy.com/png/)37277848-flying-airplane-isolated-on-background-3d-rendering-illustration
+- Flight image on ticket : [vecteezy.com](https://www.vecteezy.com/png/37277848-flying-airplane-isolated-on-background-3d-rendering-illustration)
 - Information regarding ANSI Escape Sequences : [gist.github.com/fnky](https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797)
 
 # Disclaimer
