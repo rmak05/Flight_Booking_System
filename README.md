@@ -51,7 +51,7 @@ It is advised that users read the instructions given below before using the prog
 
 # Managing data as an Admin
 
-The two main components are airplane(flight) and airport data. Before adding any airplane, there must be an airport at the starting and destination locations. Hence, airports must added first. To add an airplane, first its respective airline, airplane model and route must be added.The, you can add a flight(airplane). To check what exact details are to be added, for each entity, you can check out the already existing data through the admin section (for each entity, you will find an option as "View ... List").
+The two main components are airplane(flight) and airport data. Before adding any airplane, there must be an airport at the starting and destination locations. Hence, airports must added first. To add an airplane, first its respective airline, airplane model and route must be added.The, you can add a flight(airplane). To check what exact details are to be added, for each entity, you can check out the already existing data through the admin section (for each entity, you will find an option as "View [entity name] List").
 
 # Instructions
 
@@ -66,10 +66,15 @@ The two main components are airplane(flight) and airport data. Before adding any
 
 # Resources
 
-- ASCII Art for title : https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20
+<!-- - ASCII Art for title : https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20
 - ASCII Art for flight animation : https://www.asciiart.eu/vehicles/airplanes
 - Flight image on ticket : https://www.vecteezy.com/png/37277848-flying-airplane-isolated-on-background-3d-rendering-illustration
-- Information regarding ANSI Escape Sequences : https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+- Information regarding ANSI Escape Sequences : https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797 -->
+
+- ASCII Art for title : [patorjk.com](https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20)
+- ASCII Art for flight animation : [asciiart.eu](https://www.asciiart.eu/vehicles/airplanes)
+- Flight image on ticket : [vecteezy.com](https://www.vecteezy.com/png/)37277848-flying-airplane-isolated-on-background-3d-rendering-illustration
+- Information regarding ANSI Escape Sequences : [gist.github.com/fnky](https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797)
 
 # Disclaimer
 
