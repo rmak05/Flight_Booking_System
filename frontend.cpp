@@ -537,7 +537,6 @@ char* getAllImpUpdates(){
 }
 
 void* guestScreen(void *p){
-    setCursorVisibility(false);
     system("cls");
     int imp_news_line=0;
 
@@ -594,12 +593,10 @@ void* guestScreen(void *p){
         if(user_choice!='\0' || curr_screen!=guest_homepage) break;
     }
 
-    setCursorVisibility(true);
     return NULL;
 }
 
 void* printUserScreen(void *p){
-    setCursorVisibility(false);
     system("cls");
     int imp_news_line=0;
 
@@ -657,12 +654,10 @@ void* printUserScreen(void *p){
         if(user_choice!='\0' || curr_screen!=user_homepage) break;
     }
 
-    setCursorVisibility(true);
     return NULL;
 }
 
 void* printAdminScreen(void *p){
-    setCursorVisibility(false);
     system("cls");
     int imp_news_line=0;
 
@@ -720,7 +715,6 @@ void* printAdminScreen(void *p){
         if(user_choice!='\0' || curr_screen!=admin_homepage) break;
     }
 
-    setCursorVisibility(true);
     return NULL;
 }
 
@@ -735,7 +729,6 @@ void* printUserTypeSelectionScreen(void *p){
     printLine("1. ","Guest",align::center,colour::green,true);
     printLine("2. ","User",align::center,colour::green,true);
     printLine("3. ","Admin",align::center,colour::green,true);
-    printLine();
     printLine();
     printLine();
     printBottomBorder();
@@ -760,6 +753,7 @@ void* printLoggedOutScreen(void *p){
 }
 
 void* takeInput(void *p){
+    setCursorVisibility(false);
     user_choice=(unsigned char)getch();
     if(curr_screen==screen::usage_type){
         if(user_choice=='1'){
@@ -848,6 +842,7 @@ void* takeInput(void *p){
     else if(curr_screen==screen::logged_out){
         curr_screen=screen::usage_type;
     }
+    setCursorVisibility(true);
     return NULL;
 }
 

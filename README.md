@@ -1,4 +1,4 @@
-# Flight_Booking_System
+# Flight Booking System
 
 This program allows users to books flight tickets and also check for available flights. It also has an admin access to manage and update flight data.   
 It is advised that users read the instructions given below before using the program or in case of any query.
@@ -24,7 +24,7 @@ It is advised that users read the instructions given below before using the prog
 5. Run the .exe file.
 6. Your program has now been initiated!
 
-# Overview of various sections of the program :
+# Overview of various sections of the program
 
 ## 1. Guest
 
@@ -51,25 +51,21 @@ It is advised that users read the instructions given below before using the prog
 
 # Managing data as an Admin
 
-The two main components are airplane(flight) and airport data. Before adding any airplane, there must be an airport at the starting and destination locations. Hence, airports must added first. To add an airplane, first its respective airline, airplane model and route must be added.The, you can add a flight(airplane). To check what exact details are to be added, for each entity, you can check out the already existing data through the admin section (for each entity, you will find an option as "View [entity name] List").
+The two main components are airplane(flight) and airport data. Before adding any airplane, there must be an airport at the starting and destination locations. Hence, airports must added first. To add an airplane, first its respective airline, airplane model and route must be added. Then, you can add a flight(airplane). To check what exact details are to be added, for each entity, you can check out the already existing data through the admin section (for each entity, you will find an option as "View [entity name] List").
 
 # Instructions
 
 - All times are displayed in 24 hour format.
 - If you want to select an option with the serial number, let's say '2', then press '2' on your keyboard to select that option.
 - After each stage of entering data, you will be asked to choose Yes/NO/Quit. "Yes" means your input is correct and you want to proceed further. "No" means your input is incorrect and you want to entire your input again. "Quit" means you want to quit from that section (stop giving input) and go to homepage.
-- To go back, use the ESCAPE button on your keyboard. Only instances where ESCAPE won't work is when your in a homepage(guest/user/admin). In that case, you will find the log out option, choose that.
-- Although rapidly giving inputs to the system should be fine in most cases but it is always preferred to give one input after another and give the program sufficient time to load its screen.
+- To go back to a previous page, use the ESCAPE button on your keyboard. Only instances where ESCAPE won't work is when you are in a homepage(guest/user/admin). In that case, you will find the log out option, choose that.
+- Although rapidly giving inputs to the system should be fine in most cases but it is always preferred to give one input after another and give the program sufficient time to load from one section to another.
 - In case you find that you are pressing your keyboard keys but the program apparently isn't taking your input, it's probably because the cursor has moved to a place outside your terminal screen (probably due to changing of tabs). As a remedy, try left clicking once on the terminal screen and then continue giving your input.
 - Measures have been taken to tackle invalid inputs but it is advisable to give valid inputs.
 - If you move the ticket file to some other folder, please also move style.css and airplane_image.png files along with it.
+- If you feel that the program isn't responding as you intended, then kill the terminal and restart your program.
 
 # Resources
-
-<!-- - ASCII Art for title : https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20
-- ASCII Art for flight animation : https://www.asciiart.eu/vehicles/airplanes
-- Flight image on ticket : https://www.vecteezy.com/png/37277848-flying-airplane-isolated-on-background-3d-rendering-illustration
-- Information regarding ANSI Escape Sequences : https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797 -->
 
 - ASCII Art for title : [patorjk.com](https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20)
 - ASCII Art for flight animation : [asciiart.eu](https://www.asciiart.eu/vehicles/airplanes)
