@@ -3,6 +3,10 @@
 This program allows users to book flight tickets and also check for available flights. It also has admin access to manage and update flight data.   
 It is advised that users read the instructions given below before using the program or in case of any query.
 
+# Disclaimer
+
+This program does not book tickets in real life. All the names of various entities used in this program are just for the sake of this program and do not correlate with the entities in real life.
+
 # Note
 - Flight data has been added for flights connected with Bhubaneswar Airport. More data will be added soon.
 - Input validity checks aren't being performed at some of the sections, will be fixed soon.
@@ -71,7 +75,3 @@ The two main components are airplane(flight) and airport data. Before adding any
 - ASCII Art for flight animation : [asciiart.eu](https://www.asciiart.eu/vehicles/airplanes)
 - Flight image on ticket : [vecteezy.com](https://www.vecteezy.com/png/37277848-flying-airplane-isolated-on-background-3d-rendering-illustration)
 - Information regarding ANSI Escape Sequences : [gist.github.com/fnky](https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797)
-
-# Disclaimer
-
-This program does not book tickets in real life. All the names of various entities used in this program are just for the sake of this program and do not correlate with the entities in real life.
