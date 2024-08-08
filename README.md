@@ -24,8 +24,8 @@ This program does not book tickets in real life. All the names of various entiti
 1. Copy all the files into a folder or clone the repository.
 2. Open your Windows terminal (or VS Code terminal). Note that some Windows-specific functions have been used so a Windows system is required for the functioning of the program.
 3. Set your terminal window to full screen (or as big as possible).
-4. Use the command "g++ main.cpp -pthread" (don't use quotes).
-5. Run the .exe file.
+4. Use the command "g++ main.cpp -o main.exe -pthread" (don't use quotes).
+5. Run the executable file using the command "./main.exe" (don't use quotes).
 6. Your program has now initiated!
 
 # Overview of various sections of the program
