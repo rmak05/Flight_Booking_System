@@ -24,7 +24,7 @@ This program does not book tickets in real life. All the names of various entiti
 1. Copy all the files into a folder or clone the repository.
 2. Open your Windows terminal (or VS Code terminal). Note that some Windows-specific functions have been used so a Windows system is required for the functioning of the program.
 3. Set your terminal window to full screen (or as big as possible).
-4. Use the following command :
+4. Use the following command to compile the code :
    ```bash
    g++ main.cpp -o main.exe -pthread
    ```
@@ -49,7 +49,7 @@ This program does not book tickets in real life. All the names of various entiti
 ## 2. User
 
 - Sign-up is required. (For now, login page is not created so sign-up is not required)
-- Can check for available flights
+- Can check for available flights.
 - Can book a ticket.
 
 ## 3. Admin
