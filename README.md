@@ -25,9 +25,18 @@ This program does not book tickets in real life. All the names of various entiti
 2. Open your Windows terminal (or VS Code terminal). Note that some Windows-specific functions have been used so a Windows system is required for the functioning of the program.
 3. Set your terminal window to full screen (or as big as possible).
 4. Use the following command :
-    ```g++ main.cpp -o main.exe -pthread```
-5. Run the executable file using the command "./main.exe" (don't use quotes).
-6. Your program has now initiated!
+   ```bash
+   g++ main.cpp -o main.exe -pthread
+   ```
+
+5. In case of an error related to "pthread.h", if you are using MinGW, please make sure that the "mingw32-pthreads-w32" package has been installed on your system. If not, then open your MinGW Installer and install the package.
+
+6. Run the executable file using the command :
+   ```bash
+   ./main.exe
+   ```
+
+7. Your program must now be running.
 
 # Overview of various sections of the program
 
