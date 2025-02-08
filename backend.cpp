@@ -1194,8 +1194,8 @@ void printTicket(ticket_details& _details){
     ticket_file<<"\t\t<div class=\"line\"></div>\n";
     ticket_file<<"\n";
     ticket_file<<"\t\t<div class=\"airline\">\n";
-	ticket_file<<"\t\t\t"<<_details._airplane.get_airline_name()<<"\n";
-	ticket_file<<"\t\t</div>\n";
+    ticket_file<<"\t\t\t"<<_details._airplane.get_airline_name()<<"\n";
+    ticket_file<<"\t\t</div>\n";
     ticket_file<<"\t\t<div class=\"flight_details\">\n";
     ticket_file<<"\t\t\t<div class=\"from_to_box\">\n";
     ticket_file<<"\t\t\t\t<div class=\"from_to_text\">\n";
