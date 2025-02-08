@@ -13,13 +13,11 @@ class trie;
 template<class T>
 struct trieNode;
 
-// check how to use stl containers with classes (like vector<airplane>)
-
 template<class T>
 struct trieNode{
     T* value;
     bool isEnd;
-    trieNode<T>* next[TRIE_CHARACTERS];     // A to Z , a to z , , 0 to 9 , ' '
+    trieNode<T>* next[TRIE_CHARACTERS];     // A to Z , a to z , 0 to 9 , ' '
 
     trieNode(){
         value=NULL;

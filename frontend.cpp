@@ -845,8 +845,3 @@ void* takeInput(void *p){
     setCursorVisibility(true);
     return NULL;
 }
-
-// ascii art
-// big
-// doom (currently using)
-// standard
