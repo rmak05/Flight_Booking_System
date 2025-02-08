@@ -31,7 +31,7 @@ This program does not book tickets in real life. All the names of various entiti
 
 5. In case of an error related to "pthread.h", if you are using MinGW, please make sure that the "mingw32-pthreads-w32" package has been installed on your system. If not, then open your MinGW Installer and install the package.
 
-6. Run the executable file using the command :
+6. Run the executable file using the following command :
    ```bash
    ./main.exe
    ```
