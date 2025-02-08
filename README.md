@@ -36,7 +36,7 @@ This program does not book tickets in real life. All the names of various entiti
    ./main.exe
    ```
 
-7. Your program must now be running.
+7. The program must now be running.
 
 # Overview of various sections of the program
 
