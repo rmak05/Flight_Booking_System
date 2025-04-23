@@ -515,7 +515,7 @@ char* getAllImpUpdates(){
     fstream imp_updates_file;
     vector<char*> updates_list;
     char *text = new char[2*LARGE_SIZE+1];
-    imp_updates_file.open("important_updates_data.bin",ios::in | ios::app | ios::binary);
+    imp_updates_file.open("Data/important_updates_data.bin",ios::in | ios::app | ios::binary);
     while(imp_updates_file.read((char*)text,2*LARGE_SIZE+1)){
         req_size+=strlen(text);
         updates_list.push_back(text);

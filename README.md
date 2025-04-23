@@ -8,6 +8,7 @@ It is advised that users read the instructions given below before using the prog
 This program does not book tickets in real life. All the names of various entities used in this program are just for the sake of this program and do not correlate with the entities in real life.
 
 # Note
+
 - Flight data has been added for flights connected with Bhubaneswar Airport. More data will be added soon.
 - Input validity checks aren't being performed at some of the sections, will be fixed soon.
 - Login screen is yet to be added.
@@ -38,7 +39,7 @@ This program does not book tickets in real life. All the names of various entiti
 
 7. The program must now be running.
 
-# Overview of various sections of the program
+# Overview of various sections and users of the program
 
 ## 1. Guest
 
@@ -60,7 +61,7 @@ This program does not book tickets in real life. All the names of various entiti
 
 ## 4. Booking a Ticket
 
-- Once you enter your flight and passenger details, a Flight_Ticket.html file will be generated (in the same folder), which will contain your ticket.
+- Once you enter your flight and passenger details, a Flight_Ticket.html file will be generated in the Ticket folder, which will contain your ticket.
 - Simply double-click on the Flight_Ticket.html file to open your ticket. 
 
 # Managing data as an Admin

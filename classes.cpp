@@ -508,7 +508,7 @@ public:
 void initializeDataFromFiles(){
     airline _airline;
     fstream airline_file;
-    airline_file.open("airline_data.bin",ios::in | ios::app | ios::binary);
+    airline_file.open("Data/airline_data.bin",ios::in | ios::app | ios::binary);
     airline_file.seekg(0,ios::beg);
     while(airline_file.read((char*)&_airline,sizeof(airline))){
         name_to_airline[_airline.get_airline_name()] = new airline(_airline);
@@ -518,7 +518,7 @@ void initializeDataFromFiles(){
 
     airplane_model _airplane_model;
     fstream airplane_model_file;
-    airplane_model_file.open("airplane_model_data.bin",ios::in | ios::app | ios::binary);
+    airplane_model_file.open("Data/airplane_model_data.bin",ios::in | ios::app | ios::binary);
     airplane_model_file.seekg(0,ios::beg);
     while(airplane_model_file.read((char*)&_airplane_model,sizeof(airplane_model))){
         name_to_airplane_model[_airplane_model.get_model_name()] = new airplane_model(_airplane_model);
@@ -528,7 +528,7 @@ void initializeDataFromFiles(){
 
     route _route;
     fstream route_file;
-    route_file.open("route_data.bin",ios::in | ios::app | ios::binary);
+    route_file.open("Data/route_data.bin",ios::in | ios::app | ios::binary);
     route_file.seekg(0,ios::beg);
     while(route_file.read((char*)&_route,sizeof(route))){
         code_to_route[_route.get_route_code()] = new route(_route);
@@ -538,7 +538,7 @@ void initializeDataFromFiles(){
 
     airport _airport;
     fstream airport_file;
-    airport_file.open("airport_data.bin",ios::in | ios::app | ios::binary);
+    airport_file.open("Data/airport_data.bin",ios::in | ios::app | ios::binary);
     airport_file.seekg(0,ios::beg);
     while(airport_file.read((char*)&_airport,sizeof(airport))){
         _airport.clear_flights();
@@ -551,7 +551,7 @@ void initializeDataFromFiles(){
     airport* __airport;
     fstream airplane_file;
     char s_airport[SMALL_SIZE+1],*r_code;
-    airplane_file.open("airplane_data.bin",ios::in | ios::app | ios::binary);
+    airplane_file.open("Data/airplane_data.bin",ios::in | ios::app | ios::binary);
     airplane_file.seekg(0,ios::beg);
     while(airplane_file.read((char*)&_airplane,sizeof(airplane))){
         r_code=_airplane.get_route_code();
@@ -564,7 +564,7 @@ void initializeDataFromFiles(){
     airplane_file.close();
 
     fstream imp_updates_file;
-    imp_updates_file.open("important_updates_data.bin",ios::out | ios::app | ios::binary);
+    imp_updates_file.open("Data/important_updates_data.bin",ios::out | ios::app | ios::binary);
     imp_updates_file.close();
 }
 

@@ -252,7 +252,7 @@ void addAirportScreen(){
     airport *_airport;
     fstream airport_file;
     _airport = new airport(a_name,a_city,a_code);
-    airport_file.open("airport_data.bin",ios::out | ios::app | ios::binary);
+    airport_file.open("Data/airport_data.bin",ios::out | ios::app | ios::binary);
     airport_file.seekp(0,ios::end);
     airport_file.write((char*)_airport,sizeof(airport));
     airport_file.close();
@@ -285,7 +285,7 @@ void deleteAirportScreen(){
     curr_screen=screen::manage_airports;
 
     code_to_airport.erase(a_code);
-    code_to_airport.copy_to_file("airport_data.bin");
+    code_to_airport.copy_to_file("Data/airport_data.bin");
     line+=printOutputSetCursor("Airport deleted successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
@@ -374,7 +374,7 @@ void addAirlineScreen(){
     airline *_airline;
     fstream airline_file;
     _airline = new airline(a_name);
-    airline_file.open("airline_data.bin",ios::out | ios::app | ios::binary);
+    airline_file.open("Data/airline_data.bin",ios::out | ios::app | ios::binary);
     airline_file.seekp(0,ios::end);
     airline_file.write((char*)_airline,sizeof(airline));
     airline_file.close();
@@ -406,7 +406,7 @@ void deleteAirlineScreen(){
     curr_screen=screen::manage_airlines;
 
     name_to_airline.erase(a_name);
-    name_to_airline.copy_to_file("airline_data.bin");
+    name_to_airline.copy_to_file("Data/airline_data.bin");
     line+=printOutputSetCursor("Airline deleted successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
@@ -493,7 +493,7 @@ void addAirplaneModelScreen(){
     airplane_model *_airplane_model;
     fstream airplane_model_file;
     _airplane_model = new airplane_model(capacity,a_name);
-    airplane_model_file.open("airplane_model_data.bin",ios::out | ios::app | ios::binary);
+    airplane_model_file.open("Data/airplane_model_data.bin",ios::out | ios::app | ios::binary);
     airplane_model_file.seekp(0,ios::end);
     airplane_model_file.write((char*)_airplane_model,sizeof(airplane_model));
     airplane_model_file.close();
@@ -525,7 +525,7 @@ void deleteAirplaneModelScreen(){
     curr_screen=screen::manage_airplane_models;
 
     name_to_airplane_model.erase(a_name);
-    name_to_airplane_model.copy_to_file("airplane_model_data.bin");
+    name_to_airplane_model.copy_to_file("Data/airplane_model_data.bin");
     line+=printOutputSetCursor("Airplane Model deleted successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
@@ -635,7 +635,7 @@ void addRouteScreen(){
     route *_route;
     fstream route_file;
     _route = new route(r_distance,s_airport,d_airport);
-    route_file.open("route_data.bin",ios::out | ios::app | ios::binary);
+    route_file.open("Data/route_data.bin",ios::out | ios::app | ios::binary);
     route_file.seekp(0,ios::end);
     route_file.write((char*)_route,sizeof(route));
     code_to_route[r_code]=_route;
@@ -673,7 +673,7 @@ void deleteRouteScreen(){
     curr_screen=screen::manage_routes;
 
     code_to_route.erase(r_code);
-    code_to_route.copy_to_file("route_data.bin");
+    code_to_route.copy_to_file("Data/route_data.bin");
     line+=printOutputSetCursor("Route deleted successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
@@ -797,7 +797,7 @@ void addAirplaneScreen(){
     airplane *_airplane;
     fstream airplane_file;
     _airplane = new airplane((*_airline),(*_airplane_model),(*_route),cost,d_time,a_time);
-    airplane_file.open("airplane_data.bin",ios::out | ios::app | ios::binary);
+    airplane_file.open("Data/airplane_data.bin",ios::out | ios::app | ios::binary);
     airplane_file.seekp(0,ios::end);
     airplane_file.write((char*)_airplane,sizeof(airplane));
     airplane_file.close();
@@ -849,9 +849,9 @@ void deleteAirplaneScreen(){
     code_to_airport.traverse(airport_list);
     list_size=airport_list.size();
     fstream airplane_file;
-    airplane_file.open("airplane_data.bin",ios::out);
+    airplane_file.open("Data/airplane_data.bin",ios::out);
     airplane_file.close();
-    for(int i=0;i<list_size;i++) (airport_list[i])->copy_flights_to_file("airplane_data.bin");
+    for(int i=0;i<list_size;i++) (airport_list[i])->copy_flights_to_file("Data/airplane_data.bin");
 
     line+=printOutputSetCursor("Airplane deleted successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
@@ -937,7 +937,7 @@ void addImpUpdateScreen(){
     curr_screen=screen::manage_imp_updates;
 
     fstream imp_updates_file;
-    imp_updates_file.open("important_updates_data.bin",ios::out | ios::app | ios::binary);
+    imp_updates_file.open("Data/important_updates_data.bin",ios::out | ios::app | ios::binary);
     char *text = new char[2*LARGE_SIZE+1];
     strcpy(text,_text);
     imp_updates_file.write((char*)text,2*LARGE_SIZE+1);
@@ -975,7 +975,7 @@ void deleteImpUpdateScreen(){
     fstream imp_updates_file;
     vector<char*> updates_list;
     char *text = new char[2*LARGE_SIZE+1];
-    imp_updates_file.open("important_updates_data.bin",ios::in | ios::app | ios::binary);
+    imp_updates_file.open("Data/important_updates_data.bin",ios::in | ios::app | ios::binary);
     while(imp_updates_file.read((char*)text,2*LARGE_SIZE+1)){
         s_num++;
         if(s_num==serial_num) continue;
@@ -983,7 +983,7 @@ void deleteImpUpdateScreen(){
         text = new char[2*LARGE_SIZE+1];
     }
     imp_updates_file.close();
-    imp_updates_file.open("important_updates_data.bin",ios::out);
+    imp_updates_file.open("Data/important_updates_data.bin",ios::out);
     list_size=updates_list.size();
     for(int i=0;i<list_size;i++) imp_updates_file.write((char*)updates_list[i],2*LARGE_SIZE+1);
 
@@ -1011,13 +1011,13 @@ void impUpdateListScreen(){
     fstream imp_updates_file;
     char *text = new char[2*LARGE_SIZE+1];
     char _text[2*LARGE_SIZE+1+10];
-    imp_updates_file.open("important_updates_data.bin",ios::in | ios::binary);
+    imp_updates_file.open("Data/important_updates_data.bin",ios::in | ios::binary);
     imp_updates_file.seekg(0,ios::beg);
     while(imp_updates_file.read((char*)text,2*LARGE_SIZE+1)){
         list_size++;
     }
     imp_updates_file.close();
-    imp_updates_file.open("important_updates_data.bin",ios::in | ios::binary);
+    imp_updates_file.open("Data/important_updates_data.bin",ios::in | ios::binary);
     imp_updates_file.seekg(0,ios::beg);
     while(imp_updates_file.read((char*)text,2*LARGE_SIZE+1)){
         i++;
@@ -1161,7 +1161,7 @@ void printTicket(ticket_details& _details){
     gst=total_cost-ticket_cost;
 
     fstream ticket_file;
-    ticket_file.open("Flight_Ticket.html",ios::out);
+    ticket_file.open("Ticket/Flight_Ticket.html",ios::out);
 
     ticket_file<<"<!DOCTYPE html>\n";
 
@@ -1323,7 +1323,7 @@ void printTicket(ticket_details& _details){
 
     ticket_file<<"</body>\n";
 
-    ticket_file<<"</html>\n";
+    ticket_file<<"</html>";
 
     ticket_file.close();
     airplaneAnimation();
@@ -1655,6 +1655,8 @@ void controlCenter(){
                 break;
         }
     }
+
+    system("cls");
 }
 
 // check if all input characters are trie characters are not
