@@ -1,6 +1,6 @@
 # Flight Booking System
 
-This program allows users to book flight tickets and also check for available flights. It also has admin access to manage and update flight data.   
+An application that allows users to books flight tickets and also check for available flights. It also has an admin access to manage and update flight data.       
 It is advised that users read the instructions given below before using the program or in case of any query.
 
 # Disclaimer
