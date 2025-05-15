@@ -85,6 +85,18 @@ The two main components are airplane(flight) and airport data. Before adding any
 - If you move the ticket file to some other folder, please also move style.css and airplane_image.png files along with it.
 - If you feel that the program isn't responding as you intended, then kill the terminal and restart your program.
 
+## Snapshots
+
+<img src="README_Images/Home.png" alt="Image not found">
+
+<img src="README_Images/Admin_Home.png" alt="Image not found">
+
+<img src="README_Images/User_Home.png" alt="Image not found">
+
+<img src="README_Images/Passenger_Details.png" alt="Image not found">
+
+<img src="README_Images/Flight.png" alt="Image not found">
+
 ## Resources
 
 - ASCII Art for title : [patorjk.com](https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20)
