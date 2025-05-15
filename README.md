@@ -3,29 +3,33 @@
 An application that allows users to books flight tickets and also check for available flights. It also has an admin access to manage and update flight data.       
 It is advised that users read the instructions given below before using the program or in case of any query.
 
-# Disclaimer
+## Disclaimer
 
 This program does not book tickets in real life. All the names of various entities used in this program are just for the sake of this program and do not correlate with the entities in real life.
 
-# Note
+## Note
 
 - Flight data has been added for flights connected with Bhubaneswar Airport. More data will be added soon.
 - Input validity checks aren't being performed at some of the sections, will be fixed soon.
 - Login screen is yet to be added.
 
-# Concepts
+## Concepts
 
 - Object Oriented Programming
 - File Handling
 - Multithreading
 - Data Structures
 
-# How to run the program
+## Program Execution
 
-1. Copy all the files into a folder or clone the repository.
+1. Clone the repository.
+
 2. Open your Windows terminal (or VS Code terminal) and navigate to the folder of the cloned repository. Note that some Windows-specific functions have been used so a Windows system is required for the functioning of the program.
+
 3. Set your terminal window to full screen (or as big as possible).
+
 4. Use the following command to compile the code :
+
    ```bash
    g++ main.cpp -o main.exe -pthread
    ```
@@ -33,42 +37,43 @@ This program does not book tickets in real life. All the names of various entiti
 5. In case of an error related to "pthread.h", if you are using MinGW, please make sure that the "mingw32-pthreads-w32" package has been installed on your system. If not, then open your MinGW Installer and install the package.
 
 6. Run the executable file using the following command :
+
    ```bash
    ./main.exe
    ```
 
 7. The program must now be running.
 
-# Overview of various sections and users of the program
+## Overview of various sections and users of the program
 
-## 1. Guest
+### 1. Guest
 
 - No sign up required.
 - Can check for available flights.
 - Cannot book ticket.
 
-## 2. User
+### 2. User
 
 - Sign-up is required. (For now, login page is not created so sign-up is not required)
 - Can check for available flights.
 - Can book a ticket.
 
-## 3. Admin
+### 3. Admin
 
 - Has entire access to the data.
 - Can add or delete data.
 - Can check existing data.
 
-## 4. Booking a Ticket
+### 4. Booking a Ticket
 
 - Once you enter your flight and passenger details, a Flight_Ticket.html file will be generated in the Ticket folder, which will contain your ticket.
 - Simply double-click on the Flight_Ticket.html file to open your ticket. 
 
-# Managing data as an Admin
+## Managing data as an Admin
 
 The two main components are airplane(flight) and airport data. Before adding any airplane, there must be an airport at the starting and destination locations. Hence, airports must added first. To add an airplane, first, its respective airline, airplane model and route must be added. Then, you can add a flight(airplane). To check what exact details are to be added, for each entity, you can check out the already existing data through the admin section (for each entity, you will find an option as "View [entity name] List").
 
-# Instructions
+## Instructions
 
 - All times are displayed in 24-hour format.
 - If you want to select an option with the serial number, let's say '2', then press '2' on your keyboard to select that option.
@@ -80,7 +85,7 @@ The two main components are airplane(flight) and airport data. Before adding any
 - If you move the ticket file to some other folder, please also move style.css and airplane_image.png files along with it.
 - If you feel that the program isn't responding as you intended, then kill the terminal and restart your program.
 
-# Resources
+## Resources
 
 - ASCII Art for title : [patorjk.com](https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20)
 - ASCII Art for flight animation : [asciiart.eu](https://www.asciiart.eu/vehicles/airplanes)
