@@ -195,6 +195,20 @@ public:
         output_file.close();
     }
 
+    // this function is only used for T = airport
+    void copy_to_file_v2(const char *file_name){
+        vector<T*> v;
+        traverse(v);
+        int size=v.size();
+        fstream output_file;
+        output_file.open(file_name,ios::out | ios::binary);
+        output_file.seekp(0,ios::beg);
+        for(int i=0;i<size;i++){
+            v[i]->write_to_file(output_file);
+        }
+        output_file.close();
+    }
+
     trieProxy operator[](const char *key){
         return trieProxy(this,key);
     }
@@ -205,16 +219,18 @@ trie<airplane_model> name_to_airplane_model;
 trie<airport> code_to_airport;
 trie<route> code_to_route;
 
+#pragma pack(push, 1)
 class airline{
 protected:
     char airline_name[MEDIUM_SIZE+1];
 
 public:
     airline(){
-        airline_name[0]='\0';
+        memset((void*)airline_name, 0, sizeof(airline_name));
     }
 
     airline(char *a_name){
+        memset((void*)airline_name, 0, sizeof(airline_name));
         strcpy(airline_name,a_name);
     }
 
@@ -222,14 +238,21 @@ public:
         return airline_name;
     }
 
+    void write_to_file(ofstream& _file){
+        _file.write((char*)this, sizeof(airline));
+    }
+
+    void write_to_file(fstream& _file){
+        _file.write((char*)this, sizeof(airline));
+    }
+
     void display(){
-        char text[2*LARGE_SIZE+1];
-        // sprintf(text,"Airline Name             : %s.",airline_name);
-        // printLine(text,colour::_default);
         printLine("Airline Name             : ",airline_name,colour::green,true);
     }
 };
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 class airplane_model{
 protected:
     int passenger_capacity;
@@ -238,11 +261,12 @@ protected:
 public:
     airplane_model(){
         passenger_capacity=0;
-        model_name[0]='\0';
+        memset((void*)model_name, 0, sizeof(model_name));
     }
 
     airplane_model(int capacity, char *m_name){
         passenger_capacity=capacity;
+        memset((void*)model_name, 0, sizeof(model_name));
         strcpy(model_name,m_name);
     }
 
@@ -254,18 +278,24 @@ public:
         return model_name;
     }
 
+    void write_to_file(ofstream& _file){
+        _file.write((char*)this, sizeof(airplane_model));
+    }
+
+    void write_to_file(fstream& _file){
+        _file.write((char*)this, sizeof(airplane_model));
+    }
+
     void display(){
         char text[2*LARGE_SIZE+1];
-        // sprintf(text,"Airplane Model Name      : %s.",model_name);
-        // printLine(text,colour::_default);
         printLine("Airplane Model Name      : ",model_name,colour::green,true);
-        // sprintf(text,"Passenger Capacity       : %d.",passenger_capacity);
-        // printLine(text,colour::_default);
         sprintf(text,"%d",passenger_capacity);
         printLine("Passenger Capacity       : ",text,colour::green,true);
     }
 };
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 class route{
 protected:
     int route_distance;
@@ -276,17 +306,28 @@ protected:
 public:
     route(){
         route_distance=0;
-        starting_airport[0]='\0';
-        destination_airport[0]='\0';
-        route_code[0]='\0';
+        memset((void*)starting_airport, 0, sizeof(starting_airport));
+        memset((void*)destination_airport, 0, sizeof(destination_airport));
+        memset((void*)route_code, 0, sizeof(route_code));
     }
 
     route(int distance, char *start, char *end){
         route_distance=distance;
+        memset((void*)starting_airport, 0, sizeof(starting_airport));
+        memset((void*)destination_airport, 0, sizeof(destination_airport));
+        memset((void*)route_code, 0, sizeof(route_code));
         strcpy(starting_airport,start);
         strcpy(destination_airport,end);
         strcpy(route_code,starting_airport);
         strcpy(route_code+SMALL_SIZE,destination_airport);
+    }
+
+    char* get_starting_airport(){
+        return starting_airport;
+    }
+
+    char* get_destination_airport(){
+        return destination_airport;
     }
 
     char* get_route_code(){
@@ -297,24 +338,26 @@ public:
         return route_distance;
     }
 
+    void write_to_file(ofstream& _file){
+        _file.write((char*)this, sizeof(route));
+    }
+
+    void write_to_file(fstream& _file){
+        _file.write((char*)this, sizeof(route));
+    }
+
     void display(){
         char text[2*LARGE_SIZE+1];
-        // sprintf(text,"Starting Airport Code    : %s.",starting_airport);
-        // printLine(text,colour::_default);
         printLine("Starting Airport Code    : ",starting_airport,colour::green,true);
-        // sprintf(text,"Destination Airport Code : %s.",destination_airport);
-        // printLine(text,colour::_default);
         printLine("Destination Airport Code : ",destination_airport,colour::green,true);
-        // sprintf(text,"Route Code               : %s.",route_code);
-        // printLine(text,colour::_default);
         printLine("Route Code               : ",route_code,colour::green,true);
-        // sprintf(text,"Route Distance           : %d.",route_distance);
-        // printLine(text,colour::_default);
         sprintf(text,"%d",route_distance);
         printLine("Route Distance (in KM)   : ",text,colour::green,true);
     }
 };
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 class airplane : public airline, public airplane_model, public route{
 protected:
     int airplane_cost;
@@ -355,28 +398,30 @@ public:
         return airplane_cost;
     }
 
+    void write_to_file(ofstream& _file){
+        _file.write((char*)this, sizeof(airplane));
+    }
+
+    void write_to_file(fstream& _file){
+        _file.write((char*)this, sizeof(airplane));
+    }
+
     void display(){
         airline::display();
         airplane_model::display();
         route::display();
         char text[2*LARGE_SIZE+1];
-        // sprintf(text,"Departure Time           : %04d.",departure_time);
-        // printLine(text,colour::_default);
-        // sprintf(text,"%04d",departure_time);
         sprintf(text,"%02d:%d%d",departure_time/100,(departure_time%100)/10,departure_time%10);
         printLine("Departure Time           : ",text,colour::green,true);
-        // sprintf(text,"Arrival Time             : %04d.",arrival_time);
-        // printLine(text,colour::_default);
-        // sprintf(text,"%04d",arrival_time);
         sprintf(text,"%02d:%d%d",arrival_time/100,(arrival_time%100)/10,arrival_time%10);
         printLine("Arrival Time             : ",text,colour::green,true);
-        // sprintf(text,"Ticket Cost              : %d.",airplane_cost);
-        // printLine(text,colour::_default);
         sprintf(text,"%d",airplane_cost);
         printLine("Ticket Cost (in Rs.)     : ",text,colour::green,true);
     }
 };
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 class airport{
 private:
     char airport_name[LARGE_SIZE+1];
@@ -386,19 +431,26 @@ private:
 
 public:
     airport(){
-        airport_name[0]='\0';
-        airport_city[0]='\0';
-        airport_code[0]='\0';
+        memset((void*)airport_name, 0, sizeof(airport_name));
+        memset((void*)airport_city, 0, sizeof(airport_city));
+        memset((void*)airport_code, 0, sizeof(airport_code));
         outgoing_flights.clear();
     }
 
     airport(char *a_name, char *a_city, char *a_code){
+        memset((void*)airport_name, 0, sizeof(airport_name));
+        memset((void*)airport_city, 0, sizeof(airport_city));
+        memset((void*)airport_code, 0, sizeof(airport_code));
         strcpy(airport_name,a_name);
         strcpy(airport_city,a_city);
         strcpy(airport_code,a_code);
+        outgoing_flights.clear();
     }
 
     airport(char *a_name, char *a_city, char *a_code, vector<airplane*>& o_flights){
+        memset((void*)airport_name, 0, sizeof(airport_name));
+        memset((void*)airport_city, 0, sizeof(airport_city));
+        memset((void*)airport_code, 0, sizeof(airport_code));
         strcpy(airport_name,a_name);
         strcpy(airport_city,a_city);
         strcpy(airport_code,a_code);
@@ -475,24 +527,45 @@ public:
         output_file.close();
     }
 
+    void read_from_file(ifstream& _file){
+        _file.read(airport_name, sizeof(airport_name));
+        _file.read(airport_city, sizeof(airport_city));
+        _file.read(airport_code, sizeof(airport_code));
+    }
+
+    void read_from_file(fstream& _file){
+        _file.read(airport_name, sizeof(airport_name));
+        _file.read(airport_city, sizeof(airport_city));
+        _file.read(airport_code, sizeof(airport_code));
+    }
+
+    void write_to_file(ofstream& _file){
+        _file.write(airport_name, sizeof(airport_name));
+        _file.write(airport_city, sizeof(airport_city));
+        _file.write(airport_code, sizeof(airport_code));
+    }
+
+    void write_to_file(fstream& _file){
+        _file.write(airport_name, sizeof(airport_name));
+        _file.write(airport_city, sizeof(airport_city));
+        _file.write(airport_code, sizeof(airport_code));
+    }
+
     void display(){
-        char text[2*LARGE_SIZE+1];
-        // sprintf(text,"Name : %s.",airport_name);
-        // printLine(text,colour::_default);
         printLine("Name : ",airport_name,colour::green,true);
-        // sprintf(text,"City : %s.",airport_city);
-        // printLine(text,colour::_default);
         printLine("City : ",airport_city,colour::green,true);
-        // sprintf(text,"Code : %s.",airport_code);
-        // printLine(text,colour::_default);
         printLine("Code : ",airport_code,colour::green,true);
     }
 };
+#pragma pack(pop)
 
 class ticket_details{
 public:
     int age;
-    char passenger_name[MEDIUM_SIZE+1],gender[2],s_airport[SMALL_SIZE+1],d_airport[SMALL_SIZE+1];
+    char passenger_name[MEDIUM_SIZE+1];
+    char gender[2];
+    char s_airport[SMALL_SIZE+1];
+    char d_airport[SMALL_SIZE+1];
     airplane _airplane;
 
     ticket_details(){
@@ -536,11 +609,14 @@ void initializeDataFromFiles(){
     }
     route_file.close();
 
-    airport _airport;
     fstream airport_file;
     airport_file.open("Data/airport_data.bin",ios::in | ios::app | ios::binary);
+    airport_file.seekg(0,ios::end);
+    int total_bytes=airport_file.tellg();
     airport_file.seekg(0,ios::beg);
-    while(airport_file.read((char*)&_airport,sizeof(airport))){
+    while(airport_file.tellg() != total_bytes){
+        airport _airport;
+        _airport.read_from_file(airport_file);
         _airport.clear_flights();
         code_to_airport[_airport.get_airport_code()] = new airport(_airport);
         // (*code_to_airport[_airport.get_airport_code()]).display();
@@ -550,22 +626,14 @@ void initializeDataFromFiles(){
     airplane _airplane;
     airport* __airport;
     fstream airplane_file;
-    char s_airport[SMALL_SIZE+1],*r_code;
     airplane_file.open("Data/airplane_data.bin",ios::in | ios::app | ios::binary);
     airplane_file.seekg(0,ios::beg);
     while(airplane_file.read((char*)&_airplane,sizeof(airplane))){
-        r_code=_airplane.get_route_code();
-        for(int i=0;i<SMALL_SIZE;i++) s_airport[i]=r_code[i];
-        s_airport[SMALL_SIZE]='\0';
-        __airport=code_to_airport[s_airport];
-        (*__airport).add_airplane(new airplane(_airplane));
+        __airport=code_to_airport[_airplane.get_starting_airport()];
+        __airport->add_airplane(new airplane(_airplane));
         // _airplane.display();
     }
     airplane_file.close();
-
-    fstream imp_updates_file;
-    imp_updates_file.open("Data/important_updates_data.bin",ios::out | ios::app | ios::binary);
-    imp_updates_file.close();
 }
 
 void customInput(char *s,int size){
@@ -584,6 +652,3 @@ void customInput(char *s,int size){
     }
     resetBackgorund();
 }
-
-// ignore leading and trailing whitespaces
-// when we are deleting airline, model or route, all corresponding airplanes must also be deleted

@@ -254,7 +254,8 @@ void addAirportScreen(){
     _airport = new airport(a_name,a_city,a_code);
     airport_file.open("Data/airport_data.bin",ios::out | ios::app | ios::binary);
     airport_file.seekp(0,ios::end);
-    airport_file.write((char*)_airport,sizeof(airport));
+    // airport_file.write((char*)_airport,sizeof(airport));
+    _airport->write_to_file(airport_file);
     airport_file.close();
     code_to_airport[a_code]=_airport;
 
@@ -285,7 +286,7 @@ void deleteAirportScreen(){
     curr_screen=screen::manage_airports;
 
     code_to_airport.erase(a_code);
-    code_to_airport.copy_to_file("Data/airport_data.bin");
+    code_to_airport.copy_to_file_v2("Data/airport_data.bin");
     line+=printOutputSetCursor("Airport deleted successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
     getch();
@@ -293,7 +294,6 @@ void deleteAirportScreen(){
 
 void airportListScreen(){
     setCursorVisibility(false);
-    // curr_screen=screen::manage_airports;
     if(user_type=='G') curr_screen=screen::guest_homepage;
     else if(user_type=='U') curr_screen=screen::user_homepage;
     else if(user_type=='A') curr_screen=screen::manage_airports;
@@ -785,7 +785,7 @@ void addAirplaneScreen(){
     airport *_airport;
     _airport=code_to_airport[s_airport];
     if(_airport->find_airplane(_route_code,d_time)){
-        line+=printOutputSetCursor("Either flight already exists or there is a clash with another flight.",line);
+        line+=printOutputSetCursor("Either flight already exists or there is a timing clash with another flight.",line);
         line+=printOutputSetCursor("Press any key to continue ...",line);
         getch();
         return;
@@ -801,7 +801,6 @@ void addAirplaneScreen(){
     airplane_file.seekp(0,ios::end);
     airplane_file.write((char*)_airplane,sizeof(airplane));
     airplane_file.close();
-    // (*_airplane).add_to_airport();
     if(_airport!=NULL) (*_airport).add_airplane(_airplane);
     line+=printOutputSetCursor("Airplane added successfully.",line);
     line+=printOutputSetCursor("Press any key to continue ...",line);
@@ -811,12 +810,10 @@ void addAirplaneScreen(){
 void deleteAirplaneScreen(){
     system("cls");
     int line=0,d_time;
-    // char _airline_name[MEDIUM_SIZE+1];
     char _route_code[2*SMALL_SIZE+1],s_airport[SMALL_SIZE+1];
     char yesno;
 
     line+=printBasicScreen(10);
-    // line+=takeInputSetCursor("Airline Name   : ",_airline_name,sizeof(_airline_name),line);
     line+=takeInputSetCursor("Route Code     : ",_route_code,sizeof(_route_code),line);
     convertToUppercase(_route_code);
     if(strlen(_route_code)!=2*SMALL_SIZE){
@@ -1023,8 +1020,6 @@ void impUpdateListScreen(){
         i++;
         serial_num++;
         printLine();
-        // sprintf(_text,"%2d. %s",serial_num,text);
-        // printLine(_text,colour::_default);
         sprintf(_text,"%2d. ",serial_num);
         printLine(_text,text,colour::green,true);
         if(i!=list_size-1){
@@ -1070,7 +1065,7 @@ void airplaneAnimation(){
 
     int animation_width,animation_height=8,count=0,index,total_width=SCREEN_WIDTH-2-2*TEXT_PADDING;
     animation_width=strlen("        ______                                          ");
-    char text[animation_height][animation_width];
+    char text[animation_height][animation_width+1];
 
     strcpy(text[0],"        ______                                          ");
     strcpy(text[1],"        _\\ _~-\\___                                      ");
@@ -1138,8 +1133,7 @@ void airplaneAnimation(){
     setCursorVisibility(true);
     bookingSuccessful();
 }
-// add random seat number
-// create booking id using seed or time
+
 void printTicket(ticket_details& _details){
     airport *starting_airport,*destination_airport;
     destination_airport=code_to_airport[_details.d_airport];
@@ -1228,15 +1222,12 @@ void printTicket(ticket_details& _details){
     ticket_file<<"\t\t\t\t</div>\n";
     ticket_file<<"\t\t\t\t<div class=\"city\">\n";
     ticket_file<<"\t\t\t\t\t"<<destination_airport->get_airport_city()<<" ("<<destination_airport->get_airport_code()<<")\n";
-    // ticket_file<<"\t\t\t\t\tBhubaneswar (BBI)\n";
     ticket_file<<"\t\t\t\t</div>\n";
     ticket_file<<"\t\t\t\t<div class=\"airport_name\">\n";
     ticket_file<<"\t\t\t\t\t"<<destination_airport->get_airport_name()<<"\n";
-    // ticket_file<<"\t\t\t\t\tBiju Patnaik International Airport\n";
     ticket_file<<"\t\t\t\t</div>\n";
     ticket_file<<"\t\t\t\t<div class=\"time\">\n";
     ticket_file<<"\t\t\t\t\tArrival Time - "<<a_time[0]<<a_time[1]<<":"<<a_time[2]<<a_time[3]<<"\n";
-    // ticket_file<<"\t\t\t\t\tArrival Time - 10:00 PM\n";
     ticket_file<<"\t\t\t\t</div>\n";
     ticket_file<<"\t\t\t</div>\n";
     ticket_file<<"\t\t</div>\n";
@@ -1265,15 +1256,12 @@ void printTicket(ticket_details& _details){
     ticket_file<<"\t\t<div id=\"passenger_details\">\n";
     ticket_file<<"\t\t\t<div class=\"passenger_name\">\n";
     ticket_file<<"\t\t\t\t"<<_details.passenger_name<<"\n";
-    // ticket_file<<"\t\t\t\tRAVILISETTY MAKARANDH\n";
     ticket_file<<"\t\t\t</div>\n";
     ticket_file<<"\t\t\t<div class=\"age\">\n";
     ticket_file<<"\t\t\t\t"<<_details.age<<"\n";
-    // ticket_file<<"\t\t\t\t55\n";
     ticket_file<<"\t\t\t</div>\n";
     ticket_file<<"\t\t\t<div class=\"gender\">\n";
     ticket_file<<"\t\t\t\t"<<_details.gender<<"\n";
-    // ticket_file<<"\t\t\t\tM\n";
     ticket_file<<"\t\t\t</div>\n";
     ticket_file<<"\t\t\t<div class=\"seat\">\n";
     ticket_file<<"\t\t\t\tG5/ECONOMY\n";
@@ -1292,7 +1280,6 @@ void printTicket(ticket_details& _details){
     ticket_file<<"\t\t\t<div class=\"cost_text cost_value\">\n";
     ticket_file.setf(ios::fixed,ios::floatfield);
     ticket_file<<"\t\t\t\tRs. "<<setprecision(2)<<ticket_cost<<"\n";
-    // ticket_file<<"\t\t\t\t5000\n";
     ticket_file<<"\t\t\t</div>\n";
     ticket_file<<"\t\t</div>\n";
     ticket_file<<"\t\t<div class=\"cost\">\n";
@@ -1301,7 +1288,6 @@ void printTicket(ticket_details& _details){
     ticket_file<<"\t\t\t</div>\n";
     ticket_file<<"\t\t\t<div class=\"cost_text cost_value\">\n";
     ticket_file<<"\t\t\t\tRs. "<<setprecision(2)<<gst<<"\n";
-    // ticket_file<<"\t\t\t\t200\n";
     ticket_file<<"\t\t\t</div>\n";
     ticket_file<<"\t\t</div>\n";
     ticket_file<<"\t\t<div class=\"cost leavemargin\">\n";
@@ -1310,7 +1296,6 @@ void printTicket(ticket_details& _details){
     ticket_file<<"\t\t\t</div>\n";
     ticket_file<<"\t\t\t<div class=\"cost_text cost_value\">\n";
     ticket_file<<"\t\t\t\tRs. "<<setprecision(2)<<total_cost<<"\n";
-    // ticket_file<<"\t\t\t\t5200\n";
     ticket_file<<"\t\t\t</div>\n";
     ticket_file<<"\t\t</div>\n";
     ticket_file<<"\n";
@@ -1335,7 +1320,6 @@ void bookPassengerDetails(ticket_details& _details){
     char yesno;
 
     line+=printBasicScreen(14);
-    // line+=printOutputSetCursor("Passenger Details",align::center,line);
     setCursorPosition(0,line);
     line+=printLine("Passenger Details",align::center,0);
     line+=printLine();
@@ -1422,7 +1406,6 @@ void bookTicketFlightList(ticket_details& _details){
     if(curr_screen==screen::flight_availability || airplane_list_size==0){
         if(user_type=='G') curr_screen=screen::guest_homepage;
         else if(user_type=='U') curr_screen=screen::user_homepage;
-        // printOutputSetCursor("Press Escape to go back",line);
         setCursorPosition(0,line);
         printLine("Press Escape to go back",colour::red);
         cout<<"\n\n";
@@ -1439,12 +1422,7 @@ void bookTicketFlightList(ticket_details& _details){
         return;
     }
     _details._airplane=(*airplane_list[input_num-1]);
-    // for(int i=0;i<airplane_list_size;i++){
-    //     if(i+1==input_num){
-    //         _details._airplane=(*airplane_list[i]);
-    //         break;
-    //     }
-    // }
+
     bookPassengerDetails(_details);
 }
 
@@ -1455,7 +1433,6 @@ void bookTicketFlights(){
     ticket_details _details;
 
     line+=printBasicScreen(15);
-    // line+=printOutputSetCursor("Flight Details",align::center,line);
     setCursorPosition(0,line);
     line+=printLine("Flight Details",align::center,0);
     line+=printLine();
@@ -1485,10 +1462,8 @@ void passwordInput(char *s,int size){
     char c='a';
     int l=0;
     // check why '\n'=10 and enter = 13 and why this problem isn't there for cin.get()
-    // cout<<(int)'\n';
     while(l<size-1){
         c=getch();
-        // cout<<(int)c;
         if(c==(int)13) break;
         // if(c=='\n') break;
         s[l++]=c;
@@ -1513,7 +1488,6 @@ void loginScreen(){
     cout<<"Password : ";
     line++;
     passwordInput(_password,sizeof(_password));
-    // cout<<_user_id<<" "<<_password<<"\n";
 }
 
 void controlCenter(){
@@ -1658,8 +1632,3 @@ void controlCenter(){
 
     system("cls");
 }
-
-// check if all input characters are trie characters are not
-// subsequent attempt to check flight availability is causing some error
-//      - I think the bug was due to use of (*). rather than ()-> , that to in class airport only
-//      - the bug has been fixed
