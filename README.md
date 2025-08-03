@@ -73,7 +73,7 @@ This program does not book tickets in real life. All the names of various entiti
 
 The two main components are airplane(flight) and airport data. Before adding any airplane, there must be an airport at the starting and destination locations. Hence, airports must added first. To add an airplane, first, its respective airline, airplane model and route must be added. Then, you can add a flight(airplane). To check what exact details are to be added, for each entity, you can check out the already existing data through the admin section (for each entity, you will find an option as "View [entity name] List").
 
-## Instructions
+## Instructions and Troubleshooting
 
 - All times are displayed in 24-hour format.
 - If you want to select an option with the serial number, let's say '2', then press '2' on your keyboard to select that option.
